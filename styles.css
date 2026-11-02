@@ -138,7 +138,7 @@ button{font:inherit}
 .visual-overline,.visual-foot{position:relative;z-index:2;font:8px var(--mono);letter-spacing:.1em}
 .project-visual strong{position:relative;z-index:2;font-size:clamp(30px,5vw,70px);line-height:.82;letter-spacing:-.095em;margin:auto 0 12px}
 .project-visual i{position:absolute;z-index:1;font-style:normal}
-.visual-jasypa{background:#431b58}
+.visual-jasypa{background:#231f46}
 .visual-jasypa:before{content:"";position:absolute;width:70%;aspect-ratio:1;border:1px solid rgba(255,255,255,.55);border-radius:50%;right:-8%;top:10%;box-shadow:0 0 0 22px rgba(255,255,255,.06),0 0 0 44px rgba(255,255,255,.04)}
 .visual-jasypa i{font-size:90px;right:18%;top:32%;color:var(--peach)}
 .visual-selection{background:var(--lilac);color:var(--plum)}
