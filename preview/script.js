@@ -247,35 +247,94 @@
     scheduleBlink();
   }
 
+  function pointInsideAvatar(e){
+    const r=stage.getBoundingClientRect();
+    return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
+  }
+
+  const invertLayer=document.getElementById('color-invert');
+  const invertShape=document.getElementById('color-invert-shape');
+  let invertPhase=0,invertX=0,invertY=0,invertRaf=0,invertVisible=false;
+  let invertTarget={x:0,y:0},invertCurrent={x:0,y:0};
+
+  function inversionPath(cx,cy,phase,speed){
+    const count=20,rx=116,ry=126,pts=[];
+    const angle=Math.atan2(cy-invertY,cx-invertX);
+    const stretch=Math.min(speed*.012,.18);
+    for(let i=0;i<count;i++){
+      const a=Math.PI*2*i/count;
+      const wobble=1+.045*Math.sin(3*a+phase)+.025*Math.sin(5*a-phase*1.2);
+      const x=Math.cos(a)*rx*wobble*(1+stretch*Math.cos(a-angle));
+      const y=Math.sin(a)*ry*wobble*(1-stretch*.35*Math.cos(a-angle));
+      pts.push({x:120+x,y:130+y});
+    }
+    const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+    let d='M '+mid(pts[count-1],pts[0]).x+' '+mid(pts[count-1],pts[0]).y;
+    for(let i=0;i<count;i++){const m=mid(pts[i],pts[(i+1)%count]);d+=' Q '+pts[i].x+' '+pts[i].y+' '+m.x+' '+m.y;}
+    return d+' Z';
+  }
+
+  function animateInversion(){
+    invertRaf=0;
+    const dx=invertTarget.x-invertCurrent.x,dy=invertTarget.y-invertCurrent.y;
+    invertCurrent.x+=dx*(reducedMotion?1:.2);
+    invertCurrent.y+=dy*(reducedMotion?1:.2);
+    const speed=Math.hypot(dx,dy);
+    invertPhase+=Math.min(speed*.0015,.08);
+    invertLayer.style.left=invertCurrent.x+'px';
+    invertLayer.style.top=invertCurrent.y+'px';
+    invertShape.setAttribute('d',inversionPath(120,130,invertPhase,speed));
+    if(Math.abs(dx)>.3||Math.abs(dy)>.3)invertRaf=requestAnimationFrame(animateInversion);
+  }
+
+  function moveInversion(e){
+    if(!invertLayer)return;
+    invertTarget={x:e.clientX,y:e.clientY};
+    invertLayer.classList.add('is-visible');
+    if(!invertRaf)invertRaf=requestAnimationFrame(animateInversion);
+  }
+
+  function hideInversion(){if(invertLayer)invertLayer.classList.remove('is-visible');}
+
+  function handlePointer(e){
+    if(e.pointerType!=='mouse'&&e.pointerType!=='pen')return;
+    trackEyes(e);
+    if(pointInsideAvatar(e)){
+      hideInversion();
+      activateReveal(e);
+    }else{
+      moveInversion(e);
+      if(stage.classList.contains('is-hovering'))closeReveal();
+    }
+  }
+
   function bindInteractions(){
     stage.addEventListener('click',flashSmile);
     const supportsHover=window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if(supportsHover){
-      window.addEventListener('pointermove',e=>{
-        if(e.pointerType!=='mouse'&&e.pointerType!=='pen')return;
-        trackEyes(e);
-        activateReveal(e);
-      },{passive:true});
+      window.addEventListener('pointermove',handlePointer,{passive:true});
       window.addEventListener('pointerout',e=>{
-        if(!e.relatedTarget)closeReveal();
+        if(!e.relatedTarget){hideInversion();closeReveal();}
       },{passive:true});
     }else{
-      // Passive touch events preserve the browser's native page scrolling.
+      let touchActive=false;
       document.addEventListener('touchstart',e=>{
         if(!e.touches.length)return;
         const t=e.touches[0],point={clientX:t.clientX,clientY:t.clientY};
-        touchActive=true;
-        trackEyes(point);
-        activateReveal(point);
+        touchActive=true;trackEyes(point);
+        if(pointInsideAvatar(point)){hideInversion();activateReveal(point);}
+        else{moveInversion(point);if(stage.classList.contains('is-hovering'))closeReveal();}
       },{passive:true});
       document.addEventListener('touchmove',e=>{
         if(!touchActive||!e.touches.length)return;
         const t=e.touches[0],point={clientX:t.clientX,clientY:t.clientY};
         trackEyes(point);
-        setRevealTarget(point);
+        if(pointInsideAvatar(point)){hideInversion();activateReveal(point);}
+        else{moveInversion(point);setRevealTarget(point);if(stage.classList.contains('is-hovering'))closeReveal();}
       },{passive:true});
       const finishTouch=()=>{
         touchActive=false;
+        hideInversion();
         clearTimeout(touchRevealTimer);
         touchRevealTimer=window.setTimeout(closeReveal,650);
       };
@@ -303,7 +362,7 @@
   }
 
   window.addEventListener('pagehide',()=>{
-    clearTimeout(smileTimer);clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);
+    clearTimeout(smileTimer);clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);if(invertRaf)cancelAnimationFrame(invertRaf);
     if(pupilRaf)cancelAnimationFrame(pupilRaf);
     if(revealRaf)cancelAnimationFrame(revealRaf);
   });
