@@ -558,3 +558,34 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
     bottom:9%!important;
   }
 }
+
+
+/* EXPRESSION SAFETY — keep the base face visible during every crossfade */
+.avatar-svg #cara_ojos_abiertos_neutro{
+  opacity:1!important;
+  transition:opacity .12s ease-in-out!important;
+}
+.avatar-svg #ojos_sonrientes,
+.avatar-svg #cara_ojos_abiertos_neutro_copia{
+  opacity:0;
+  transition:opacity .12s ease-in-out!important;
+}
+.avatar-stage.is-smiling .avatar-svg #ojos_sonrientes{opacity:1}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro_copia{opacity:1}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito{
+  opacity:0;
+  transition:opacity .09s ease-in-out!important;
+}
+
+/* Match the softness and timing of both chromatic transitions */
+.avatar-svg #CRÁNEO,
+.avatar-svg #skull-peek-shape{
+  transition:opacity .24s cubic-bezier(.22,1,.36,1)!important;
+}
+.color-invert{
+  transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1)!important;
+}
+.color-invert path{fill:url(#color-invert-gradient)!important}
