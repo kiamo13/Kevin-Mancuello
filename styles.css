@@ -179,3 +179,24 @@ button{font:inherit}
  html{scroll-behavior:auto}
  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}
 }
+/* Inline SVG animation layers */
+.avatar-svg{overflow:visible}
+.avatar-svg #CRÁNEO{opacity:0;pointer-events:none;transition:opacity .22s ease}
+.avatar-svg #skull-peek-shape{opacity:0;transition:opacity .16s ease}
+.avatar-stage.is-hovering .avatar-svg #CRÁNEO,
+.avatar-stage.is-closing .avatar-svg #CRÁNEO{opacity:1}
+.avatar-stage.is-hovering .avatar-svg #skull-peek-shape,
+.avatar-stage.is-closing .avatar-svg #skull-peek-shape{opacity:1}
+.avatar-svg #cara_ojos_abiertos_neutro{opacity:1;transition:opacity .14s ease}
+.avatar-svg #ojos_sonrientes,
+.avatar-svg #cara_ojos_abiertos_neutro_copia{opacity:0;transition:opacity .14s ease}
+.avatar-stage.is-smiling .avatar-svg #cara_ojos_abiertos_neutro{opacity:0}
+.avatar-stage.is-smiling .avatar-svg #ojos_sonrientes{opacity:1}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro{opacity:0}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro_copia{opacity:1}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito{opacity:0;transition:opacity .055s ease}
+.avatar-error{font-size:12px;color:#8d304a}
+.avatar-stage:focus-visible{outline:1px solid var(--violet);outline-offset:8px}
