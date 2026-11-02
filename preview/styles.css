@@ -591,20 +591,29 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 .color-invert path{fill:url(#color-invert-gradient)!important}
 
 
-/* Separate hair layer: shared across neutral, smile and blink expressions */
-.avatar-svg #cabello{
+/* Hair layers extracted from the original illustration; no paths redrawn */
+.avatar-svg #cabello-base,
+.avatar-svg #cabello-parpadeo{
+  pointer-events:none;
+}
+.avatar-svg #cabello-base{display:inline}
+.avatar-svg #cabello-parpadeo{
+  display:none;
   transform-box:view-box;
   transform-origin:315px 220px;
   will-change:transform;
 }
-.avatar-stage.is-hair-breezing .avatar-svg #cabello{
-  animation:avatar-hair-breeze 760ms cubic-bezier(.22,.61,.36,1) both;
+.avatar-stage.is-blinking .avatar-svg #cabello-base{display:none}
+.avatar-stage.is-blinking .avatar-svg #cabello-parpadeo{
+  display:inline;
+  animation:avatar-hair-breeze 210ms ease-in-out both;
 }
 @keyframes avatar-hair-breeze{
   0%{transform:translate(0,0) rotate(0deg)}
-  24%{transform:translate(2px,-1px) rotate(.45deg)}
-  52%{transform:translate(-2px,1px) rotate(-.55deg)}
-  78%{transform:translate(1px,0) rotate(.25deg)}
+  30%{transform:translate(1.4px,-.7px) rotate(.3deg)}
+  68%{transform:translate(-1.2px,.5px) rotate(-.3deg)}
   100%{transform:translate(0,0) rotate(0deg)}
 }
-@media(prefers-reduced-motion:reduce){.avatar-stage.is-hair-breezing .avatar-svg #cabello{animation:none}}
+@media(prefers-reduced-motion:reduce){
+  .avatar-stage.is-blinking .avatar-svg #cabello-parpadeo{animation:none}
+}
