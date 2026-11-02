@@ -279,6 +279,7 @@
     const dx=invertTarget.x-invertCurrent.x,dy=invertTarget.y-invertCurrent.y;
     invertCurrent.x+=dx*(reducedMotion?1:.2);
     invertCurrent.y+=dy*(reducedMotion?1:.2);
+    invertX=invertCurrent.x;invertY=invertCurrent.y;
     const speed=Math.hypot(dx,dy);
     invertPhase+=Math.min(speed*.0015,.08);
     invertLayer.style.left=invertCurrent.x+'px';
