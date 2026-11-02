@@ -118,11 +118,15 @@
 
   function flashSmile(){
     clearTimeout(smileTimer);
+    clearTimeout(blinkTimer);
+    clearTimeout(blinkEnd);
+    stage.classList.remove('is-blinking');
     smileActive=true;
     stage.classList.add('is-smiling');
     smileTimer=window.setTimeout(()=>{
       smileActive=false;
       stage.classList.remove('is-smiling');
+      scheduleBlink();
     },1050);
   }
 
@@ -198,7 +202,7 @@
 
   function renderReveal(){
     revealRaf=0;
-    const ease=reducedMotion?1:.13;
+    const ease=reducedMotion?1:.16;
     const dx=revealTarget.x-revealCurrent.x;
     const dy=revealTarget.y-revealCurrent.y;
     revealCurrent.x+=dx*ease;
@@ -241,7 +245,7 @@
         blinkEnd=window.setTimeout(()=>{
           stage.classList.remove('is-blinking');
           scheduleBlink();
-        },180);
+        },115);
       }else{
         scheduleBlink();
       }
@@ -304,8 +308,8 @@
   function animateInversion(){
     invertRaf=0;
     const dx=invertTarget.x-invertCurrent.x,dy=invertTarget.y-invertCurrent.y;
-    invertCurrent.x+=dx*(reducedMotion?1:.2);
-    invertCurrent.y+=dy*(reducedMotion?1:.2);
+    invertCurrent.x+=dx*(reducedMotion?1:.16);
+    invertCurrent.y+=dy*(reducedMotion?1:.16);
     invertX=invertCurrent.x;invertY=invertCurrent.y;
     const speed=Math.hypot(dx,dy);
     invertPhase+=Math.min(speed*.0015,.08);
