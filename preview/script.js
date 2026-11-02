@@ -1,4 +1,32 @@
 (()=>{
+  const root=document.documentElement;
+  const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  const connectionType=connection?.effectiveType||'';
+  const weakNetwork=!!(connection&&(connection.saveData||/^(slow-2g|2g)$/.test(connectionType)||(Number.isFinite(connection.downlink)&&connection.downlink<1.2)));
+  const lowMemory=Number.isFinite(navigator.deviceMemory)&&navigator.deviceMemory<=2;
+  const lowCpu=Number.isFinite(navigator.hardwareConcurrency)&&navigator.hardwareConcurrency<=2;
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let savedMode=null;
+  try{savedMode=localStorage.getItem('km-site-mode');}catch(e){}
+  const autoLite=weakNetwork||lowMemory||lowCpu||reducedMotion;
+  let liteMode=savedMode==='lite'||(savedMode!=='full'&&autoLite);
+  const liteToggle=document.getElementById('lite-toggle');
+  function applyLiteMode(){
+    root.classList.toggle('is-lite',liteMode);
+    if(liteToggle){
+      liteToggle.setAttribute('aria-pressed',String(liteMode));
+      liteToggle.textContent=liteMode?'MODO COMPLETO':'MODO LITE';
+      liteToggle.setAttribute('aria-label',liteMode?'Desactivar versión Lite':'Activar versión Lite');
+    }
+  }
+  applyLiteMode();
+  if(liteToggle)liteToggle.addEventListener('click',()=>{
+    liteMode=!liteMode;
+    try{localStorage.setItem('km-site-mode',liteMode?'lite':'full');}catch(e){}
+    applyLiteMode();
+    if(liteMode&&typeof stopVisualEffects==='function')stopVisualEffects();
+  });
+
   const stage=document.getElementById('avatar-stage');
   const mount=document.getElementById('avatar-mount');
   if(!stage||!mount)return;
@@ -80,7 +108,7 @@
         if(!skull||!peekShape||pupils.some(p=>!p))throw new Error('Faltan capas necesarias del avatar.');
 
         pupils.forEach(p=>p.setAttribute('transform','translate(0 0)'));
-        bindInteractions();
+        if(!liteMode)bindInteractions();
         stage.classList.add('avatar-ready');
       })
       .catch(error=>{
@@ -309,8 +337,18 @@
     }
   }
 
+  function stopVisualEffects(){
+    clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);
+    if(pupilRaf)cancelAnimationFrame(pupilRaf);
+    if(revealRaf)cancelAnimationFrame(revealRaf);
+    if(invertRaf)cancelAnimationFrame(invertRaf);
+    if(invertLayer)invertLayer.classList.remove('is-visible');
+    if(stage){stage.classList.remove('is-hovering','is-closing','is-blinking','is-smiling');}
+    if(peekShape){peekShape.setAttribute('opacity','0');}
+  }
+
   function bindInteractions(){
-    stage.addEventListener('click',flashSmile);
+    stage.addEventListener('click',()=>{if(!liteMode)flashSmile();});
     const supportsHover=window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if(supportsHover){
       window.addEventListener('pointermove',handlePointer,{passive:true});
