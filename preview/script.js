@@ -5,10 +5,10 @@
   const weakNetwork=!!(connection&&(connection.saveData||/^(slow-2g|2g)$/.test(connectionType)||(Number.isFinite(connection.downlink)&&connection.downlink<1.2)));
   const lowMemory=Number.isFinite(navigator.deviceMemory)&&navigator.deviceMemory<=2;
   const lowCpu=Number.isFinite(navigator.hardwareConcurrency)&&navigator.hardwareConcurrency<=2;
-  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const systemReducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let savedMode=null;
   try{savedMode=localStorage.getItem('km-site-mode');}catch(e){}
-  const autoLite=weakNetwork||lowMemory||lowCpu||reducedMotion;
+  const autoLite=weakNetwork||lowMemory||lowCpu||systemReducedMotion;
   let liteMode=savedMode==='lite'||(savedMode!=='full'&&autoLite);
   const liteToggle=document.getElementById('lite-toggle');
   function applyLiteMode(){
