@@ -88,7 +88,7 @@
   }
 
   function loadAvatar(){
-    fetch('assets/avatar.svg')
+    fetch(new URL('assets/avatar.svg?v=20261102-15',document.baseURI),{cache:'no-store'})
       .then(response=>{
         if(!response.ok)throw new Error('No se pudo cargar el SVG del avatar.');
         return response.text();
