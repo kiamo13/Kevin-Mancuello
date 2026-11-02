@@ -591,38 +591,43 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 .color-invert path{fill:url(#color-invert-gradient)!important}
 
 
-/* Cabello: silueta estructural permanente + alternancia de detalles. */
+/* Cabello: la forma original nunca pierde opacidad; la segunda variante solo se superpone. */
 .avatar-svg #cabello-silueta{
   opacity:1!important;
+  visibility:visible!important;
   pointer-events:none;
-}
-.avatar-svg #cabello-base,
-.avatar-svg #cabello-parpadeo{
-  pointer-events:none;
-  transform-box:view-box;
-  transform-origin:315px 220px;
-  will-change:opacity,transform;
 }
 .avatar-svg #cabello-base{
-  opacity:1;
-  animation:hair-flow-base 6.2s ease-in-out infinite;
+  opacity:1!important;
+  visibility:visible!important;
+  animation:hair-base-drift 6.2s ease-in-out infinite;
+  transform-box:view-box;
+  transform-origin:315px 220px;
+  will-change:transform;
+  pointer-events:none;
 }
 .avatar-svg #cabello-parpadeo{
   opacity:0;
-  animation:hair-flow-alt 6.2s ease-in-out infinite;
+  visibility:visible!important;
+  animation:hair-alt-flow 6.2s ease-in-out infinite;
+  transform-box:view-box;
+  transform-origin:315px 220px;
+  will-change:opacity,transform;
+  pointer-events:none;
 }
-@keyframes hair-flow-base{
-  0%,30%,100%{opacity:1;transform:translate(0,0) rotate(0deg)}
-  43%,57%{opacity:.08;transform:translate(-.7px,-.4px) rotate(-.1deg)}
-  70%{opacity:1;transform:translate(.25px,.1px) rotate(.04deg)}
+@keyframes hair-base-drift{
+  0%,100%{transform:translate(0,0) rotate(0deg)}
+  25%{transform:translate(-.25px,-.15px) rotate(-.025deg)}
+  50%{transform:translate(.15px,.1px) rotate(.02deg)}
+  75%{transform:translate(-.1px,.15px) rotate(-.015deg)}
 }
-@keyframes hair-flow-alt{
-  0%,30%,100%{opacity:0;transform:translate(.7px,.35px) rotate(.1deg)}
-  43%,57%{opacity:1;transform:translate(0,0) rotate(0deg)}
-  70%{opacity:0;transform:translate(-.25px,-.1px) rotate(-.04deg)}
+@keyframes hair-alt-flow{
+  0%,25%,100%{opacity:0;transform:translate(.5px,.25px) rotate(.05deg)}
+  40%,60%{opacity:.28;transform:translate(-.25px,-.1px) rotate(-.025deg)}
+  75%{opacity:0;transform:translate(-.5px,.15px) rotate(-.05deg)}
 }
 @media(prefers-reduced-motion:reduce){
-  .avatar-svg #cabello-silueta{opacity:1!important}
-  .avatar-svg #cabello-base{opacity:1;animation:none;transform:none}
+  .avatar-svg #cabello-silueta,
+  .avatar-svg #cabello-base{opacity:1!important;visibility:visible!important;animation:none;transform:none}
   .avatar-svg #cabello-parpadeo{opacity:0;animation:none;transform:none}
 }
