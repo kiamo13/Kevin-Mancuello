@@ -522,3 +522,39 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 @media(max-width:680px){
   .lite-toggle{font-size:8px;padding:7px 8px}
 }
+
+
+/* HERO REFINEMENT — readable name, balanced portrait, continuous expressions */
+.hero-giant{
+  top:39%!important;
+  font-size:clamp(138px,23vw,340px)!important;
+}
+.hero-character{
+  width:min(44vw,580px)!important;
+  height:81%!important;
+  bottom:0!important;
+}
+.avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-svg #ojos_sonrientes,
+.avatar-svg #cara_ojos_abiertos_neutro_copia{
+  transition:opacity .18s ease-in-out!important;
+}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito{
+  transition:opacity .18s ease-in-out!important;
+}
+@media(max-width:680px){
+  .hero-giant{
+    top:37%!important;
+    font-size:clamp(105px,23vw,158px)!important;
+    line-height:.76!important;
+  }
+  .hero-giant span:last-child{font-size:.62em!important}
+  .hero-character{
+    width:min(88vw,420px)!important;
+    height:61%!important;
+    bottom:9%!important;
+  }
+}
