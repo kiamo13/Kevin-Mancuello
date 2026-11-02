@@ -118,7 +118,7 @@
   }
 
   function trackEyes(e){
-    if(!svg)return;
+    if(!svg||e.pointerType==='touch')return;
     const matrix=svg.getScreenCTM();
     if(!matrix)return;
     const pt=svg.createSVGPoint();
@@ -221,12 +221,10 @@
 
   function bindInteractions(){
     stage.addEventListener('click',flashSmile);
-    stage.addEventListener('keydown',e=>{
-      if(e.key==='Enter'||e.key===' '){e.preventDefault();flashSmile();}
-    });
     window.addEventListener('pointermove',trackEyes,{passive:true});
 
-    stage.addEventListener('pointerenter',e=>{
+    const supportsHover=window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if(supportsHover)stage.addEventListener('pointerenter',e=>{
       setRevealTarget(e);
       revealCurrent={...revealTarget};
       previousReveal={...revealCurrent};
@@ -239,14 +237,16 @@
       peekShape.setAttribute('d',organicRevealPath(revealCurrent.x,revealCurrent.y,revealPhase,0,revealScale));
       requestRevealFrame();
     });
-    stage.addEventListener('pointermove',setRevealTarget,{passive:true});
-    stage.addEventListener('pointerleave',()=>{
-      stage.classList.remove('is-hovering');
-      stage.classList.add('is-closing');
-      revealScaleTarget=0;
-      requestRevealFrame();
-      scheduleBlink();
-    });
+    if(supportsHover){
+      stage.addEventListener('pointermove',setRevealTarget,{passive:true});
+      stage.addEventListener('pointerleave',()=>{
+        stage.classList.remove('is-hovering');
+        stage.classList.add('is-closing');
+        revealScaleTarget=0;
+        requestRevealFrame();
+        scheduleBlink();
+      });
+    }
     if(!reducedMotion)scheduleBlink();
   }
 
