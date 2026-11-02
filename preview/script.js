@@ -123,7 +123,7 @@
     smileTimer=window.setTimeout(()=>{
       smileActive=false;
       stage.classList.remove('is-smiling');
-    },950);
+    },1050);
   }
 
   function animatePupils(){
@@ -241,7 +241,7 @@
         blinkEnd=window.setTimeout(()=>{
           stage.classList.remove('is-blinking');
           scheduleBlink();
-        },135);
+        },180);
       }else{
         scheduleBlink();
       }
