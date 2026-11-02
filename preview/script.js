@@ -33,7 +33,7 @@
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let svg,skull,peekShape,pupils=[];
-  let smileTimer=0,blinkTimer=0,blinkEnd=0,pupilRaf=0,revealRaf=0,touchRevealTimer=0;
+  let smileTimer=0,blinkTimer=0,blinkEnd=0,hairTimer=0,pupilRaf=0,revealRaf=0,touchRevealTimer=0;
   let touchActive=false;
   let smileActive=false;
   let pupilCurrent=[{x:0,y:0},{x:0,y:0}];
@@ -118,6 +118,8 @@
 
   function flashSmile(){
     clearTimeout(smileTimer);
+    clearTimeout(hairTimer);
+    stage.classList.remove('is-hair-breezing');
     clearTimeout(blinkTimer);
     clearTimeout(blinkEnd);
     stage.classList.remove('is-blinking');
@@ -242,6 +244,10 @@
     blinkTimer=window.setTimeout(()=>{
       if(!stage.classList.contains('is-hovering')&&!smileActive){
         stage.classList.add('is-blinking');
+        clearTimeout(hairTimer);
+        stage.classList.remove('is-hair-breezing');
+        stage.classList.add('is-hair-breezing');
+        hairTimer=window.setTimeout(()=>stage.classList.remove('is-hair-breezing'),780);
         blinkEnd=window.setTimeout(()=>{
           stage.classList.remove('is-blinking');
           scheduleBlink();
@@ -404,7 +410,7 @@
   }
 
   window.addEventListener('pagehide',()=>{
-    clearTimeout(smileTimer);clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);if(invertRaf)cancelAnimationFrame(invertRaf);
+    clearTimeout(smileTimer);clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(hairTimer);clearTimeout(touchRevealTimer);if(invertRaf)cancelAnimationFrame(invertRaf);
     if(pupilRaf)cancelAnimationFrame(pupilRaf);
     if(revealRaf)cancelAnimationFrame(revealRaf);
   });
