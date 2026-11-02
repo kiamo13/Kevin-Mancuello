@@ -300,3 +300,70 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--violet);outline-off
 }
 
 :root{--acid:#84ff00;--gold:#ffe600}
+
+/* KM — composición editorial y jerarquía cromática */
+body{background:var(--paper);color:var(--plum)}
+::selection{background:var(--acid);color:var(--plum)}
+.topbar{color:var(--paper);border-color:rgba(255,255,255,.2)}
+.menu-toggle span{background:var(--paper)}
+.hero{background:var(--plum);color:var(--paper)}
+.hero:before{width:min(78vw,1080px);top:52%;background:var(--violet);border:0;border-radius:48% 52% 43% 57%/53% 43% 57% 47%}
+.hero:after{width:min(84vw,1160px);top:52%;border-color:rgba(255,255,255,.2)}
+.hero-meta{color:var(--paper)}
+.hero-giant{top:50%;font-size:clamp(130px,23vw,340px);line-height:.69;letter-spacing:-.12em;color:var(--paper)}
+.hero-giant span:first-child{color:var(--paper);transform:translateX(-.11em)}
+.hero-giant span:last-child{font-size:.67em;letter-spacing:-.105em;margin-top:.16em;color:var(--acid);transform:translateX(.04em)}
+.hero-greeting{z-index:8}
+.hero-kicker{color:var(--acid)}
+.hero-role{z-index:8;color:var(--paper)}
+.role-rule{background:var(--acid);height:2px}
+.hero-role small{color:var(--acid)}
+.hero-character{z-index:5;width:min(39vw,520px);height:78%;bottom:2%}
+.character-shadow{background:rgba(0,0,0,.3)}
+.character-ring{border-color:rgba(255,255,255,.25)}
+.ring-b{border-color:rgba(132,255,0,.55)}
+.character-index,.hero-scroll{color:var(--paper)}
+.hero-scroll .scroll-line{background:var(--acid);height:2px}
+.hero-coordinate{color:rgba(255,255,255,.72)}
+.works-section{background:var(--paper)}
+.works-heading h2,.discipline-main h3{color:var(--plum)}
+.works-heading h2 span{color:var(--coral)}
+.eyebrow,.discipline-number,.discipline-projects span,.project-caption small{color:var(--violet)}
+.discipline-art{display:none}
+.discipline-main{min-height:clamp(190px,25vw,330px)}
+.discipline-main h3{font-size:clamp(66px,12vw,172px);letter-spacing:-.12em}
+.discipline-main h3 em{color:var(--violet)}
+.discipline-bottom{border-top:1px solid var(--line);padding-top:20px}
+.discipline-projects a{border-color:var(--line);color:var(--plum)}
+.watch-link{border-color:var(--violet);color:var(--violet)}
+.visual-jasypa,.visual-todegol{background:var(--violet)}
+.visual-selection{background:var(--acid);color:var(--plum)}
+.visual-personal,.visual-etidol{background:var(--coral);color:var(--plum)}
+.visual-mariano,.visual-atlas{background:var(--plum)}
+.visual-player{background:var(--gold);color:var(--plum)}
+.about-section{background:var(--violet);color:var(--paper)}
+.about-kicker,.about-timeline span{color:var(--acid)}
+.about-heading h2 span{color:var(--acid)}
+.about-signature{color:var(--gold)}
+.about-text>p:not(.about-lead),.about-timeline p{color:rgba(255,255,255,.82)}
+.about-link{border-color:var(--acid)}
+.about-link span{color:var(--acid)}
+.footer{background:var(--acid);color:var(--plum)}
+.footer-email span{color:var(--violet)}
+.footer-links a:hover{color:var(--violet)}
+.skip-link{background:var(--acid);color:var(--plum)}
+@media(max-width:1000px){.topbar{color:var(--paper)}.hero-character{width:min(48vw,500px);height:73%}}
+@media(max-width:680px){
+ .topbar{color:var(--paper)}
+ .main-nav{background:var(--plum);border-color:rgba(255,255,255,.2)}
+ .main-nav a{color:var(--paper)}
+ .menu-toggle span{background:var(--paper)}
+ .hero{background:var(--plum)}
+ .hero-giant{font-size:clamp(104px,25vw,176px);line-height:.72}
+ .hero-giant span:last-child{font-size:.63em}
+ .hero-character{width:min(82vw,405px);height:62%;bottom:12%}
+ .hero:before{width:112vw;top:49%}
+ .hero:after{width:105vw;top:49%}
+ .discipline-main{min-height:260px;padding-top:24px}
+ .discipline-main h3{font-size:clamp(58px,13vw,92px)}
+}
