@@ -118,17 +118,21 @@
     if(!pupilRaf)pupilRaf=requestAnimationFrame(animatePupils);
   }
 
-  function trackEyes(e){
-    if(!svg)return;
-    if(e.pointerType==='touch'&&!stage.contains(e.target))return;
-    const matrix=svg.getScreenCTM();
-    if(!matrix)return;
-    const pt=svg.createSVGPoint();
-    pt.x=e.clientX;pt.y=e.clientY;
-    const p=pt.matrixTransform(matrix.inverse());
+  // Map the whole viewport onto the avatar coordinate system.
+  function screenToFace(e){
+    if(!svg)return null;
+    const rect=svg.getBoundingClientRect();
     const vb=svg.viewBox.baseVal;
-    const dx=clamp((p.x-vb.width*.5)/(vb.width*.40),-1,1);
-    const dy=clamp((p.y-vb.height*.47)/(vb.height*.34),-1,1);
+    const nx=clamp((e.clientX-rect.left)/Math.max(1,rect.width),0,1);
+    const ny=clamp((e.clientY-rect.top)/Math.max(1,rect.height),0,1);
+    return {x:nx*vb.width,y:ny*vb.height,vb};
+  }
+
+  function trackEyes(e){
+    const p=screenToFace(e);
+    if(!p)return;
+    const dx=clamp((p.x-p.vb.width*.5)/(p.vb.width*.40),-1,1);
+    const dy=clamp((p.y-p.vb.height*.47)/(p.vb.height*.34),-1,1);
     pupilTarget=[{x:dx*14,y:dy*10},{x:dx*14,y:dy*10}];
     requestPupilFrame();
   }
@@ -195,12 +199,8 @@
   }
 
   function setRevealTarget(e){
-    if(!svg)return;
-    const matrix=svg.getScreenCTM();
-    if(!matrix)return;
-    const pt=svg.createSVGPoint();
-    pt.x=e.clientX;pt.y=e.clientY;
-    const p=pt.matrixTransform(matrix.inverse());
+    const p=screenToFace(e);
+    if(!p)return;
     revealTarget={x:clamp(p.x,55,575),y:clamp(p.y,135,640)};
     requestRevealFrame();
   }
@@ -249,33 +249,38 @@
 
   function bindInteractions(){
     stage.addEventListener('click',flashSmile);
-    window.addEventListener('pointermove',trackEyes,{passive:true});
     const supportsHover=window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if(supportsHover){
-      stage.addEventListener('pointerenter',activateReveal);
-      stage.addEventListener('pointermove',setRevealTarget,{passive:true});
-      stage.addEventListener('pointerleave',closeReveal);
-    }else{
-      stage.addEventListener('pointerdown',e=>{
-        if(e.pointerType!=='touch')return;
-        touchActive=true;
-        if(stage.setPointerCapture)stage.setPointerCapture(e.pointerId);
+      window.addEventListener('pointermove',e=>{
+        if(e.pointerType!=='mouse'&&e.pointerType!=='pen')return;
+        trackEyes(e);
         activateReveal(e);
-        trackEyes(e);
-      });
-      stage.addEventListener('pointermove',e=>{
-        if(e.pointerType!=='touch'||!touchActive)return;
-        setRevealTarget(e);
-        trackEyes(e);
       },{passive:true});
-      const finishTouch=e=>{
-        if(e.pointerType!=='touch')return;
+      window.addEventListener('pointerout',e=>{
+        if(!e.relatedTarget)closeReveal();
+      },{passive:true});
+    }else{
+      // Passive touch events preserve the browser's native page scrolling.
+      document.addEventListener('touchstart',e=>{
+        if(!e.touches.length)return;
+        const t=e.touches[0],point={clientX:t.clientX,clientY:t.clientY};
+        touchActive=true;
+        trackEyes(point);
+        activateReveal(point);
+      },{passive:true});
+      document.addEventListener('touchmove',e=>{
+        if(!touchActive||!e.touches.length)return;
+        const t=e.touches[0],point={clientX:t.clientX,clientY:t.clientY};
+        trackEyes(point);
+        setRevealTarget(point);
+      },{passive:true});
+      const finishTouch=()=>{
         touchActive=false;
         clearTimeout(touchRevealTimer);
-        touchRevealTimer=window.setTimeout(closeReveal,1500);
+        touchRevealTimer=window.setTimeout(closeReveal,650);
       };
-      stage.addEventListener('pointerup',finishTouch);
-      stage.addEventListener('pointercancel',finishTouch);
+      document.addEventListener('touchend',finishTouch,{passive:true});
+      document.addEventListener('touchcancel',finishTouch,{passive:true});
     }
     if(!reducedMotion)scheduleBlink();
   }
