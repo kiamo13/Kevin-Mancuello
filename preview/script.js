@@ -6,7 +6,8 @@
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let svg,skull,peekShape,pupils=[];
-  let smileTimer=0,blinkTimer=0,blinkEnd=0,pupilRaf=0,revealRaf=0;
+  let smileTimer=0,blinkTimer=0,blinkEnd=0,pupilRaf=0,revealRaf=0,touchRevealTimer=0;
+  let touchActive=false;
   let smileActive=false;
   let pupilCurrent=[{x:0,y:0},{x:0,y:0}];
   let pupilTarget=[{x:0,y:0},{x:0,y:0}];
@@ -118,7 +119,8 @@
   }
 
   function trackEyes(e){
-    if(!svg||e.pointerType==='touch')return;
+    if(!svg)return;
+    if(e.pointerType==='touch'&&!stage.contains(e.target))return;
     const matrix=svg.getScreenCTM();
     if(!matrix)return;
     const pt=svg.createSVGPoint();
@@ -219,13 +221,11 @@
     },2400+Math.random()*3000);
   }
 
-  function bindInteractions(){
-    stage.addEventListener('click',flashSmile);
-    window.addEventListener('pointermove',trackEyes,{passive:true});
-
-    const supportsHover=window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    if(supportsHover)stage.addEventListener('pointerenter',e=>{
-      setRevealTarget(e);
+  function activateReveal(e){
+    if(!svg)return;
+    clearTimeout(touchRevealTimer);
+    setRevealTarget(e);
+    if(!stage.classList.contains('is-hovering')){
       revealCurrent={...revealTarget};
       previousReveal={...revealCurrent};
       revealScale=.04;
@@ -235,17 +235,47 @@
       clearTimeout(blinkEnd);
       stage.classList.add('is-hovering');
       peekShape.setAttribute('d',organicRevealPath(revealCurrent.x,revealCurrent.y,revealPhase,0,revealScale));
-      requestRevealFrame();
-    });
+    }
+    requestRevealFrame();
+  }
+
+  function closeReveal(){
+    stage.classList.remove('is-hovering');
+    stage.classList.add('is-closing');
+    revealScaleTarget=0;
+    requestRevealFrame();
+    scheduleBlink();
+  }
+
+  function bindInteractions(){
+    stage.addEventListener('click',flashSmile);
+    window.addEventListener('pointermove',trackEyes,{passive:true});
+    const supportsHover=window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if(supportsHover){
+      stage.addEventListener('pointerenter',activateReveal);
       stage.addEventListener('pointermove',setRevealTarget,{passive:true});
-      stage.addEventListener('pointerleave',()=>{
-        stage.classList.remove('is-hovering');
-        stage.classList.add('is-closing');
-        revealScaleTarget=0;
-        requestRevealFrame();
-        scheduleBlink();
+      stage.addEventListener('pointerleave',closeReveal);
+    }else{
+      stage.addEventListener('pointerdown',e=>{
+        if(e.pointerType!=='touch')return;
+        touchActive=true;
+        if(stage.setPointerCapture)stage.setPointerCapture(e.pointerId);
+        activateReveal(e);
+        trackEyes(e);
       });
+      stage.addEventListener('pointermove',e=>{
+        if(e.pointerType!=='touch'||!touchActive)return;
+        setRevealTarget(e);
+        trackEyes(e);
+      },{passive:true});
+      const finishTouch=e=>{
+        if(e.pointerType!=='touch')return;
+        touchActive=false;
+        clearTimeout(touchRevealTimer);
+        touchRevealTimer=window.setTimeout(closeReveal,1500);
+      };
+      stage.addEventListener('pointerup',finishTouch);
+      stage.addEventListener('pointercancel',finishTouch);
     }
     if(!reducedMotion)scheduleBlink();
   }
@@ -268,7 +298,7 @@
   }
 
   window.addEventListener('pagehide',()=>{
-    clearTimeout(smileTimer);clearTimeout(blinkTimer);clearTimeout(blinkEnd);
+    clearTimeout(smileTimer);clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);
     if(pupilRaf)cancelAnimationFrame(pupilRaf);
     if(revealRaf)cancelAnimationFrame(revealRaf);
   });
