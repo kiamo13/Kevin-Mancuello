@@ -591,7 +591,11 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 .color-invert path{fill:url(#color-invert-gradient)!important}
 
 
-/* Alternancia sutil: la capa base conserva siempre la silueta completa del cabello. */
+/* Cabello: silueta estructural permanente + alternancia de detalles. */
+.avatar-svg #cabello-silueta{
+  opacity:1!important;
+  pointer-events:none;
+}
 .avatar-svg #cabello-base,
 .avatar-svg #cabello-parpadeo{
   pointer-events:none;
@@ -608,16 +612,17 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
   animation:hair-flow-alt 6.2s ease-in-out infinite;
 }
 @keyframes hair-flow-base{
-  0%,34%,100%{opacity:1;transform:translate(0,0) rotate(0deg)}
-  48%,68%{opacity:.78;transform:translate(-.7px,-.4px) rotate(-.1deg)}
-  82%{opacity:1;transform:translate(.25px,.1px) rotate(.04deg)}
+  0%,30%,100%{opacity:1;transform:translate(0,0) rotate(0deg)}
+  43%,57%{opacity:.08;transform:translate(-.7px,-.4px) rotate(-.1deg)}
+  70%{opacity:1;transform:translate(.25px,.1px) rotate(.04deg)}
 }
 @keyframes hair-flow-alt{
-  0%,34%,100%{opacity:0;transform:translate(.7px,.35px) rotate(.1deg)}
-  48%,68%{opacity:.28;transform:translate(0,0) rotate(0deg)}
-  82%{opacity:0;transform:translate(-.25px,-.1px) rotate(-.04deg)}
+  0%,30%,100%{opacity:0;transform:translate(.7px,.35px) rotate(.1deg)}
+  43%,57%{opacity:1;transform:translate(0,0) rotate(0deg)}
+  70%{opacity:0;transform:translate(-.25px,-.1px) rotate(-.04deg)}
 }
 @media(prefers-reduced-motion:reduce){
+  .avatar-svg #cabello-silueta{opacity:1!important}
   .avatar-svg #cabello-base{opacity:1;animation:none;transform:none}
   .avatar-svg #cabello-parpadeo{opacity:0;animation:none;transform:none}
 }
