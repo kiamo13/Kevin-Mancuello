@@ -23,8 +23,7 @@
   if(liteToggle)liteToggle.addEventListener('click',()=>{
     liteMode=!liteMode;
     try{localStorage.setItem('km-site-mode',liteMode?'lite':'full');}catch(e){}
-    applyLiteMode();
-    if(liteMode&&typeof stopVisualEffects==='function')stopVisualEffects();
+    window.location.reload();
   });
 
   const stage=document.getElementById('avatar-stage');
