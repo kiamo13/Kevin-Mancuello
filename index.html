@@ -4,7 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f2946b">
-  <meta name="description" content="Kevin Mancuello — Senior Visual Designer. Branding, ilustración y motion. Asunción, Paraguay.">
+  <meta name="description" content="Kevin Mancuello, Senior Visual Designer e ilustrador en Asunción, Paraguay. Branding, ilustración, motion design y dirección de arte.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Kevin Mancuello — Senior Visual Designer">
+  <meta property="og:description" content="Branding, ilustración, motion design y dirección de arte. Asunción, Paraguay.">
+  <meta property="og:url" content="https://kiamo13.github.io/Kevin-Mancuello/">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://kiamo13.github.io/Kevin-Mancuello/">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <title>Kevin Mancuello — Senior Visual Designer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,20 +20,21 @@
   <script src="script.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#top">Saltar al contenido</a>
   <header class="topbar">
     <a class="brand-code" href="#top" aria-label="Kevin Mancuello, inicio">&lt; kevin./mancuello &gt;</a>
     <p class="location-line">in asunción / paraguay <span></span> & anywhere</p>
     <nav class="main-nav" aria-label="Navegación principal">
-      <a href="#about">about</a>
-      <a href="#works">works <small>2021—2026</small></a>
-      <a href="#contact">talk to me</a>
+      <a href="#about">sobre mí</a>
+      <a href="#works">proyectos <small>2021—2026</small></a>
+      <a href="#contact">contacto</a>
     </nav>
     <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">
       <span></span><span></span>
     </button>
   </header>
 
-  <main id="top">
+  <main id="top" tabindex="-1">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-grain" aria-hidden="true"></div>
       <div class="hero-meta hero-meta-left">PORTFOLIO<br>VISUAL DESIGN / 2026</div>
@@ -52,13 +60,13 @@
         <div class="character-shadow"></div>
         <div class="character-ring ring-a"></div>
         <div class="character-ring ring-b"></div>
-        <div id="avatar-stage" class="avatar-stage" tabindex="0" role="button" aria-label="Avatar interactivo. Haz clic para sonreír.">
+        <button id="avatar-stage" class="avatar-stage" type="button" aria-label="Retrato interactivo: activar sonrisa.">
           <div id="avatar-mount" class="avatar-mount" aria-hidden="true"></div>
-        </div>
+        </button>
         <span class="character-index">[01 — SELF PORTRAIT]</span>
       </div>
 
-      <a class="hero-scroll" href="#works"><span class="scroll-line"></span> SCROLL TO EXPLORE <span>↓</span></a>
+      <a class="hero-scroll" href="#works"><span class="scroll-line"></span> VER PROYECTOS <span>↓</span></a>
       <div class="hero-coordinate">25°18' S / 57°38' W</div>
     </section>
 
@@ -192,9 +200,15 @@
         </div>
         <div class="about-text">
           <p class="about-lead">Diseño sistemas visuales, construyo personajes y exploro nuevas formas de contar historias.</p>
-          <p>Soy diseñador visual en Asunción, Paraguay. Mi trabajo cruza branding, ilustración y motion, con especial interés en la dirección de arte y las nuevas tecnologías creativas.</p>
+          <p>Trabajo en diseño visual desde 2015. Mi experiencia combina branding, ilustración, diseño editorial, motion y producción audiovisual. Actualmente desarrollo proyectos para marcas y campañas desde Periferia Comunicación, mientras profundizo en dirección de arte y nuevas tecnologías creativas.</p>
+          <div class="about-timeline" id="about-timeline" aria-label="Recorrido profesional">
+            <div><span>2015</span><p>Inicio de mi recorrido profesional en diseño y comunicación visual.</p></div>
+            <div><span>FORMACIÓN</span><p>Estudios de Diseño y Arte Secuencial, complementados con formación continua y práctica autodidacta.</p></div>
+            <div><span>2022—2025</span><p>Diseño y desarrollo de marcas, campañas, personajes y piezas de comunicación en Todegol.</p></div>
+            <div><span>2025—HOY</span><p>Senior Visual Designer en Periferia Comunicación: identidad, campañas, ilustración, motion y exploración de herramientas creativas.</p></div>
+          </div>
           <div class="about-tags"><span>BRANDING</span><span>ILLUSTRATION</span><span>MOTION</span><span>ART DIRECTION</span></div>
-          <a class="about-link" href="mailto:kevin13.kiamo@gmail.com">MORE ABOUT ME / LET'S TALK <span>↗</span></a>
+          <a class="about-link" href="#about-timeline">VER MI RECORRIDO <span>↘</span></a>
         </div>
       </div>
       <div class="about-giant" aria-hidden="true">VISUAL THINKING / VISUAL THINKING /</div>
@@ -202,13 +216,13 @@
   </main>
 
   <footer class="footer" id="contact">
-    <div class="footer-topline"><span>LET'S TALK</span><span>OPEN FOR COLLABORATION</span></div>
+    <div class="footer-topline"><span>HABLEMOS</span><span>DISPONIBLE PARA COLABORACIONES</span></div>
     <a class="footer-email" href="mailto:kevin13.kiamo@gmail.com">HABLEMOS<span>↗</span></a>
     <div class="footer-links">
       <a href="mailto:kevin13.kiamo@gmail.com">kevin13.kiamo@gmail.com</a>
       <a href="https://wa.me/595981923361" target="_blank" rel="noreferrer">WhatsApp 0981 923 361</a>
       <a href="https://www.behance.net/kevinmancuello" target="_blank" rel="noreferrer">Behance ↗</a>
-      <a href="#top">BACK TO TOP ↑</a>
+      <a href="#top">VOLVER ARRIBA ↑</a>
     </div>
     <p class="footer-copyright">KEVIN MANCUELLO © 2026 / ASUNCIÓN, PARAGUAY</p>
   </footer>
