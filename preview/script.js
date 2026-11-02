@@ -80,11 +80,16 @@
     defs.append(gradient,mask);
     svg.insertBefore(defs,svg.firstChild);
 
-    ['cara_ojos_abiertos_neutro','ojos_sonrientes','cara_ojos_abiertos_neutro_copia','BARBA']
+    /* El hueco del cráneo se aplica solo a la silueta de piel.
+       Los detalles dibujados encima (incluidas las pestañas) quedan intactos. */
+    ['cara_ojos_abiertos_neutro','ojos_sonrientes','cara_ojos_abiertos_neutro_copia']
       .forEach(id=>{
         const layer=svg.querySelector('#'+id);
-        if(layer)layer.setAttribute('mask','url(#avatarFaceMask)');
+        const faceSilhouette=layer?.querySelectorAll(':scope > path')[1];
+        if(faceSilhouette)faceSilhouette.setAttribute('mask','url(#avatarFaceMask)');
       });
+    const beard=svg.querySelector('#BARBA');
+    if(beard)beard.setAttribute('mask','url(#avatarFaceMask)');
   }
 
   function loadAvatar(){
