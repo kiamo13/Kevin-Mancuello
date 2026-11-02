@@ -474,3 +474,10 @@ body{background:var(--paper);color:var(--plum)}
  .footer-email{font-size:clamp(78px,20vw,135px)}
 }
 @media(prefers-reduced-motion:reduce){.avatar-svg{filter:none}}
+
+
+/* Mobile: preserve native scrolling while the global touch interaction follows the finger. */
+@media(max-width:680px){
+  .avatar-stage{touch-action:pan-y pinch-zoom !important}
+  .hero{height:auto;min-height:max(820px,100svh);max-height:none}
+}
