@@ -589,3 +589,22 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
   transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1)!important;
 }
 .color-invert path{fill:url(#color-invert-gradient)!important}
+
+
+/* Separate hair layer: shared across neutral, smile and blink expressions */
+.avatar-svg #cabello{
+  transform-box:view-box;
+  transform-origin:315px 220px;
+  will-change:transform;
+}
+.avatar-stage.is-hair-breezing .avatar-svg #cabello{
+  animation:avatar-hair-breeze 760ms cubic-bezier(.22,.61,.36,1) both;
+}
+@keyframes avatar-hair-breeze{
+  0%{transform:translate(0,0) rotate(0deg)}
+  24%{transform:translate(2px,-1px) rotate(.45deg)}
+  52%{transform:translate(-2px,1px) rotate(-.55deg)}
+  78%{transform:translate(1px,0) rotate(.25deg)}
+  100%{transform:translate(0,0) rotate(0deg)}
+}
+@media(prefers-reduced-motion:reduce){.avatar-stage.is-hair-breezing .avatar-svg #cabello{animation:none}}
