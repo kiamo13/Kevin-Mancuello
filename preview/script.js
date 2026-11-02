@@ -80,20 +80,17 @@
     defs.append(gradient,mask);
     svg.insertBefore(defs,svg.firstChild);
 
-    /* El hueco del cráneo se aplica solo a la silueta de piel.
-       Los detalles dibujados encima (incluidas las pestañas) quedan intactos. */
-    ['cara_ojos_abiertos_neutro','ojos_sonrientes']
-      .forEach(id=>{
-        const layer=svg.querySelector('#'+id);
-        const faceSilhouette=layer?.querySelectorAll(':scope > path')[1];
-        if(faceSilhouette)faceSilhouette.setAttribute('mask','url(#avatarFaceMask)');
-      });
-    /* La capa de parpadeo queda intacta: no debe recibir la máscara
-       del cráneo ni alterar los detalles de los ojos en sus fotogramas. */
+    /* La máscara afecta únicamente la silueta de piel.
+       Las pestañas, ojos, cabello y barba conservan sus capas originales. */
+    ['cara_ojos_abiertos_neutro','ojos_sonrientes'].forEach(id=>{
+      const faceLayer=svg.querySelector('#'+id);
+      const skinSilhouette=faceLayer?.querySelectorAll(':scope > path')[1];
+      if(skinSilhouette)skinSilhouette.setAttribute('mask','url(#avatarFaceMask)');
+    });
   }
 
   function loadAvatar(){
-    fetch(new URL('assets/avatar.svg?v=20261102-21',document.baseURI),{cache:'no-store'})
+    fetch(new URL('assets/avatar.svg?v=20261102-22',document.baseURI),{cache:'no-store'})
       .then(response=>{
         if(!response.ok)throw new Error('No se pudo cargar el SVG del avatar.');
         return response.text();
@@ -154,16 +151,10 @@
     if(!pupilRaf)pupilRaf=requestAnimationFrame(animatePupils);
   }
 
-  // Use a generous hit area around the complete character artwork.
-  function avatarHitRect(){
-    const r=stage.getBoundingClientRect();
-    const padX=r.width*.24;
-    const padY=r.height*.08;
-    return {left:r.left-padX,right:r.right+padX,top:r.top-padY,bottom:r.bottom+padY,width:r.width+padX*2,height:r.height+padY*2};
-  }
+  // Map the whole viewport onto the avatar coordinate system.
   function screenToFace(e){
     if(!svg)return null;
-    const rect=avatarHitRect();
+    const rect=svg.getBoundingClientRect();
     const vb=svg.viewBox.baseVal;
     const nx=clamp((e.clientX-rect.left)/Math.max(1,rect.width),0,1);
     const ny=clamp((e.clientY-rect.top)/Math.max(1,rect.height),0,1);
@@ -290,7 +281,7 @@
   }
 
   function pointInsideAvatar(e){
-    const r=avatarHitRect();
+    const r=stage.getBoundingClientRect();
     return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
   }
 
@@ -342,8 +333,8 @@
   function handlePointer(e){
     if(e.pointerType!=='mouse'&&e.pointerType!=='pen')return;
     trackEyes(e);
-    /* El efecto de cursor global continúa también sobre el personaje.
-       El revelado del cráneo se suma al efecto, no lo sustituye. */
+    /* El cursor mantiene el mismo efecto global sobre el avatar.
+       El revelado del cráneo se suma sin sustituir la inversión cromática. */
     moveInversion(e);
     if(pointInsideAvatar(e)){
       activateReveal(e);
