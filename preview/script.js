@@ -54,15 +54,21 @@
 
   function addRevealMask(){
     const defs=svgElement('defs');
-    const gradient=svgElement('radialGradient',{
-      id:'skullRevealGradient',
-      gradientUnits:'objectBoundingBox',
-      cx:'50%',cy:'50%',r:'71%'
+    const blurFilter=svgElement('filter',{
+      id:'skullRevealBlur',
+      x:'-60%',y:'-60%',width:'220%',height:'220%'
     });
-    [
-      ['0%','#000000'],['54%','#000000'],['72%','#474747'],
-      ['88%','#d1d1d1'],['100%','#ffffff']
-    ].forEach(([offset,color])=>gradient.appendChild(svgElement('stop',{offset,'stop-color':color})));
+    revealBlur=svgElement('feGaussianBlur',{
+      in:'SourceGraphic',
+      stdDeviation:'7',
+      result:'skullBlur'
+    });
+    const alphaTransfer=svgElement('feComponentTransfer',{in:'skullBlur'});
+    alphaTransfer.appendChild(svgElement('feFuncA',{
+      type:'table',
+      tableValues:'0 0 0 0.074 0.316 0.623 0.888 1 1 1'
+    }));
+    blurFilter.append(revealBlur,alphaTransfer);
 
     const mask=svgElement('mask',{
       id:'avatarFaceMask',
@@ -74,12 +80,13 @@
     mask.appendChild(svgElement('rect',{x:0,y:0,width:630.979,height:739.979,fill:'#fff'}));
     peekShape=svgElement('path',{
       id:'skull-peek-shape',
-      fill:'url(#skullRevealGradient)',
+      fill:'#000',
+      filter:'url(#skullRevealBlur)',
       opacity:0,
       d:'M 315 303 C 342 303 363 330 363 365 C 363 400 342 427 315 427 C 288 427 267 400 267 365 C 267 330 288 303 315 303 Z'
     });
     mask.appendChild(peekShape);
-    defs.append(gradient,mask);
+    defs.append(blurFilter,mask);
     svg.insertBefore(defs,svg.firstChild);
 
     /* El cráneo aparece por debajo de los ojos, pero atraviesa piel,
@@ -185,21 +192,14 @@
   function organicRevealPath(cx,cy,phase,speed,scale){
     const count=18;
     const points=[];
-    const intensity=clamp(speed/8,0,1);
     const faceRect=svg.getBoundingClientRect();
-    const cursorRect=invertLayer?.getBoundingClientRect();
     const vb=svg.viewBox.baseVal;
-    const rx=cursorRect&&faceRect.width
-      ?(cursorRect.width*.5)*(116/120)*(vb.width/faceRect.width)*scale*(1+.16*intensity)
-      :48*scale*(1+.16*intensity);
-    const ry=cursorRect&&faceRect.height
-      ?(cursorRect.height*.5)*(126/130)*(vb.height/faceRect.height)*scale*(1+.24*intensity)
-      :62*scale*(1+.24*intensity);
+    const intensity=clamp(speed/85,0,1);
+    // Coincide con la elipse del cursor: 104 x 118 px, incluido su squash/stretch.
+    const rx=104*(vb.width/Math.max(1,faceRect.width))*scale*(1+Math.min(speed/85,.22));
+    const ry=118*(vb.height/Math.max(1,faceRect.height))*scale*(1-Math.min(speed/85,.10));
     const direction=Math.atan2(revealVelocity.y,revealVelocity.x||.0001);
-    const rotation=speed>.25?direction-Math.PI/2:0;
-    const trail=Math.min(speed*.40,8)*intensity;
-    const drawCx=cx-Math.cos(direction)*trail;
-    const drawCy=cy-Math.sin(direction)*trail;
+    const rotation=speed>.35?direction:0;
 
     for(let i=0;i<count;i++){
       const a=(Math.PI*2*i)/count;
@@ -207,8 +207,8 @@
       const x=Math.cos(a)*rx*wobble;
       const y=Math.sin(a)*ry*wobble;
       points.push({
-        x:drawCx+x*Math.cos(rotation)-y*Math.sin(rotation),
-        y:drawCy+x*Math.sin(rotation)+y*Math.cos(rotation)
+        x:cx+x*Math.cos(rotation)-y*Math.sin(rotation),
+        y:cy+x*Math.sin(rotation)+y*Math.cos(rotation)
       });
     }
     const midpoint=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
@@ -220,8 +220,46 @@
     }
     return d+' Z';
   }
+  function usesFluidCursorReveal(){
+    return !!(fluidCanvas&&fluidCtx)&&!window.matchMedia('(max-width: 680px)').matches;
+  }
+
+  function syncRevealBlur(){
+    if(!revealBlur||!svg)return;
+    const rect=svg.getBoundingClientRect();
+    const vb=svg.viewBox.baseVal;
+    const blurPixels=7/Math.max(.1,fluidScale);
+    const sx=blurPixels*vb.width/Math.max(1,rect.width);
+    const sy=blurPixels*vb.height/Math.max(1,rect.height);
+    revealBlur.setAttribute('stdDeviation',sx.toFixed(2)+' '+sy.toFixed(2));
+  }
+
   function renderReveal(){
     revealRaf=0;
+    if(usesFluidCursorReveal()){
+      const rect=svg.getBoundingClientRect();
+      const vb=svg.viewBox.baseVal;
+      const cx=clamp((fluidCurrent.x-rect.left)/Math.max(1,rect.width)*vb.width,55,575);
+      const cy=clamp((fluidCurrent.y-rect.top)/Math.max(1,rect.height)*vb.height,135,640);
+      const vx=(cx-previousReveal.x)*rect.width/Math.max(1,vb.width);
+      const vy=(cy-previousReveal.y)*rect.height/Math.max(1,vb.height);
+      revealVelocity={x:vx,y:vy};
+      const speed=Math.hypot(vx,vy);
+      revealCurrent={x:cx,y:cy};
+      previousReveal={x:cx,y:cy};
+      revealScale=fluidVisualScale;
+      if(speed>.08)revealPhase+=Math.min(speed*.012,.13);
+      syncRevealBlur();
+      peekShape.setAttribute('d',organicRevealPath(
+        cx,cy,revealPhase,speed,fluidVisualScale
+      ));
+      if(!fluidActive&&fluidVisualScale===0&&stage.classList.contains('is-hovering')){
+        stage.classList.remove('is-hovering','is-closing');
+        scheduleBlink();
+      }
+      return;
+    }
+
     const ease=reducedMotion?1:.12;
     const dx=revealTarget.x-revealCurrent.x;
     const dy=revealTarget.y-revealCurrent.y;
@@ -235,6 +273,7 @@
     revealScale+=(revealScaleTarget-revealScale)*(reducedMotion?1:.12);
     if(Math.abs(revealScaleTarget-revealScale)<.006)revealScale=revealScaleTarget;
     if(speed>.08)revealPhase+=Math.min(speed*.012,.13);
+    syncRevealBlur();
     peekShape.setAttribute('d',organicRevealPath(
       revealCurrent.x,revealCurrent.y,revealPhase,speed,revealScale
     ));
@@ -242,8 +281,6 @@
     if(moving){
       revealRaf=requestAnimationFrame(renderReveal);
     }else if(revealScaleTarget===0&&revealScale===0){
-      // El estado hover mantenía opacos el cráneo y la forma de revelado.
-      // Al terminar la contracción se retira para garantizar que el efecto desaparezca.
       stage.classList.remove('is-hovering','is-closing');
     }
   }
@@ -254,34 +291,34 @@
   function setRevealTarget(e){
     const p=screenToFace(e);
     if(!p)return;
-
-    const now=performance.now();
-    const pointerX=e.clientX,pointerY=e.clientY;
-    if(stage.classList.contains('is-hovering')&&revealLastPointerTime){
-      const elapsed=Math.max(8,now-revealLastPointerTime);
-      const dx=pointerX-revealLastPointerScreen.x;
-      const dy=pointerY-revealLastPointerScreen.y;
-      const distance=Math.hypot(dx,dy);
-      const distanceFactor=clamp(distance/150,0,1);
-      const speedFactor=clamp((distance/elapsed)/1.15,0,1);
-      const movementIntensity=Math.max(distanceFactor,speedFactor);
-      revealScaleTarget=1+movementIntensity*.24;
-    }else{
-      revealScaleTarget=1;
-    }
-
-    revealLastPointerScreen={x:pointerX,y:pointerY};
-    revealLastPointerTime=now;
-    clearTimeout(revealIdleTimer);
-    revealIdleTimer=window.setTimeout(()=>{
-      revealIdleTimer=0;
-      if(stage.classList.contains('is-hovering')){
-        revealScaleTarget=0;
-        requestRevealFrame();
-      }
-    },320);
-
     revealTarget={x:clamp(p.x,55,575),y:clamp(p.y,135,640)};
+
+    // En escritorio, escala y temporizador provienen directamente del cursor global.
+    if(!usesFluidCursorReveal()){
+      const now=performance.now();
+      const pointerX=e.clientX,pointerY=e.clientY;
+      if(stage.classList.contains('is-hovering')&&revealLastPointerTime){
+        const elapsed=Math.max(8,now-revealLastPointerTime);
+        const dx=pointerX-revealLastPointerScreen.x;
+        const dy=pointerY-revealLastPointerScreen.y;
+        const distance=Math.hypot(dx,dy);
+        const distanceFactor=clamp(distance/150,0,1);
+        const speedFactor=clamp((distance/elapsed)/1.15,0,1);
+        revealScaleTarget=1+Math.max(distanceFactor,speedFactor)*.24;
+      }else{
+        revealScaleTarget=1;
+      }
+      revealLastPointerScreen={x:pointerX,y:pointerY};
+      revealLastPointerTime=now;
+      clearTimeout(revealIdleTimer);
+      revealIdleTimer=window.setTimeout(()=>{
+        revealIdleTimer=0;
+        if(stage.classList.contains('is-hovering')){
+          revealScaleTarget=0;
+          requestRevealFrame();
+        }
+      },320);
+    }
     requestRevealFrame();
   }
 
@@ -309,13 +346,20 @@
       revealCurrent={...revealTarget};
       previousReveal={...revealCurrent};
       revealVelocity={x:0,y:0};
-      revealScale=.04;
-      revealScaleTarget=1;
+      if(!usesFluidCursorReveal()){
+        revealScale=.04;
+        revealScaleTarget=1;
+      }else{
+        revealScale=fluidVisualScale;
+      }
       stage.classList.remove('is-blinking','is-closing');
       clearTimeout(blinkTimer);
       clearTimeout(blinkEnd);
       stage.classList.add('is-hovering');
-      peekShape.setAttribute('d',organicRevealPath(revealCurrent.x,revealCurrent.y,revealPhase,0,revealScale));
+      syncRevealBlur();
+      peekShape.setAttribute('d',organicRevealPath(
+        revealCurrent.x,revealCurrent.y,revealPhase,0,revealScale
+      ));
     }
     requestRevealFrame();
   }
@@ -324,10 +368,11 @@
     clearTimeout(revealIdleTimer);
     revealIdleTimer=0;
     revealLastPointerTime=0;
-    stage.classList.remove('is-hovering');
-    stage.classList.add('is-closing');
-    revealScaleTarget=0;
-    requestRevealFrame();
+    stage.classList.remove('is-hovering','is-closing');
+    if(!usesFluidCursorReveal()){
+      revealScaleTarget=0;
+      requestRevealFrame();
+    }
     scheduleBlink();
   }
 
@@ -383,6 +428,7 @@
       fluidInitialized=true;
       fluidTarget={x,y};fluidCurrent={x,y};fluidPrevious={x,y};
       fluidLastPointerTime=performance.now();
+      fluidScaleTarget=1;
       addFluidParticle(x,y,76,560);
     }else{
       const dx=x-fluidTarget.x,dy=y-fluidTarget.y;
@@ -429,6 +475,7 @@
     const scaleEase=fluidActive ? 0.018 : 0.012;
     fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*scaleEase;
     if(Math.abs(fluidScaleTarget-fluidVisualScale)<.002)fluidVisualScale=fluidScaleTarget;
+    if(stage.classList.contains('is-hovering'))requestRevealFrame();
     const vx=fluidCurrent.x-fluidPrevious.x,vy=fluidCurrent.y-fluidPrevious.y;
     const speed=Math.hypot(vx,vy),angle=Math.atan2(vy,vx||.0001);
     fluidPrevious={...fluidCurrent};
