@@ -233,9 +233,10 @@
     const speed=Math.hypot(vx,vy);
     previousReveal={x:revealCurrent.x,y:revealCurrent.y};
     revealScale+=(revealScaleTarget-revealScale)*(reducedMotion?1:.12);
+    if(Math.abs(revealScaleTarget-revealScale)<.006)revealScale=revealScaleTarget;
     if(speed>.08)revealPhase+=Math.min(speed*.012,.13);
     peekShape.setAttribute('d',organicRevealPath(
-      revealCurrent.x,revealCurrent.y,revealPhase,speed,Math.max(.001,revealScale)
+      revealCurrent.x,revealCurrent.y,revealPhase,speed,revealScale
     ));
     const moving=Math.abs(dx)>.08||Math.abs(dy)>.08||Math.abs(revealScaleTarget-revealScale)>.006;
     if(moving){
@@ -272,7 +273,7 @@
     clearTimeout(revealIdleTimer);
     revealIdleTimer=window.setTimeout(()=>{
       if(stage.classList.contains('is-hovering')){
-        revealScaleTarget=1;
+        revealScaleTarget=0;
         requestRevealFrame();
       }
     },120);
