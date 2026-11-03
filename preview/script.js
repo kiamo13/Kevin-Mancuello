@@ -365,6 +365,7 @@
       fluidTarget={x,y};
     }
     fluidActive=true;fluidCanvas.classList.add('is-active');
+    invertLayer?.classList.add('is-visible');
     if(!fluidRaf){fluidLastFrame=performance.now();fluidRaf=requestAnimationFrame(renderFluidCursor);}
   }
 
@@ -405,7 +406,7 @@
       fluidSourceCtx.translate(fluidCurrent.x*fluidScale,fluidCurrent.y*fluidScale);
       if(speed>.35)fluidSourceCtx.rotate(angle);
       fluidSourceCtx.beginPath();
-      fluidSourceCtx.ellipse(0,0,92*fluidScale*stretch,108*fluidScale*squash,0,0,Math.PI*2);
+      fluidSourceCtx.ellipse(0,0,104*fluidScale*stretch,118*fluidScale*squash,0,0,Math.PI*2);
       fluidSourceCtx.fill();
       fluidSourceCtx.restore();
     }
@@ -438,6 +439,7 @@
 
   function hideFluidCursor(){
     fluidActive=false;
+    invertLayer?.classList.remove('is-visible');
     if(!fluidRaf)fluidRaf=requestAnimationFrame(renderFluidCursor);
   }
   resizeFluidCanvas();
