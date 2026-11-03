@@ -464,8 +464,7 @@
 			<line style="fill:none;stroke:#431B58;stroke-width:10;stroke-miterlimit:10;" x1="166.446" y1="359.681" x2="176.148" y2="373.638"/>
 		<path style="fill:none;stroke:#431B58;stroke-width:10;stroke-miterlimit:10;" d="M190.786,346.361
 			c2.18,6.368,4.36,12.737,6.54,19.105"/>
-		<path style="fill:none;stroke:#431B58;stroke-width:10;stroke-miterlimit:10;" d="M218.403,345.212
-			c0.707,4.886,1.414,9.772,2.121,14.658"/>
+		<path style="fill:none;stroke:#431B58;stroke-width:10;stroke-miterlimit:10;" d="M217.979,352.383 c0.707,4.886,1.414,9.772,2.121,14.658"/>
 	</g>
 </g>
 <g id="cara_ojos_abiertos_neutro_copia">
@@ -652,8 +651,6 @@
 		c-23.009-14.802-56.442-40.646-84.766-82.213c-14.97-21.969-24.932-43.073-31.66-60.766c-2.553-41.702-5.106-83.404-7.66-125.106
 		C130.617,416.723,132.489,416.213,134.362,415.702z"/>
 </g>
-<g id="pestana-ojos-abiertos">
-<path style="fill:none;stroke:#431B58;stroke-width:10;stroke-miterlimit:10;" d="M217.979,352.383 c0.707,4.886,1.414,9.772,2.121,14.658"/>
-</g>
+
 
 </svg>
