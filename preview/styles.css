@@ -1092,3 +1092,14 @@ section[id],footer[id]{scroll-margin-top:88px}
 }
 @media(max-width:680px){.fluid-cursor{display:none}}
 @media(prefers-reduced-motion:reduce){.fluid-cursor{display:none!important}}
+
+
+/* FIX v48 — pestaña independiente del cambio de expresión y de la máscara dinámica. */
+.avatar-svg #pestana-ojos-abiertos{
+  opacity:1!important;
+  visibility:visible!important;
+  transition:none!important;
+  mask:none!important;
+  -webkit-mask:none!important;
+}
+.avatar-stage.is-smiling .avatar-svg #pestana-ojos-abiertos{opacity:0!important}
