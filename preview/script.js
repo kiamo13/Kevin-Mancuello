@@ -41,6 +41,8 @@
   let revealCurrent={x:315,y:370};
   let revealTarget={x:315,y:370};
   let revealScale=0,revealScaleTarget=0,revealPhase=0;
+  let revealIdleTimer=0,revealLastPointerTime=0;
+  let revealLastPointerScreen={x:0,y:0};
   let previousReveal={x:315,y:370};
   let revealVelocity={x:0,y:0};
 
@@ -230,7 +232,7 @@
     revealVelocity={x:vx,y:vy};
     const speed=Math.hypot(vx,vy);
     previousReveal={x:revealCurrent.x,y:revealCurrent.y};
-    revealScale+=(revealScaleTarget-revealScale)*(reducedMotion?1:.22);
+    revealScale+=(revealScaleTarget-revealScale)*(reducedMotion?1:.12);
     if(speed>.08)revealPhase+=Math.min(speed*.012,.13);
     peekShape.setAttribute('d',organicRevealPath(
       revealCurrent.x,revealCurrent.y,revealPhase,speed,Math.max(.001,revealScale)
@@ -249,6 +251,32 @@
   function setRevealTarget(e){
     const p=screenToFace(e);
     if(!p)return;
+
+    const now=performance.now();
+    const pointerX=e.clientX,pointerY=e.clientY;
+    if(stage.classList.contains('is-hovering')&&revealLastPointerTime){
+      const elapsed=Math.max(8,now-revealLastPointerTime);
+      const dx=pointerX-revealLastPointerScreen.x;
+      const dy=pointerY-revealLastPointerScreen.y;
+      const distance=Math.hypot(dx,dy);
+      const distanceFactor=clamp(distance/150,0,1);
+      const speedFactor=clamp((distance/elapsed)/1.15,0,1);
+      const movementIntensity=Math.max(distanceFactor,speedFactor);
+      revealScaleTarget=1+movementIntensity*.24;
+    }else{
+      revealScaleTarget=1;
+    }
+
+    revealLastPointerScreen={x:pointerX,y:pointerY};
+    revealLastPointerTime=now;
+    clearTimeout(revealIdleTimer);
+    revealIdleTimer=window.setTimeout(()=>{
+      if(stage.classList.contains('is-hovering')){
+        revealScaleTarget=1;
+        requestRevealFrame();
+      }
+    },120);
+
     revealTarget={x:clamp(p.x,55,575),y:clamp(p.y,135,640)};
     requestRevealFrame();
   }
@@ -289,6 +317,9 @@
   }
 
   function closeReveal(){
+    clearTimeout(revealIdleTimer);
+    revealIdleTimer=0;
+    revealLastPointerTime=0;
     stage.classList.remove('is-hovering');
     stage.classList.add('is-closing');
     revealScaleTarget=0;
@@ -481,11 +512,12 @@
   }
 
   function stopVisualEffects(){
-    clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);
+    clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);clearTimeout(revealIdleTimer);
     if(pupilRaf)cancelAnimationFrame(pupilRaf);
     if(revealRaf)cancelAnimationFrame(revealRaf);
     if(fluidRaf)cancelAnimationFrame(fluidRaf);
     if(invertLayer)invertLayer.classList.remove('is-visible');
+    revealIdleTimer=0;revealLastPointerTime=0;
     if(stage){stage.classList.remove('is-hovering','is-closing','is-blinking','is-smiling');}
     if(peekShape){peekShape.setAttribute('opacity','0');}
   }
