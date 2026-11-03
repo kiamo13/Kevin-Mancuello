@@ -206,6 +206,10 @@ button{font:inherit}
 .avatar-stage.is-hovering .avatar-svg #skull-peek-shape,
 .avatar-stage.is-closing .avatar-svg #skull-peek-shape{opacity:1}
 .avatar-svg #cara_ojos_abiertos_neutro{opacity:1;transition:opacity .14s ease}
+.avatar-svg #pestana-ojos-abiertos{opacity:1;transition:opacity .14s ease}
+.avatar-stage.is-smiling .avatar-svg #pestana-ojos-abiertos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pestana-ojos-abiertos{opacity:0}
+
 .avatar-svg #ojos_sonrientes,.avatar-svg #cara_ojos_abiertos_neutro_copia{opacity:0;transition:opacity .14s ease}
 .avatar-stage.is-smiling .avatar-svg #cara_ojos_abiertos_neutro{opacity:0}
 .avatar-stage.is-smiling .avatar-svg #ojos_sonrientes{opacity:1}
