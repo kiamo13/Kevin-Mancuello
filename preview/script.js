@@ -241,8 +241,10 @@
     const moving=Math.abs(dx)>.08||Math.abs(dy)>.08||Math.abs(revealScaleTarget-revealScale)>.006;
     if(moving){
       revealRaf=requestAnimationFrame(renderReveal);
-    }else if(revealScaleTarget===0){
-      stage.classList.remove('is-closing');
+    }else if(revealScaleTarget===0&&revealScale===0){
+      // El estado hover mantenía opacos el cráneo y la forma de revelado.
+      // Al terminar la contracción se retira para garantizar que el efecto desaparezca.
+      stage.classList.remove('is-hovering','is-closing');
     }
   }
   function requestRevealFrame(){
@@ -272,11 +274,12 @@
     revealLastPointerTime=now;
     clearTimeout(revealIdleTimer);
     revealIdleTimer=window.setTimeout(()=>{
+      revealIdleTimer=0;
       if(stage.classList.contains('is-hovering')){
         revealScaleTarget=0;
         requestRevealFrame();
       }
-    },120);
+    },320);
 
     revealTarget={x:clamp(p.x,55,575),y:clamp(p.y,135,640)};
     requestRevealFrame();
