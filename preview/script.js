@@ -322,7 +322,7 @@
 
   const invertLayer=document.getElementById('color-invert');
   const invertShape=document.getElementById('color-invert-shape');
-  let invertPhase=0,invertRaf=0;
+  let invertPhase=0,invertRaf=0,invertInitialized=false;
   let invertTarget={x:0,y:0},invertCurrent={x:0,y:0},invertVelocity={x:0,y:0};
 
   function inversionPath(cx,cy,phase,speed){
@@ -387,6 +387,14 @@
   function moveInversion(e){
     if(!invertLayer)return;
     invertTarget={x:e.clientX,y:e.clientY};
+    if(!invertInitialized){
+      invertCurrent={...invertTarget};
+      invertVelocity={x:0,y:0};
+      invertInitialized=true;
+      invertLayer.style.left=invertCurrent.x+'px';
+      invertLayer.style.top=invertCurrent.y+'px';
+      invertShape.setAttribute('d',inversionPath(120,130,invertPhase,0));
+    }
     invertLayer.classList.add('is-visible');
     if(!invertRaf)invertRaf=requestAnimationFrame(animateInversion);
   }
