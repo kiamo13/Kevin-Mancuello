@@ -58,8 +58,8 @@
       cx:'50%',cy:'50%',r:'71%'
     });
     [
-      ['0%','#000000'],['54%','#000000'],['68%','#202020'],
-      ['84%','#929292'],['100%','#ffffff']
+      ['0%','#000000'],['54%','#000000'],['72%','#474747'],
+      ['88%','#d1d1d1'],['100%','#ffffff']
     ].forEach(([offset,color])=>gradient.appendChild(svgElement('stop',{offset,'stop-color':color})));
 
     const mask=svgElement('mask',{
@@ -100,7 +100,7 @@
   }
 
   function loadAvatar(){
-    fetch(new URL('assets/avatar.svg?v=20261102-22',document.baseURI),{cache:'no-store'})
+    fetch(new URL('assets/avatar.svg?v=20261103-23',document.baseURI),{cache:'no-store'})
       .then(response=>{
         if(!response.ok)throw new Error('No se pudo cargar el SVG del avatar.');
         return response.text();
@@ -184,8 +184,15 @@
     const count=18;
     const points=[];
     const intensity=clamp(speed/8,0,1);
-    const rx=48*scale*(1+.16*intensity);
-    const ry=62*scale*(1+.24*intensity);
+    const faceRect=svg.getBoundingClientRect();
+    const cursorRect=invertLayer?.getBoundingClientRect();
+    const vb=svg.viewBox.baseVal;
+    const rx=cursorRect&&faceRect.width
+      ?(cursorRect.width*.5)*(116/120)*(vb.width/faceRect.width)*scale*(1+.16*intensity)
+      :48*scale*(1+.16*intensity);
+    const ry=cursorRect&&faceRect.height
+      ?(cursorRect.height*.5)*(126/130)*(vb.height/faceRect.height)*scale*(1+.24*intensity)
+      :62*scale*(1+.24*intensity);
     const direction=Math.atan2(revealVelocity.y,revealVelocity.x||.0001);
     const rotation=speed>.25?direction-Math.PI/2:0;
     const trail=Math.min(speed*.28,5.5)*intensity;
