@@ -1105,3 +1105,20 @@ section[id],footer[id]{scroll-margin-top:88px}
   opacity:1!important;
   transition:none!important;
 }
+
+/* v51 — blink swap by display: no opacity interpolation on any viewport. */
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos_sonrientes,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito {
+  display:none!important;
+  opacity:1!important;
+  transition:none!important;
+}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro_copia {
+  display:inline!important;
+  opacity:1!important;
+  transition:none!important;
+}
