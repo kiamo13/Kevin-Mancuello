@@ -80,12 +80,22 @@
     defs.append(gradient,mask);
     svg.insertBefore(defs,svg.firstChild);
 
-    /* La máscara afecta únicamente la silueta de piel.
-       Las pestañas, ojos, cabello y barba conservan sus capas originales. */
-    ['cara_ojos_abiertos_neutro','ojos_sonrientes'].forEach(id=>{
-      const faceLayer=svg.querySelector('#'+id);
-      const skinSilhouette=faceLayer?.querySelectorAll(':scope > path')[1];
-      if(skinSilhouette)skinSilhouette.setAttribute('mask','url(#avatarFaceMask)');
+    /* El revelado debe atravesar todas las capas del rostro.
+       Si solo se enmascara la piel, nariz, ojos y barba quedan por encima
+       del cráneo y producen el efecto de piezas flotantes. El cabello se
+       conserva delante, como marco de la cabeza. */
+    [
+      'ojos',
+      'pupila_1',
+      'pupila_2',
+      'brillito',
+      'cara_ojos_abiertos_neutro',
+      'ojos_sonrientes',
+      'cara_ojos_abiertos_neutro_copia',
+      'BARBA'
+    ].forEach(id=>{
+      const layer=svg.querySelector('#'+id);
+      if(layer)layer.setAttribute('mask','url(#avatarFaceMask)');
     });
   }
 
