@@ -308,7 +308,7 @@
   const fluidSourceCtx=fluidSource.getContext('2d',{alpha:true,willReadFrequently:true});
   const fluidBlur=document.createElement('canvas');
   const fluidBlurCtx=fluidBlur.getContext('2d',{alpha:true,willReadFrequently:true});
-  let fluidRaf=0,fluidActive=false,fluidInitialized=false,fluidScale=1,fluidLastFrame=0,fluidIdleTimer=0;
+  let fluidRaf=0,fluidActive=false,fluidInitialized=false,fluidScale=1,fluidLastFrame=0,fluidIdleTimer=0,fluidLastPointerTime=0;
   let fluidVisualScale=0,fluidScaleTarget=0;
   let fluidWidth=0,fluidHeight=0;
   let fluidParticles=[];
@@ -347,10 +347,19 @@
     if(!fluidInitialized){
       fluidInitialized=true;
       fluidTarget={x,y};fluidCurrent={x,y};fluidPrevious={x,y};
+      fluidLastPointerTime=performance.now();
       addFluidParticle(x,y,76,560);
     }else{
       const dx=x-fluidTarget.x,dy=y-fluidTarget.y;
       const distance=Math.hypot(dx,dy);
+      const pointerNow=performance.now();
+      const pointerDelta=Math.max(8,pointerNow-fluidLastPointerTime);
+      const pointerSpeed=distance/pointerDelta;
+      fluidLastPointerTime=pointerNow;
+      const distanceFactor=clamp(distance/150,0,1);
+      const speedFactor=clamp(pointerSpeed/1.15,0,1);
+      const movementIntensity=Math.max(distanceFactor,speedFactor);
+      fluidScaleTarget=1+movementIntensity*.24;
       if(distance>1.5){
         const steps=Math.min(24,Math.max(1,Math.ceil(distance/13)));
         const speed=Math.min(distance,90);
@@ -367,7 +376,7 @@
       }
       fluidTarget={x,y};
     }
-    fluidActive=true;fluidScaleTarget=1.08;fluidCanvas.classList.add('is-active');
+    fluidActive=true;fluidCanvas.classList.add('is-active');
     invertLayer?.classList.add('is-visible');
     if(!fluidRaf){fluidLastFrame=performance.now();fluidRaf=requestAnimationFrame(renderFluidCursor);}
   }
@@ -382,7 +391,7 @@
       fluidCurrent.x+=(fluidTarget.x-fluidCurrent.x)*.22;
       fluidCurrent.y+=(fluidTarget.y-fluidCurrent.y)*.22;
     }
-    const scaleEase=fluidActive ? 0.055 : 0.035;
+    const scaleEase=fluidActive ? 0.018 : 0.012;
     fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*scaleEase;
     if(Math.abs(fluidScaleTarget-fluidVisualScale)<.002)fluidVisualScale=fluidScaleTarget;
     const vx=fluidCurrent.x-fluidPrevious.x,vy=fluidCurrent.y-fluidPrevious.y;
@@ -451,6 +460,7 @@
     fluidIdleTimer=0;
     fluidActive=false;
     fluidScaleTarget=0;
+    fluidLastPointerTime=0;
     invertLayer?.classList.remove('is-visible');
     if(!fluidRaf){fluidLastFrame=performance.now();fluidRaf=requestAnimationFrame(renderFluidCursor);}
   }
