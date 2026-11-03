@@ -46,6 +46,19 @@
   let previousReveal={x:315,y:370};
   let revealVelocity={x:0,y:0};
 
+  /* ------------------------------------------------------------------
+     REVELADO DEL CRÁNEO — campo compartido (v62)
+     En escritorio, piel, cabello y barba se componen en #avatar-face-canvas
+     y se perforan con los MISMOS píxeles del campo del cursor (fluidBlur),
+     en el mismo fotograma. Posición, tamaño, partículas, fusión, desenfoque,
+     alpha y desaparición son idénticos por construcción, no por imitación.
+     El SVG conserva cráneo, ojos, pupilas y brillos debajo del canvas.
+     ------------------------------------------------------------------ */
+  const FACE_LAYERS=['cara_ojos_abiertos_neutro','ojos_sonrientes','cara_ojos_abiertos_neutro_copia','cabello-silueta','cabello-base','cabello-parpadeo','BARBA'];
+  let svgSource='',faceCanvas=null,faceCtx=null,faceBitmaps=new Map(),faceLayerEls=[];
+  let faceRasterReady=false,faceRasterScale=0,faceRasterJob=0,faceRasterOn=false,revealFullHide=null;
+  let faceState=[],faceStateTick=0,faceStateDirty=true;
+
   function svgElement(name,attrs={}){
     const el=document.createElementNS('http://www.w3.org/2000/svg',name);
     Object.entries(attrs).forEach(([key,value])=>el.setAttribute(key,String(value)));
@@ -91,6 +104,10 @@
     revealEllipseShape=svgElement('path',{fill:'#000',opacity:0});
     peekShape.append(revealPath,revealEllipseShape);
     mask.appendChild(peekShape);
+    // Modo campo compartido: las capas del rostro del SVG se ocultan por completo
+    // (el canvas las dibuja encima ya perforadas). Sin filtro para no difuminar el borde exterior.
+    revealFullHide=svgElement('rect',{x:-40,y:-40,width:710.979,height:819.979,fill:'#000',display:'none'});
+    mask.appendChild(revealFullHide);
     defs.append(blurFilter,mask);
     svg.insertBefore(defs,svg.firstChild);
 
@@ -118,6 +135,7 @@
         return response.text();
       })
       .then(source=>{
+        svgSource=source;
         const parsed=new DOMParser().parseFromString(source,'image/svg+xml');
         if(parsed.querySelector('parsererror'))throw new Error('El SVG no se pudo interpretar.');
         svg=document.importNode(parsed.documentElement,true);
@@ -131,6 +149,7 @@
         if(!skull||!peekShape||pupils.some(p=>!p))throw new Error('Faltan capas necesarias del avatar.');
 
         pupils.forEach(p=>p.setAttribute('transform','translate(0 0)'));
+        if(!liteMode)setupFaceRaster();
         if(!liteMode)bindInteractions();
         stage.classList.add('avatar-ready');
       })
@@ -138,6 +157,128 @@
         console.error(error);
         mount.innerHTML='<p class="avatar-error">No se pudo cargar el avatar.</p>';
       });
+  }
+
+  /* --- coordenadas exactas pantalla ↔ SVG (respeta viewBox, preserveAspectRatio y transformaciones) --- */
+  function clientToSvg(x,y){
+    const m=svg&&svg.getScreenCTM();
+    if(!m)return {x:0,y:0};
+    return new DOMPoint(x,y).matrixTransform(m.inverse());
+  }
+  function svgUnitsPerCssPx(){
+    const m=svg&&svg.getScreenCTM();
+    return m?1/Math.max(.0001,Math.hypot(m.a,m.b)):1;
+  }
+
+  /* --- campo compartido: rasterizado por capa --- */
+  function setupFaceRaster(){
+    if(!fluidCanvas||!fluidCtx)return;
+    faceCanvas=document.createElement('canvas');
+    faceCanvas.className='avatar-face-canvas';
+    faceCanvas.setAttribute('aria-hidden','true');
+    mount.appendChild(faceCanvas);
+    faceCtx=faceCanvas.getContext('2d',{alpha:true});
+    faceLayerEls=FACE_LAYERS.map(id=>svg.querySelector('#'+id)).filter(Boolean);
+    new MutationObserver(()=>{faceStateDirty=true;}).observe(stage,{attributes:true,attributeFilter:['class']});
+    rasterizeFaceLayers();
+    let t=0;
+    window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(rasterizeFaceLayers,140);},{passive:true});
+  }
+
+  function rasterizeFaceLayers(){
+    if(!faceCanvas||!svg||!svgSource)return;
+    const r=faceCanvas.getBoundingClientRect();
+    if(r.width<2||r.height<2)return;
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    faceCanvas.width=Math.round(r.width*dpr);
+    faceCanvas.height=Math.round(r.height*dpr);
+    const m=svg.getScreenCTM();
+    const s=m?Math.hypot(m.a,m.b):1;
+    const vb=svg.viewBox.baseVal;
+    const pw=Math.max(1,Math.round(vb.width*s*dpr)),ph=Math.max(1,Math.round(vb.height*s*dpr));
+    if(faceRasterReady&&Math.abs(pw-faceRasterScale)<1)return;
+    // Los bitmaps anteriores siguen en uso (escalados) hasta que los nuevos estén listos.
+    const job=++faceRasterJob;
+    const parser=new DOMParser(),serializer=new XMLSerializer();
+    const loads=FACE_LAYERS.map(id=>new Promise(resolve=>{
+      const doc=parser.parseFromString(svgSource,'image/svg+xml');
+      const root=doc.documentElement;
+      [...root.children].forEach(child=>{
+        if(child.tagName.toLowerCase()!=='defs'&&child.getAttribute('id')!==id)child.remove();
+      });
+      root.setAttribute('width',pw);root.setAttribute('height',ph);
+      const url=URL.createObjectURL(new Blob([serializer.serializeToString(root)],{type:'image/svg+xml'}));
+      const img=new Image();
+      img.onload=()=>{URL.revokeObjectURL(url);resolve([id,img]);};
+      img.onerror=()=>{URL.revokeObjectURL(url);resolve([id,null]);};
+      img.src=url;
+    }));
+    Promise.all(loads).then(list=>{
+      if(job!==faceRasterJob)return;
+      if(list.some(([,img])=>!img)){console.warn('Revelado: no se pudo rasterizar una capa; se usa la máscara SVG.');return;}
+      faceBitmaps=new Map(list);
+      faceRasterScale=pw;
+      faceRasterReady=true;
+    });
+  }
+
+  function fieldNearAvatar(){
+    const r=stage.getBoundingClientRect(),pad=260;
+    const inside=(x,y)=>x>r.left-pad&&x<r.right+pad&&y>r.top-pad&&y<r.bottom+pad;
+    if((fluidActive||fluidVisualScale>.002)&&inside(fluidCurrent.x,fluidCurrent.y))return true;
+    for(let i=0;i<fluidParticles.length;i++){if(inside(fluidParticles[i].x,fluidParticles[i].y))return true;}
+    return false;
+  }
+
+  function setFaceRasterMode(on){
+    if(faceRasterOn===on)return;
+    faceRasterOn=on;
+    stage.classList.toggle('km-raster',on);
+    if(revealFullHide)revealFullHide.setAttribute('display',on?'inline':'none');
+    if(peekShape)peekShape.setAttribute('display',on?'none':'inline');
+    if(!on&&faceCtx)faceCtx.clearRect(0,0,faceCanvas.width,faceCanvas.height);
+  }
+
+  // Se llama desde renderFluidCursor, después de procesar el campo: mismo fotograma, mismos píxeles.
+  function composeFaceRaster(){
+    if(!faceCtx||!faceRasterReady||!usesFluidCursorReveal()||!fieldNearAvatar()){
+      if(faceRasterOn)setFaceRasterMode(false);
+      return;
+    }
+    setFaceRasterMode(true);
+    const r=faceCanvas.getBoundingClientRect();
+    const m=svg.getScreenCTM();
+    if(!m||r.width<2)return;
+    const kx=faceCanvas.width/r.width,ky=faceCanvas.height/r.height;
+    const vb=svg.viewBox.baseVal;
+    const ox=(m.e-r.left)*kx,oy=(m.f-r.top)*ky;
+    const w=vb.width*m.a*kx,h=vb.height*m.d*ky;
+    faceCtx.setTransform(1,0,0,1,0,0);
+    faceCtx.globalCompositeOperation='source-over';
+    faceCtx.globalAlpha=1;
+    faceCtx.clearRect(0,0,faceCanvas.width,faceCanvas.height);
+    // Las capas se componen según su estado real en el DOM (sonrisa, parpadeo, cuadro del pelo).
+    // El estado se relee al cambiar la clase del escenario y cada 2 fotogramas (el pelo cambia cada 200 ms).
+    if(faceStateDirty||(++faceStateTick&1)===0||!faceState.length){
+      faceStateDirty=false;
+      faceState=faceLayerEls.map(el=>{
+        const cs=getComputedStyle(el);
+        const op=(cs.display==='none'||cs.visibility==='hidden')?0:parseFloat(cs.opacity);
+        return {img:faceBitmaps.get(el.id),op:op>0?op:0};
+      });
+    }
+    for(const s of faceState){
+      if(!s.op||!s.img)continue;
+      faceCtx.globalAlpha=s.op;
+      faceCtx.drawImage(s.img,ox,oy,w,h);
+    }
+    // Perforación con el campo del cursor: la misma porción que el canvas global pinta en esa zona.
+    const fx=fluidWidth/Math.max(1,window.innerWidth),fy=fluidHeight/Math.max(1,window.innerHeight);
+    faceCtx.globalAlpha=1;
+    faceCtx.globalCompositeOperation='destination-out';
+    faceCtx.drawImage(fluidBlur,r.left*fx,r.top*fy,r.width*fx,r.height*fy,0,0,faceCanvas.width,faceCanvas.height);
+    faceCtx.globalCompositeOperation='source-over';
+    faceCtx.globalAlpha=1;
   }
 
   function flashSmile(){
@@ -201,8 +342,9 @@
     const vb=svg.viewBox.baseVal;
     const intensity=clamp(speed/85,0,1);
     // Coincide con la elipse del cursor: 104 x 118 px, incluido su squash/stretch.
-    const rx=104*(vb.width/Math.max(1,faceRect.width))*scale*(1+Math.min(speed/85,.22));
-    const ry=118*(vb.height/Math.max(1,faceRect.height))*scale*(1-Math.min(speed/85,.10));
+    const u=svgUnitsPerCssPx();
+    const rx=104*u*scale*(1+Math.min(speed/85,.22));
+    const ry=118*u*scale*(1-Math.min(speed/85,.10));
     const direction=Math.atan2(revealVelocity.y,revealVelocity.x||.0001);
     const rotation=speed>.35?direction:0;
 
@@ -225,6 +367,7 @@
     }
     return d+' Z';
   }
+  function sharedReveal(){return usesFluidCursorReveal()&&faceRasterReady&&!!faceCtx;}
   function usesFluidCursorReveal(){
     return !!(fluidCanvas&&fluidCtx)&&window.matchMedia('(hover: hover) and (pointer: fine)').matches&&!window.matchMedia('(max-width: 680px)').matches;
   }
@@ -234,75 +377,17 @@
     const rect=svg.getBoundingClientRect();
     const vb=svg.viewBox.baseVal;
     const blurPixels=7/Math.max(.1,fluidScale);
-    const sx=blurPixels*vb.width/Math.max(1,rect.width);
-    const sy=blurPixels*vb.height/Math.max(1,rect.height);
+    const sx=blurPixels*svgUnitsPerCssPx();
+    const sy=sx;
     revealBlur.setAttribute('stdDeviation',sx.toFixed(2)+' '+sy.toFixed(2));
   }
 
   function renderReveal(){
     revealRaf=0;
-    if(usesFluidCursorReveal()){
-      const rect=svg.getBoundingClientRect();
-      const vb=svg.viewBox.baseVal;
-      const toSvgX=x=>(x-rect.left)/Math.max(1,rect.width)*vb.width;
-      const toSvgY=y=>(y-rect.top)/Math.max(1,rect.height)*vb.height;
-      const cx=toSvgX(fluidCurrent.x);
-      const cy=toSvgY(fluidCurrent.y);
-      revealCurrent={x:cx,y:cy};
-      revealScale=fluidVisualScale;
-
-      // Reproduce la misma composición del cursor: partículas primero, elipse después.
-      const particleCount=fluidParticles.length;
-      if(revealEllipseShape.parentNode!==peekShape)peekShape.appendChild(revealEllipseShape);
-      if(revealPath.parentNode===peekShape)revealPath.remove();
-      while(revealParticleShapes.length<particleCount){
-        const node=svgElement('ellipse',{fill:'#000'});
-        revealParticleShapes.push(node);
-        peekShape.insertBefore(node,revealEllipseShape);
-      }
-      for(let i=0;i<revealParticleShapes.length;i++){
-        const node=revealParticleShapes[i];
-        if(i>=particleCount){
-          node.setAttribute('display','none');
-          continue;
-        }
-        const p=fluidParticles[particleCount-1-i];
-        const life=clamp(p.life/p.maxLife,0,1);
-        const radius=p.radius*(.22+.78*life)*fluidVisualScale;
-        const x=fluidCurrent.x+(p.x-fluidCurrent.x)*fluidVisualScale;
-        const y=fluidCurrent.y+(p.y-fluidCurrent.y)*fluidVisualScale;
-        node.removeAttribute('display');
-        node.setAttribute('cx',toSvgX(x));
-        node.setAttribute('cy',toSvgY(y));
-        node.setAttribute('rx',radius*vb.width/Math.max(1,rect.width));
-        node.setAttribute('ry',radius*vb.height/Math.max(1,rect.height));
-        node.setAttribute('opacity',(Math.pow(life,1.15)*.9).toFixed(4));
-      }
-
-      if(fluidActive){
-        const stretch=1+Math.min(fluidCursorSpeed/85,.22);
-        const squash=1-Math.min(fluidCursorSpeed/85,.10);
-        const rotation=fluidCursorSpeed>.35?fluidCursorAngle:0;
-        const points=[];
-        const count=48;
-        for(let i=0;i<count;i++){
-          const a=Math.PI*2*i/count;
-          const localX=Math.cos(a)*104*stretch*fluidVisualScale;
-          const localY=Math.sin(a)*118*squash*fluidVisualScale;
-          const x=fluidCurrent.x+localX*Math.cos(rotation)-localY*Math.sin(rotation);
-          const y=fluidCurrent.y+localX*Math.sin(rotation)+localY*Math.cos(rotation);
-          points.push({x:toSvgX(x),y:toSvgY(y)});
-        }
-        let d='M '+points[0].x.toFixed(2)+' '+points[0].y.toFixed(2);
-        for(let i=1;i<points.length;i++)d+=' L '+points[i].x.toFixed(2)+' '+points[i].y.toFixed(2);
-        d+=' Z';
-        revealEllipseShape.setAttribute('d',d);
-        revealEllipseShape.setAttribute('opacity','.98');
-      }else{
-        revealEllipseShape.setAttribute('opacity','0');
-      }
-      syncRevealBlur();
-      if(!fluidActive&&fluidVisualScale===0&&stage.classList.contains('is-hovering')){
+    if(sharedReveal()){
+      // El dibujo lo hace composeFaceRaster() dentro del fotograma del cursor.
+      // Acá solo se cierra el estado cuando el campo terminó de desaparecer.
+      if(!fluidActive&&fluidVisualScale===0&&!fluidParticles.length&&stage.classList.contains('is-hovering')){
         stage.classList.remove('is-hovering','is-closing');
         scheduleBlink();
       }
@@ -339,12 +424,12 @@
   }
 
   function setRevealTarget(e){
-    const p=screenToFace(e);
-    if(!p)return;
+    if(!svg)return;
+    const p=clientToSvg(e.clientX,e.clientY);
     revealTarget={x:clamp(p.x,55,575),y:clamp(p.y,135,640)};
 
     // En escritorio, escala y temporizador provienen directamente del cursor global.
-    if(!usesFluidCursorReveal()){
+    if(!sharedReveal()){
       const now=performance.now();
       const pointerX=e.clientX,pointerY=e.clientY;
       if(stage.classList.contains('is-hovering')&&revealLastPointerTime){
@@ -393,7 +478,7 @@
     clearTimeout(touchRevealTimer);
     setRevealTarget(e);
     if(!stage.classList.contains('is-hovering')){
-      if(usesFluidCursorReveal()){
+      if(sharedReveal()){
         const rect=svg.getBoundingClientRect();
         const vb=svg.viewBox.baseVal;
         revealCurrent={
@@ -426,7 +511,7 @@
     revealIdleTimer=0;
     revealLastPointerTime=0;
     stage.classList.remove('is-hovering','is-closing');
-    if(!usesFluidCursorReveal()){
+    if(!sharedReveal()){
       revealScaleTarget=0;
       requestRevealFrame();
     }
@@ -585,6 +670,7 @@
     fluidBlurCtx.putImageData(pixels,0,0);
     fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
     fluidCtx.drawImage(fluidBlur,0,0,fluidWidth,fluidHeight,0,0,window.innerWidth,window.innerHeight);
+    composeFaceRaster();
     const pointerLag=fluidActive?Math.hypot(fluidTarget.x-fluidCurrent.x,fluidTarget.y-fluidCurrent.y):0;
     if(fluidParticles.length||pointerLag>.35||Math.abs(fluidScaleTarget-fluidVisualScale)>.002||fluidVisualScale>.002){
       fluidCanvas.classList.add('is-active');
@@ -593,6 +679,7 @@
       fluidCanvas.classList.remove('is-active');
       fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
       fluidInitialized=false;fluidLastFrame=0;fluidVisualScale=0;
+      composeFaceRaster();
     }
   }
 

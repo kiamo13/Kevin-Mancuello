@@ -1111,3 +1111,59 @@ section[id],footer[id]{scroll-margin-top:88px}
   25%,74.999% { visibility:visible; }
   75%,100% { visibility:hidden; }
 }
+
+/* v62 — REVELADO CON CAMPO COMPARTIDO
+   El rostro (piel, cabello, barba) se compone en un canvas perforado con los mismos
+   píxeles del cursor fluido. El SVG debajo conserva cráneo, ojos, pupilas y brillos. */
+.avatar-face-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;display:block;
+  filter:drop-shadow(0 24px 26px rgba(0,0,0,.24));
+}
+.avatar-stage.km-raster .avatar-svg #CRÁNEO{opacity:1!important;transition:none!important}
+html.is-lite .avatar-face-canvas{display:none!important}
+@media(prefers-reduced-motion:reduce){.avatar-face-canvas{filter:none}}
+
+/* v62 — PROYECTOS CON IMAGEN REAL (reemplaza los espacios reservados) */
+.project-visual.has-img{background:#14112A}
+.project-visual.has-img::before,.project-visual.has-img::after{display:none!important}
+.project-visual.has-img strong,.project-visual.has-img i,.project-visual.has-img .visual-foot{display:none!important}
+.project-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.project-item:hover .project-img{transform:scale(1.035)}
+.project-visual.has-img .visual-overline{align-self:flex-start;z-index:2;background:rgba(20,17,42,.78);color:#fff;padding:7px 12px;border-radius:999px;font-size:11px;letter-spacing:.08em;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.visual-atlas .project-img{object-position:50% 38%}
+.visual-jasypa .project-img{object-position:50% 30%}
+.visual-personal .project-img,.visual-selection .project-img{object-position:50% 35%}
+/* tamaños mínimos legibles */
+.visual-overline,.visual-foot{font-size:11px}
+.character-index,.avatar-hint{font-size:11px}
+@media(max-width:680px){.character-index,.avatar-hint{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.project-img{transition:none}.project-item:hover .project-img{transform:none}}
+
+/* v62 — HERO: corrige la colisión de «MOVIMIENTO» con «MANCUELLO».
+   La regla .hero-intro (texto secundario, 230 px) perdía contra .hero-greeting h1 (68 px). */
+.hero-greeting .hero-intro{font-size:clamp(17px,1.6vw,23px);line-height:1.04;letter-spacing:-.035em}
+.hero-greeting{max-width:230px}
+/* En pantallas bajas (notebooks de 650–760 px) el CTA y el autorretrato quedan dentro del primer pliegue */
+@media(min-width:681px) and (max-height:780px){
+  .hero{min-height:max(620px,100svh)!important;height:100svh!important;max-height:none!important}
+  .hero-character{height:82%!important;bottom:0!important}
+  .hero-role{bottom:clamp(84px,13vh,140px)!important}
+}
+/* ayuda del avatar legible sobre la ilustración */
+.avatar-hint{background:rgba(35,31,70,.78);color:var(--paper);padding:6px 12px;border-radius:999px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.visual-mariano .project-img{object-position:0% 50%}
+/* celular: About entra completo en el ancho (antes se cortaba 21 px a la derecha) */
+@media(max-width:680px){
+  .about-layout{display:block!important;width:auto!important;max-width:100%!important;grid-template-columns:1fr!important}
+  .about-layout>*,.about-heading,.about-text{width:auto!important;max-width:100%!important;min-width:0!important}
+  .about-text p,.about-timeline{overflow-wrap:anywhere}
+}
+/* pantallas táctiles: sin la ayuda «hacé click» (choca con el rol y el verbo no aplica al tacto) */
+@media(hover:none),(max-width:680px){.avatar-hint{display:none!important}}
+@media(max-width:680px){.about-heading h2{font-size:min(17.5vw,78px)!important}.about-heading h2 span{font-size:1em!important}}
+/* mínimo legible de 11 px para rótulos monoespaciados (antes 7–9 px) */
+.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.location-line,.main-nav small,.footer-topline{font-size:max(11px,1em)!important}
+@media(max-width:680px){.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.footer-topline{font-size:11px!important}}
+.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:max(11px,1em)!important}
+@media(max-width:680px){.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:11px!important}}
