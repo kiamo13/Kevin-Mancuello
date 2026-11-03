@@ -66,7 +66,7 @@
     const alphaTransfer=svgElement('feComponentTransfer',{in:'skullBlur'});
     alphaTransfer.appendChild(svgElement('feFuncA',{
       type:'table',
-      tableValues:'0 0 0 0.074 0.316 0.623 0.888 1 1 1'
+      tableValues:'0 0 0.074 0.316 0.623 0.888 1 1 1 1 1'
     }));
     blurFilter.append(revealBlur,alphaTransfer);
 
@@ -221,7 +221,7 @@
     return d+' Z';
   }
   function usesFluidCursorReveal(){
-    return !!(fluidCanvas&&fluidCtx)&&!window.matchMedia('(max-width: 680px)').matches;
+    return !!(fluidCanvas&&fluidCtx)&&window.matchMedia('(hover: hover) and (pointer: fine)').matches&&!window.matchMedia('(max-width: 680px)').matches;
   }
 
   function syncRevealBlur(){
