@@ -87,6 +87,7 @@
       'cara_ojos_abiertos_neutro',
       'ojos_sonrientes',
       'cara_ojos_abiertos_neutro_copia',
+      'pestana-ojos-abiertos',
       'BARBA',
       'cabello-silueta',
       'cabello-base',
@@ -98,7 +99,7 @@
   }
 
   function loadAvatar(){
-    fetch(new URL('assets/avatar.svg?v=20261103-45',document.baseURI),{cache:'no-store'})
+    fetch(new URL('assets/avatar.svg?v=20261103-46',document.baseURI),{cache:'no-store'})
       .then(response=>{
         if(!response.ok)throw new Error('No se pudo cargar el SVG del avatar.');
         return response.text();
