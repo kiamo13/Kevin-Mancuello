@@ -32,7 +32,7 @@
 
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let svg,skull,peekShape,revealPath,revealBlur,pupils=[];
+  let svg,skull,peekShape,revealPath,revealBlur,revealEllipseShape,revealParticleShapes=[],pupils=[];
   let smileTimer=0,blinkTimer=0,blinkEnd=0,pupilRaf=0,revealRaf=0,touchRevealTimer=0;
   let touchActive=false;
   let smileActive=false;
@@ -88,7 +88,8 @@
       fill:'#000',
       d:'M 315 303 C 342 303 363 330 363 365 C 363 400 342 427 315 427 C 288 427 267 400 267 365 C 267 330 288 303 315 303 Z'
     });
-    peekShape.appendChild(revealPath);
+    revealEllipseShape=svgElement('path',{fill:'#000',opacity:0});
+    peekShape.append(revealPath,revealEllipseShape);
     mask.appendChild(peekShape);
     defs.append(blurFilter,mask);
     svg.insertBefore(defs,svg.firstChild);
@@ -251,21 +252,31 @@
       revealScale=fluidVisualScale;
 
       // Reproduce la misma composición del cursor: partículas primero, elipse después.
-      const shapes=[];
-      for(let i=fluidParticles.length-1;i>=0;i--){
-        const p=fluidParticles[i];
+      const particleCount=fluidParticles.length;
+      if(revealEllipseShape.parentNode!==peekShape)peekShape.appendChild(revealEllipseShape);
+      if(revealPath.parentNode===peekShape)revealPath.remove();
+      while(revealParticleShapes.length<particleCount){
+        const node=svgElement('ellipse',{fill:'#000'});
+        revealParticleShapes.push(node);
+        peekShape.insertBefore(node,revealEllipseShape);
+      }
+      for(let i=0;i<revealParticleShapes.length;i++){
+        const node=revealParticleShapes[i];
+        if(i>=particleCount){
+          node.setAttribute('display','none');
+          continue;
+        }
+        const p=fluidParticles[particleCount-1-i];
         const life=clamp(p.life/p.maxLife,0,1);
         const radius=p.radius*(.22+.78*life)*fluidVisualScale;
         const x=fluidCurrent.x+(p.x-fluidCurrent.x)*fluidVisualScale;
         const y=fluidCurrent.y+(p.y-fluidCurrent.y)*fluidVisualScale;
-        shapes.push(svgElement('ellipse',{
-          cx:toSvgX(x),
-          cy:toSvgY(y),
-          rx:radius*vb.width/Math.max(1,rect.width),
-          ry:radius*vb.height/Math.max(1,rect.height),
-          opacity:(Math.pow(life,1.15)*.9).toFixed(4),
-          fill:'#000'
-        }));
+        node.removeAttribute('display');
+        node.setAttribute('cx',toSvgX(x));
+        node.setAttribute('cy',toSvgY(y));
+        node.setAttribute('rx',radius*vb.width/Math.max(1,rect.width));
+        node.setAttribute('ry',radius*vb.height/Math.max(1,rect.height));
+        node.setAttribute('opacity',(Math.pow(life,1.15)*.9).toFixed(4));
       }
 
       if(fluidActive){
@@ -285,10 +296,11 @@
         let d='M '+points[0].x.toFixed(2)+' '+points[0].y.toFixed(2);
         for(let i=1;i<points.length;i++)d+=' L '+points[i].x.toFixed(2)+' '+points[i].y.toFixed(2);
         d+=' Z';
-        shapes.push(svgElement('path',{d,opacity:'.98',fill:'#000'}));
+        revealEllipseShape.setAttribute('d',d);
+        revealEllipseShape.setAttribute('opacity','.98');
+      }else{
+        revealEllipseShape.setAttribute('opacity','0');
       }
-
-      peekShape.replaceChildren(...shapes);
       syncRevealBlur();
       if(!fluidActive&&fluidVisualScale===0&&stage.classList.contains('is-hovering')){
         stage.classList.remove('is-hovering','is-closing');
