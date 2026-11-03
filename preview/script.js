@@ -382,7 +382,7 @@
       fluidCurrent.x+=(fluidTarget.x-fluidCurrent.x)*.22;
       fluidCurrent.y+=(fluidTarget.y-fluidCurrent.y)*.22;
     }
-    const scaleEase=fluidActive?.14:.075;
+    const scaleEase=fluidActive ? 0.14 : 0.075;
     fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*scaleEase;
     if(Math.abs(fluidScaleTarget-fluidVisualScale)<.002)fluidVisualScale=fluidScaleTarget;
     const vx=fluidCurrent.x-fluidPrevious.x,vy=fluidCurrent.y-fluidPrevious.y;
