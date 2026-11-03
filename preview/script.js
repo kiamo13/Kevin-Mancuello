@@ -41,6 +41,7 @@
   let revealCurrent={x:315,y:370};
   let revealTarget={x:315,y:370};
   let revealScale=0,revealScaleTarget=0,revealPhase=0;
+  let previousReveal={x:315,y:370};
   let revealVelocity={x:0,y:0};
 
   function svgElement(name,attrs={}){
@@ -97,7 +98,7 @@
   }
 
   function loadAvatar(){
-    fetch(new URL('assets/avatar.svg?v=20261103-31',document.baseURI),{cache:'no-store'})
+    fetch(new URL('assets/avatar.svg?v=20261103-33',document.baseURI),{cache:'no-store'})
       .then(response=>{
         if(!response.ok)throw new Error('No se pudo cargar el SVG del avatar.');
         return response.text();
@@ -180,32 +181,29 @@
   }
 
   function organicRevealPath(cx,cy,phase,speed,scale){
-    const count=24;
+    const count=18;
     const points=[];
-    const intensity=clamp(speed/28,0,1);
+    const intensity=clamp(speed/8,0,1);
     const faceRect=svg.getBoundingClientRect();
     const cursorRect=invertLayer?.getBoundingClientRect();
     const vb=svg.viewBox.baseVal;
     const rx=cursorRect&&faceRect.width
-      ?(cursorRect.width*.5)*(116/120)*(vb.width/faceRect.width)*scale*(1+.28*intensity)
-      :48*scale*(1+.28*intensity);
+      ?(cursorRect.width*.5)*(116/120)*(vb.width/faceRect.width)*scale*(1+.16*intensity)
+      :48*scale*(1+.16*intensity);
     const ry=cursorRect&&faceRect.height
-      ?(cursorRect.height*.5)*(126/130)*(vb.height/faceRect.height)*scale*(1+.38*intensity)
-      :62*scale*(1+.38*intensity);
+      ?(cursorRect.height*.5)*(126/130)*(vb.height/faceRect.height)*scale*(1+.24*intensity)
+      :62*scale*(1+.24*intensity);
     const direction=Math.atan2(revealVelocity.y,revealVelocity.x||.0001);
-    // The long axis turns into the direction of travel, creating a soft liquid tail.
-    const rotation=speed>.45?direction-Math.PI/2:0;
-    const trail=Math.min(speed*.48,18)*intensity;
+    const rotation=speed>.25?direction-Math.PI/2:0;
+    const trail=Math.min(speed*.40,8)*intensity;
     const drawCx=cx-Math.cos(direction)*trail;
     const drawCy=cy-Math.sin(direction)*trail;
-    const squash=1-.14*intensity;
-    const stretch=1+.48*intensity;
 
     for(let i=0;i<count;i++){
       const a=(Math.PI*2*i)/count;
-      const wobble=1+(.075+.055*intensity)*Math.sin(3*a+phase)+.045*Math.sin(5*a-phase*1.35)+.026*Math.sin(2*a+phase*.7);
-      const x=Math.cos(a)*rx*wobble*squash;
-      const y=Math.sin(a)*ry*wobble*stretch;
+      const wobble=1+.075*Math.sin(3*a+phase)+.038*Math.sin(5*a-phase*1.35)+.022*Math.sin(2*a+phase*.7);
+      const x=Math.cos(a)*rx*wobble;
+      const y=Math.sin(a)*ry*wobble;
       points.push({
         x:drawCx+x*Math.cos(rotation)-y*Math.sin(rotation),
         y:drawCy+x*Math.sin(rotation)+y*Math.cos(rotation)
@@ -220,48 +218,30 @@
     }
     return d+' Z';
   }
-
   function renderReveal(){
     revealRaf=0;
+    const ease=reducedMotion?1:.12;
     const dx=revealTarget.x-revealCurrent.x;
     const dy=revealTarget.y-revealCurrent.y;
-    if(reducedMotion){
-      revealCurrent={...revealTarget};
-      revealVelocity={x:0,y:0};
-    }else{
-      // Damped spring: deliberately slower than direct tracking, with a small overshoot.
-      const stiffness=.105;
-      const damping=.76;
-      revealVelocity.x=(revealVelocity.x+dx*stiffness)*damping;
-      revealVelocity.y=(revealVelocity.y+dy*stiffness)*damping;
-      const velocityLength=Math.hypot(revealVelocity.x,revealVelocity.y);
-      if(velocityLength>42){
-        const ratio=42/velocityLength;
-        revealVelocity.x*=ratio;
-        revealVelocity.y*=ratio;
-      }
-      revealCurrent.x+=revealVelocity.x;
-      revealCurrent.y+=revealVelocity.y;
-    }
-    const speed=Math.hypot(revealVelocity.x,revealVelocity.y);
-    revealScale+=(revealScaleTarget-revealScale)*(reducedMotion?1:.18);
-    if(speed>.08)revealPhase+=Math.min(speed*.018,.18);
+    revealCurrent.x+=dx*ease;
+    revealCurrent.y+=dy*ease;
+    const vx=revealCurrent.x-previousReveal.x;
+    const vy=revealCurrent.y-previousReveal.y;
+    revealVelocity={x:vx,y:vy};
+    const speed=Math.hypot(vx,vy);
+    previousReveal={x:revealCurrent.x,y:revealCurrent.y};
+    revealScale+=(revealScaleTarget-revealScale)*(reducedMotion?1:.22);
+    if(speed>.08)revealPhase+=Math.min(speed*.012,.13);
     peekShape.setAttribute('d',organicRevealPath(
       revealCurrent.x,revealCurrent.y,revealPhase,speed,Math.max(.001,revealScale)
     ));
-    const remainingX=revealTarget.x-revealCurrent.x;
-    const remainingY=revealTarget.y-revealCurrent.y;
-    const moving=Math.abs(remainingX)>.22||Math.abs(remainingY)>.22||
-      speed>.18||Math.abs(revealScaleTarget-revealScale)>.004;
+    const moving=Math.abs(dx)>.08||Math.abs(dy)>.08||Math.abs(revealScaleTarget-revealScale)>.006;
     if(moving){
       revealRaf=requestAnimationFrame(renderReveal);
-    }else{
-      revealCurrent={...revealTarget};
-      revealVelocity={x:0,y:0};
-      if(revealScaleTarget===0)stage.classList.remove('is-closing');
+    }else if(revealScaleTarget===0){
+      stage.classList.remove('is-closing');
     }
   }
-
   function requestRevealFrame(){
     if(!revealRaf)revealRaf=requestAnimationFrame(renderReveal);
   }
@@ -295,6 +275,7 @@
     setRevealTarget(e);
     if(!stage.classList.contains('is-hovering')){
       revealCurrent={...revealTarget};
+      previousReveal={...revealCurrent};
       revealVelocity={x:0,y:0};
       revealScale=.04;
       revealScaleTarget=1;
@@ -326,19 +307,18 @@
   let invertTarget={x:0,y:0},invertCurrent={x:0,y:0},invertVelocity={x:0,y:0};
 
   function inversionPath(cx,cy,phase,speed){
-    const count=24,rx=116,ry=126,pts=[];
+    const count=20,rx=116,ry=126,pts=[];
+    const intensity=clamp(speed/24,0,1);
     const angle=Math.atan2(invertVelocity.y,invertVelocity.x||.0001);
-    const intensity=clamp(speed/34,0,1);
-    const stretch=.42*intensity;
-    const trail=Math.min(speed*.2,12);
+    const stretch=Math.min(speed*.006,.12);
+    const trail=Math.min(speed*.10,5);
     const centerX=cx-Math.cos(angle)*trail;
     const centerY=cy-Math.sin(angle)*trail;
     for(let i=0;i<count;i++){
       const a=Math.PI*2*i/count;
-      const wobble=1+.055*Math.sin(3*a+phase)+.035*Math.sin(5*a-phase*1.2)+.018*Math.sin(2*a+phase*.8);
-      const radial=1+stretch*Math.cos(a-angle);
-      const x=Math.cos(a)*rx*wobble*radial;
-      const y=Math.sin(a)*ry*wobble*radial;
+      const wobble=1+.045*Math.sin(3*a+phase)+.025*Math.sin(5*a-phase*1.2);
+      const x=Math.cos(a)*rx*wobble*(1+stretch*Math.cos(a-angle));
+      const y=Math.sin(a)*ry*wobble*(1-stretch*.35*Math.cos(a-angle));
       pts.push({x:centerX+x,y:centerY+y});
     }
     const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
@@ -350,40 +330,21 @@
   function animateInversion(){
     invertRaf=0;
     const dx=invertTarget.x-invertCurrent.x,dy=invertTarget.y-invertCurrent.y;
-    if(reducedMotion){
-      invertCurrent={...invertTarget};
-      invertVelocity={x:0,y:0};
-    }else{
-      const stiffness=.115;
-      const damping=.75;
-      invertVelocity.x=(invertVelocity.x+dx*stiffness)*damping;
-      invertVelocity.y=(invertVelocity.y+dy*stiffness)*damping;
-      const velocityLength=Math.hypot(invertVelocity.x,invertVelocity.y);
-      if(velocityLength>76){
-        const ratio=76/velocityLength;
-        invertVelocity.x*=ratio;
-        invertVelocity.y*=ratio;
-      }
-      invertCurrent.x+=invertVelocity.x;
-      invertCurrent.y+=invertVelocity.y;
-    }
+    const oldX=invertCurrent.x,oldY=invertCurrent.y;
+    invertCurrent.x+=dx*(reducedMotion?1:.12);
+    invertCurrent.y+=dy*(reducedMotion?1:.12);
+    invertVelocity={x:invertCurrent.x-oldX,y:invertCurrent.y-oldY};
     const speed=Math.hypot(invertVelocity.x,invertVelocity.y);
-    invertPhase+=Math.min(speed*.0025,.12);
+    invertPhase+=Math.min(speed*.0025,.08);
     invertLayer.style.left=invertCurrent.x+'px';
     invertLayer.style.top=invertCurrent.y+'px';
     invertShape.setAttribute('d',inversionPath(120,130,invertPhase,speed));
-    const remainingX=invertTarget.x-invertCurrent.x;
-    const remainingY=invertTarget.y-invertCurrent.y;
-    if(Math.abs(remainingX)>.35||Math.abs(remainingY)>.35||speed>.18){
+    if(Math.abs(dx)>.3||Math.abs(dy)>.3){
       invertRaf=requestAnimationFrame(animateInversion);
     }else{
-      invertCurrent={...invertTarget};
       invertVelocity={x:0,y:0};
-      invertLayer.style.left=invertCurrent.x+'px';
-      invertLayer.style.top=invertCurrent.y+'px';
     }
   }
-
   function moveInversion(e){
     if(!invertLayer)return;
     invertTarget={x:e.clientX,y:e.clientY};
