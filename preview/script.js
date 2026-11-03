@@ -302,73 +302,149 @@
   }
 
   const invertLayer=document.getElementById('color-invert');
-  const invertShape=document.getElementById('color-invert-shape');
-  let invertPhase=0,invertX=0,invertY=0,invertRaf=0,invertInitialized=false;
-  let invertTarget={x:0,y:0},invertCurrent={x:0,y:0},invertVelocity={x:0,y:0};
+  const fluidCanvas=document.getElementById('fluid-cursor');
+  const fluidCtx=fluidCanvas?.getContext('2d',{alpha:true,desynchronized:true});
+  const fluidSource=document.createElement('canvas');
+  const fluidSourceCtx=fluidSource.getContext('2d',{alpha:true,willReadFrequently:true});
+  const fluidBlur=document.createElement('canvas');
+  const fluidBlurCtx=fluidBlur.getContext('2d',{alpha:true,willReadFrequently:true});
+  let fluidRaf=0,fluidActive=false,fluidInitialized=false,fluidScale=1,fluidLastFrame=0;
+  let fluidWidth=0,fluidHeight=0;
+  let fluidParticles=[];
+  let fluidTarget={x:0,y:0},fluidCurrent={x:0,y:0},fluidPrevious={x:0,y:0};
 
-  function inversionPath(cx,cy,phase,speed){
-    const count=20,rx=116,ry=126,pts=[];
-    const angle=Math.atan2(cy-invertY,cx-invertX);
-    const stretch=Math.min(speed*.012,.18);
-    const travelAngle=Math.atan2(invertVelocity.y,invertVelocity.x||.0001);
-    const trail=Math.min(Math.hypot(invertVelocity.x,invertVelocity.y)*.10,4);
-    const centerX=120-Math.cos(travelAngle)*trail;
-    const centerY=130-Math.sin(travelAngle)*trail;
-    for(let i=0;i<count;i++){
-      const a=Math.PI*2*i/count;
-      const wobble=1+.045*Math.sin(3*a+phase)+.025*Math.sin(5*a-phase*1.2);
-      const x=Math.cos(a)*rx*wobble*(1+stretch*Math.cos(a-angle));
-      const y=Math.sin(a)*ry*wobble*(1-stretch*.35*Math.cos(a-angle));
-      pts.push({x:centerX+x,y:centerY+y});
-    }
-    const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
-    let d='M '+mid(pts[count-1],pts[0]).x+' '+mid(pts[count-1],pts[0]).y;
-    for(let i=0;i<count;i++){const m=mid(pts[i],pts[(i+1)%count]);d+=' Q '+pts[i].x+' '+pts[i].y+' '+m.x+' '+m.y;}
-    return d+' Z';
+  function resizeFluidCanvas(){
+    if(!fluidCanvas||!fluidCtx)return;
+    const width=Math.max(1,window.innerWidth),height=Math.max(1,window.innerHeight);
+    const dpr=Math.min(window.devicePixelRatio||1,1.5);
+    fluidCanvas.width=Math.round(width*dpr);
+    fluidCanvas.height=Math.round(height*dpr);
+    fluidCanvas.style.width=width+'px';
+    fluidCanvas.style.height=height+'px';
+    fluidCtx.setTransform(dpr,0,0,dpr,0,0);
+    fluidCtx.imageSmoothingEnabled=true;
+    fluidScale=Math.min(1,960/Math.max(width,height));
+    fluidWidth=Math.max(1,Math.ceil(width*fluidScale));
+    fluidHeight=Math.max(1,Math.ceil(height*fluidScale));
+    fluidSource.width=fluidWidth;fluidSource.height=fluidHeight;
+    fluidBlur.width=fluidWidth;fluidBlur.height=fluidHeight;
   }
 
-  function animateInversion(){
-    invertRaf=0;
-    const dx=invertTarget.x-invertCurrent.x,dy=invertTarget.y-invertCurrent.y;
-    const oldX=invertCurrent.x,oldY=invertCurrent.y;
-    invertCurrent.x+=dx*(reducedMotion?1:.12);
-    invertCurrent.y+=dy*(reducedMotion?1:.12);
-    invertX=invertCurrent.x;invertY=invertCurrent.y;
-    invertVelocity={x:invertCurrent.x-oldX,y:invertCurrent.y-oldY};
-    const speed=Math.hypot(dx,dy);
-    invertPhase+=Math.min(speed*.0015,.08);
-    invertLayer.style.left=invertCurrent.x+'px';
-    invertLayer.style.top=invertCurrent.y+'px';
-    invertShape.setAttribute('d',inversionPath(120,130,invertPhase,speed));
-    if(Math.abs(dx)>.3||Math.abs(dy)>.3){
-      invertRaf=requestAnimationFrame(animateInversion);
+  function addFluidParticle(x,y,radius,life,vx=0,vy=0){
+    fluidParticles.push({x,y,radius,life,maxLife:life,vx,vy});
+    if(fluidParticles.length>190)fluidParticles.splice(0,fluidParticles.length-190);
+  }
+
+  function moveFluidCursor(e){
+    if(!fluidCanvas||!fluidCtx)return;
+    const x=e.clientX,y=e.clientY;
+    if(!fluidInitialized){
+      fluidInitialized=true;
+      fluidTarget={x,y};fluidCurrent={x,y};fluidPrevious={x,y};
+      addFluidParticle(x,y,76,560);
     }else{
-      invertVelocity={x:0,y:0};
+      const dx=x-fluidTarget.x,dy=y-fluidTarget.y;
+      const distance=Math.hypot(dx,dy);
+      if(distance>1.5){
+        const steps=Math.min(24,Math.max(1,Math.ceil(distance/13)));
+        const speed=Math.min(distance,90);
+        for(let i=1;i<=steps;i++){
+          const t=i/steps,px=fluidTarget.x+dx*t,py=fluidTarget.y+dy*t;
+          addFluidParticle(px,py,clamp(50+speed*.10,50,68),560+Math.random()*260,dx/steps*.16,dy/steps*.16);
+          if(distance>32&&i%3===0){
+            const side=(Math.random()-.5)*2,length=Math.hypot(dx,dy)||1;
+            const nx=-dy/length,ny=dx/length,offset=side*(17+Math.random()*20);
+            addFluidParticle(px+nx*offset,py+ny*offset,13+Math.random()*12,
+              320+Math.random()*150,dx/steps*.09+nx*side*.25,dy/steps*.09+ny*side*.25);
+          }
+        }
+      }
+      fluidTarget={x,y};
     }
-  }
-  function moveInversion(e){
-    if(!invertLayer)return;
-    invertTarget={x:e.clientX,y:e.clientY};
-    if(!invertInitialized){
-      invertCurrent={...invertTarget};
-      invertVelocity={x:0,y:0};
-      invertInitialized=true;
-      invertLayer.style.left=invertCurrent.x+'px';
-      invertLayer.style.top=invertCurrent.y+'px';
-      invertShape.setAttribute('d',inversionPath(120,130,invertPhase,0));
-    }
-    invertLayer.classList.add('is-visible');
-    if(!invertRaf)invertRaf=requestAnimationFrame(animateInversion);
+    fluidActive=true;fluidCanvas.classList.add('is-active');
+    if(!fluidRaf){fluidLastFrame=performance.now();fluidRaf=requestAnimationFrame(renderFluidCursor);}
   }
 
-  function hideInversion(){if(invertLayer)invertLayer.classList.remove('is-visible');}
+  function renderFluidCursor(now){
+    fluidRaf=0;
+    if(!fluidCanvas||!fluidCtx||!fluidSourceCtx||!fluidBlurCtx)return;
+    const elapsed=Math.min(34,Math.max(1,now-fluidLastFrame||16.67));
+    const frameScale=elapsed/16.67;
+    fluidLastFrame=now;
+    if(fluidActive){
+      fluidCurrent.x+=(fluidTarget.x-fluidCurrent.x)*.22;
+      fluidCurrent.y+=(fluidTarget.y-fluidCurrent.y)*.22;
+    }
+    const vx=fluidCurrent.x-fluidPrevious.x,vy=fluidCurrent.y-fluidPrevious.y;
+    const speed=Math.hypot(vx,vy),angle=Math.atan2(vy,vx||.0001);
+    fluidPrevious={...fluidCurrent};
+    fluidSourceCtx.clearRect(0,0,fluidWidth,fluidHeight);
+    fluidSourceCtx.save();
+    fluidSourceCtx.fillStyle='#fff';
+    fluidSourceCtx.globalCompositeOperation='source-over';
+    for(let i=fluidParticles.length-1;i>=0;i--){
+      const p=fluidParticles[i];
+      p.life-=elapsed;
+      if(p.life<=0){fluidParticles.splice(i,1);continue;}
+      p.x+=p.vx*frameScale;p.y+=p.vy*frameScale;
+      p.vx*=Math.pow(.935,frameScale);p.vy*=Math.pow(.935,frameScale);
+      const life=clamp(p.life/p.maxLife,0,1);
+      const radius=p.radius*(.22+.78*life);
+      fluidSourceCtx.globalAlpha=Math.pow(life,1.15)*.9;
+      fluidSourceCtx.beginPath();
+      fluidSourceCtx.arc(p.x*fluidScale,p.y*fluidScale,radius*fluidScale,0,Math.PI*2);
+      fluidSourceCtx.fill();
+    }
+    if(fluidActive){
+      const stretch=1+Math.min(speed/85,.22),squash=1-Math.min(speed/85,.10);
+      fluidSourceCtx.globalAlpha=.98;
+      fluidSourceCtx.save();
+      fluidSourceCtx.translate(fluidCurrent.x*fluidScale,fluidCurrent.y*fluidScale);
+      if(speed>.35)fluidSourceCtx.rotate(angle);
+      fluidSourceCtx.beginPath();
+      fluidSourceCtx.ellipse(0,0,92*fluidScale*stretch,108*fluidScale*squash,0,0,Math.PI*2);
+      fluidSourceCtx.fill();
+      fluidSourceCtx.restore();
+    }
+    fluidSourceCtx.restore();
+
+    fluidBlurCtx.clearRect(0,0,fluidWidth,fluidHeight);
+    fluidBlurCtx.save();
+    fluidBlurCtx.filter='blur(7px)';
+    fluidBlurCtx.drawImage(fluidSource,0,0);
+    fluidBlurCtx.restore();
+    const pixels=fluidBlurCtx.getImageData(0,0,fluidWidth,fluidHeight);
+    const data=pixels.data;
+    for(let i=0;i<data.length;i+=4){
+      const alpha=data[i+3]/255,t=clamp((alpha-.12)/.48,0,1),smooth=t*t*(3-2*t);
+      data[i]=255;data[i+1]=255;data[i+2]=255;data[i+3]=Math.round(smooth*255);
+    }
+    fluidBlurCtx.putImageData(pixels,0,0);
+    fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+    fluidCtx.drawImage(fluidBlur,0,0,fluidWidth,fluidHeight,0,0,window.innerWidth,window.innerHeight);
+    if(fluidActive||fluidParticles.length){
+      fluidCanvas.classList.add('is-active');
+      fluidRaf=requestAnimationFrame(renderFluidCursor);
+    }else{
+      fluidCanvas.classList.remove('is-active');
+      fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      fluidInitialized=false;fluidLastFrame=0;
+    }
+  }
+
+  function hideFluidCursor(){
+    fluidActive=false;
+    if(fluidParticles.length&&!fluidRaf)fluidRaf=requestAnimationFrame(renderFluidCursor);
+  }
+  resizeFluidCanvas();
+  window.addEventListener('resize',resizeFluidCanvas,{passive:true});
 
   function handlePointer(e){
     if(e.pointerType!=='mouse'&&e.pointerType!=='pen')return;
     trackEyes(e);
     /* El cursor mantiene el mismo efecto global sobre el avatar.
        El revelado del cráneo se suma sin sustituir la inversión cromática. */
-    moveInversion(e);
+    moveFluidCursor(e);
     if(pointInsideAvatar(e)){
       activateReveal(e);
     }else if(stage.classList.contains('is-hovering')){
@@ -380,7 +456,7 @@
     clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);
     if(pupilRaf)cancelAnimationFrame(pupilRaf);
     if(revealRaf)cancelAnimationFrame(revealRaf);
-    if(invertRaf)cancelAnimationFrame(invertRaf);
+    if(fluidRaf)cancelAnimationFrame(fluidRaf);
     if(invertLayer)invertLayer.classList.remove('is-visible');
     if(stage){stage.classList.remove('is-hovering','is-closing','is-blinking','is-smiling');}
     if(peekShape){peekShape.setAttribute('opacity','0');}
@@ -392,7 +468,7 @@
     if(supportsHover){
       window.addEventListener('pointermove',handlePointer,{passive:true});
       window.addEventListener('pointerout',e=>{
-        if(!e.relatedTarget){hideInversion();closeReveal();}
+        if(!e.relatedTarget){hideFluidCursor();closeReveal();}
       },{passive:true});
     }else{
       let touchActive=false;
@@ -400,19 +476,19 @@
         if(!e.touches.length)return;
         const t=e.touches[0],point={clientX:t.clientX,clientY:t.clientY};
         touchActive=true;trackEyes(point);
-        if(pointInsideAvatar(point)){hideInversion();activateReveal(point);}
-        else{moveInversion(point);if(stage.classList.contains('is-hovering'))closeReveal();}
+        if(pointInsideAvatar(point)){hideFluidCursor();activateReveal(point);}
+        else{moveFluidCursor(point);if(stage.classList.contains('is-hovering'))closeReveal();}
       },{passive:true});
       document.addEventListener('touchmove',e=>{
         if(!touchActive||!e.touches.length)return;
         const t=e.touches[0],point={clientX:t.clientX,clientY:t.clientY};
         trackEyes(point);
-        if(pointInsideAvatar(point)){hideInversion();activateReveal(point);}
-        else{moveInversion(point);setRevealTarget(point);if(stage.classList.contains('is-hovering'))closeReveal();}
+        if(pointInsideAvatar(point)){hideFluidCursor();activateReveal(point);}
+        else{moveFluidCursor(point);setRevealTarget(point);if(stage.classList.contains('is-hovering'))closeReveal();}
       },{passive:true});
       const finishTouch=()=>{
         touchActive=false;
-        hideInversion();
+        hideFluidCursor();
         clearTimeout(touchRevealTimer);
         touchRevealTimer=window.setTimeout(closeReveal,650);
       };
@@ -471,7 +547,7 @@
   }
 
   window.addEventListener('pagehide',()=>{
-    clearTimeout(smileTimer);clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);if(invertRaf)cancelAnimationFrame(invertRaf);
+    clearTimeout(smileTimer);clearTimeout(blinkTimer);clearTimeout(blinkEnd);clearTimeout(touchRevealTimer);if(fluidRaf)cancelAnimationFrame(fluidRaf);
     if(pupilRaf)cancelAnimationFrame(pupilRaf);
     if(revealRaf)cancelAnimationFrame(revealRaf);
   });
