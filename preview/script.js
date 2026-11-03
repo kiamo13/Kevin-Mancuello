@@ -369,7 +369,7 @@
   }
   function sharedReveal(){return usesFluidCursorReveal()&&faceRasterReady&&!!faceCtx;}
   function usesFluidCursorReveal(){
-    return !!(fluidCanvas&&fluidCtx)&&window.matchMedia('(hover: hover) and (pointer: fine)').matches&&!window.matchMedia('(max-width: 680px)').matches;
+    return !!(fluidCanvas&&fluidCtx)&&!reducedMotion;
   }
 
   function syncRevealBlur(){
@@ -562,7 +562,7 @@
   }
 
   function moveFluidCursor(e){
-    if(!fluidCanvas||!fluidCtx||window.matchMedia('(max-width: 680px)').matches)return;
+    if(!fluidCanvas||!fluidCtx||reducedMotion)return;
     const x=e.clientX,y=e.clientY;
     clearTimeout(fluidIdleTimer);
     fluidIdleTimer=window.setTimeout(hideFluidCursor,320);
@@ -733,14 +733,14 @@
         if(!e.touches.length)return;
         const t=e.touches[0],point={clientX:t.clientX,clientY:t.clientY};
         touchActive=true;trackEyes(point);
-        if(pointInsideAvatar(point)){hideFluidCursor();activateReveal(point);}
+        if(pointInsideAvatar(point)){moveFluidCursor(point);activateReveal(point);}
         else{moveFluidCursor(point);if(stage.classList.contains('is-hovering'))closeReveal();}
       },{passive:true});
       document.addEventListener('touchmove',e=>{
         if(!touchActive||!e.touches.length)return;
         const t=e.touches[0],point={clientX:t.clientX,clientY:t.clientY};
         trackEyes(point);
-        if(pointInsideAvatar(point)){hideFluidCursor();activateReveal(point);}
+        if(pointInsideAvatar(point)){moveFluidCursor(point);activateReveal(point);}
         else{moveFluidCursor(point);setRevealTarget(point);if(stage.classList.contains('is-hovering'))closeReveal();}
       },{passive:true});
       const finishTouch=()=>{

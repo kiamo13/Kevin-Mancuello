@@ -1167,3 +1167,5 @@ html.is-lite .avatar-face-canvas{display:none!important}
 @media(max-width:680px){.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.footer-topline{font-size:11px!important}}
 .hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:max(11px,1em)!important}
 @media(max-width:680px){.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:11px!important}}
+/* v62 — el efecto negativo (cursor fluido por diferencia) también al tocar en celular */
+@media(max-width:680px){.fluid-cursor{display:block}}
