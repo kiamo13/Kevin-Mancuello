@@ -328,6 +328,9 @@
     fluidHeight=Math.max(1,Math.ceil(height*fluidScale));
     fluidSource.width=fluidWidth;fluidSource.height=fluidHeight;
     fluidBlur.width=fluidWidth;fluidBlur.height=fluidHeight;
+    if((fluidActive||fluidParticles.length)&&!fluidRaf){
+      fluidRaf=requestAnimationFrame(renderFluidCursor);
+    }
   }
 
   function addFluidParticle(x,y,radius,life,vx=0,vy=0){
@@ -336,7 +339,7 @@
   }
 
   function moveFluidCursor(e){
-    if(!fluidCanvas||!fluidCtx)return;
+    if(!fluidCanvas||!fluidCtx||window.matchMedia('(max-width: 680px)').matches)return;
     const x=e.clientX,y=e.clientY;
     if(!fluidInitialized){
       fluidInitialized=true;
@@ -422,10 +425,11 @@
     fluidBlurCtx.putImageData(pixels,0,0);
     fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
     fluidCtx.drawImage(fluidBlur,0,0,fluidWidth,fluidHeight,0,0,window.innerWidth,window.innerHeight);
-    if(fluidActive||fluidParticles.length){
+    const pointerLag=fluidActive?Math.hypot(fluidTarget.x-fluidCurrent.x,fluidTarget.y-fluidCurrent.y):0;
+    if(fluidParticles.length||pointerLag>.35){
       fluidCanvas.classList.add('is-active');
       fluidRaf=requestAnimationFrame(renderFluidCursor);
-    }else{
+    }else if(!fluidActive){
       fluidCanvas.classList.remove('is-active');
       fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
       fluidInitialized=false;fluidLastFrame=0;
@@ -434,7 +438,7 @@
 
   function hideFluidCursor(){
     fluidActive=false;
-    if(fluidParticles.length&&!fluidRaf)fluidRaf=requestAnimationFrame(renderFluidCursor);
+    if(!fluidRaf)fluidRaf=requestAnimationFrame(renderFluidCursor);
   }
   resizeFluidCanvas();
   window.addEventListener('resize',resizeFluidCanvas,{passive:true});
