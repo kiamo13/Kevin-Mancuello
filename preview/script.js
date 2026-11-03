@@ -80,19 +80,17 @@
     defs.append(gradient,mask);
     svg.insertBefore(defs,svg.firstChild);
 
-    /* El revelado debe atravesar todas las capas del rostro.
-       Si solo se enmascara la piel, nariz, ojos y barba quedan por encima
-       del cráneo y producen el efecto de piezas flotantes. El cabello se
-       conserva delante, como marco de la cabeza. */
+    /* El cráneo aparece por debajo de los ojos, pero atraviesa piel,
+       barba y cabello. Los ojos, pupilas y brillos quedan visibles sobre
+       el cráneo para conservar la expresión del personaje. */
     [
-      'ojos',
-      'pupila_1',
-      'pupila_2',
-      'brillito',
       'cara_ojos_abiertos_neutro',
       'ojos_sonrientes',
       'cara_ojos_abiertos_neutro_copia',
-      'BARBA'
+      'BARBA',
+      'cabello-silueta',
+      'cabello-base',
+      'cabello-parpadeo'
     ].forEach(id=>{
       const layer=svg.querySelector('#'+id);
       if(layer)layer.setAttribute('mask','url(#avatarFaceMask)');
@@ -100,7 +98,7 @@
   }
 
   function loadAvatar(){
-    fetch(new URL('assets/avatar.svg?v=20261103-25',document.baseURI),{cache:'no-store'})
+    fetch(new URL('assets/avatar.svg?v=20261103-27',document.baseURI),{cache:'no-store'})
       .then(response=>{
         if(!response.ok)throw new Error('No se pudo cargar el SVG del avatar.');
         return response.text();
