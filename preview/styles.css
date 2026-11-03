@@ -561,8 +561,8 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 
 
 /* EXPRESSION SAFETY — keep the base face visible during every crossfade */
-.avatar-svg #cara_ojos_abiertos_neutro{
-  opacity:1!important;
+ .avatar-svg #cara_ojos_abiertos_neutro{
+  opacity:1;
   transition:opacity .12s ease-in-out!important;
 }
 .avatar-svg #ojos_sonrientes,
