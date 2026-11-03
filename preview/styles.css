@@ -206,9 +206,6 @@ button{font:inherit}
 .avatar-stage.is-hovering .avatar-svg #skull-peek-shape,
 .avatar-stage.is-closing .avatar-svg #skull-peek-shape{opacity:1}
 .avatar-svg #cara_ojos_abiertos_neutro{opacity:1;transition:opacity .14s ease}
-.avatar-svg #pestana-ojos-abiertos{opacity:1;transition:opacity .14s ease}
-.avatar-stage.is-smiling .avatar-svg #pestana-ojos-abiertos{opacity:0}
-
 .avatar-svg #ojos_sonrientes,.avatar-svg #cara_ojos_abiertos_neutro_copia{opacity:0;transition:opacity .14s ease}
 .avatar-stage.is-smiling .avatar-svg #cara_ojos_abiertos_neutro{opacity:0}
 .avatar-stage.is-smiling .avatar-svg #ojos_sonrientes{opacity:1}
@@ -594,8 +591,7 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 .color-invert path{fill:url(#color-invert-gradient)!important}
 
 
-/* Cabello: alternancia original de fotogramas, sin fundidos.
-   La pestaña se mantiene en una capa independiente para que no parpadee con los frames. */
+/* Cabello: alternancia original de fotogramas, sin fundidos. */
 .avatar-svg #cabello-silueta{
   opacity:1!important;
   visibility:visible!important;
@@ -1095,4 +1091,17 @@ section[id],footer[id]{scroll-margin-top:88px}
 
 
 
-/* v49 — el trazo de la pestaña vive exclusivamente dentro de cara_ojos_abiertos_neutro. */
+
+/* v50 — el parpadeo cambia de dibujo de forma atómica, sin fotogramas translúcidos. */
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito {
+  opacity:0!important;
+  transition:none!important;
+}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro_copia {
+  opacity:1!important;
+  transition:none!important;
+}
