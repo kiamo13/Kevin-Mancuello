@@ -100,7 +100,7 @@
   }
 
   function loadAvatar(){
-    fetch(new URL('assets/avatar.svg?v=20261103-23',document.baseURI),{cache:'no-store'})
+    fetch(new URL('assets/avatar.svg?v=20261103-25',document.baseURI),{cache:'no-store'})
       .then(response=>{
         if(!response.ok)throw new Error('No se pudo cargar el SVG del avatar.');
         return response.text();
@@ -135,9 +135,11 @@
     stage.classList.remove('is-blinking');
     smileActive=true;
     stage.classList.add('is-smiling');
+    stage.setAttribute('aria-label','Retrato interactivo: sonrisa activada.');
     smileTimer=window.setTimeout(()=>{
       smileActive=false;
       stage.classList.remove('is-smiling');
+      stage.setAttribute('aria-label','Retrato interactivo. Activar sonrisa.');
       scheduleBlink();
     },1050);
   }
@@ -411,16 +413,47 @@
   const menuButton=document.querySelector('.menu-toggle');
   const nav=document.querySelector('.main-nav');
   if(menuButton&&nav){
+    const closeMenu=({restoreFocus=false}={})=>{
+      nav.classList.remove('is-open');
+      menuButton.setAttribute('aria-expanded','false');
+      menuButton.setAttribute('aria-label','Abrir menú');
+      if(restoreFocus)menuButton.focus();
+    };
     menuButton.addEventListener('click',()=>{
       const open=nav.classList.toggle('is-open');
       menuButton.setAttribute('aria-expanded',String(open));
       menuButton.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú');
+      if(open&&window.matchMedia('(max-width: 680px)').matches){
+        const firstLink=nav.querySelector('a');
+        if(firstLink)firstLink.focus();
+      }
     });
-    nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{
-      nav.classList.remove('is-open');
-      menuButton.setAttribute('aria-expanded','false');
-      menuButton.setAttribute('aria-label','Abrir menú');
-    }));
+    nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>closeMenu()));
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape'&&nav.classList.contains('is-open'))closeMenu({restoreFocus:true});
+    });
+    document.addEventListener('pointerdown',e=>{
+      if(nav.classList.contains('is-open')&&!nav.contains(e.target)&&!menuButton.contains(e.target))closeMenu();
+    });
+  }
+
+  // Keep the current section visible to assistive technology and keyboard users.
+  const sectionLinks=[...document.querySelectorAll('.main-nav a[href^="#"]')];
+  const observedSections=sectionLinks
+    .map(link=>document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+  if('IntersectionObserver' in window&&observedSections.length){
+    const sectionObserver=new IntersectionObserver(entries=>{
+      const visible=entries.filter(entry=>entry.isIntersecting)
+        .sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+      if(!visible)return;
+      sectionLinks.forEach(link=>{
+        const active=link.getAttribute('href')==='#'+visible.target.id;
+        if(active)link.setAttribute('aria-current','location');
+        else link.removeAttribute('aria-current');
+      });
+    },{rootMargin:'-18% 0px -62% 0px',threshold:[0,.15,.35,.6]});
+    observedSections.forEach(section=>sectionObserver.observe(section));
   }
 
   window.addEventListener('pagehide',()=>{
