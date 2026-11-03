@@ -1052,3 +1052,18 @@ section[id],footer[id]{scroll-margin-top:88px}
 @media(max-width:680px){
   .character-index,.avatar-hint{font-size:9px}
 }
+
+
+/* BUTTERMAX-INSPIRED FLUID CURSOR — particle trail + metaball fusion */
+.fluid-cursor{
+  position:fixed;inset:0;z-index:24;display:block;
+  width:100vw;height:100vh;pointer-events:none;
+  opacity:0;mix-blend-mode:difference;
+  transition:opacity .12s linear;image-rendering:auto;
+}
+.fluid-cursor.is-active{opacity:.96}
+.color-invert{
+  visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+}
+@media(max-width:680px){.fluid-cursor{display:none}}
+@media(prefers-reduced-motion:reduce){.fluid-cursor{display:none!important}}
