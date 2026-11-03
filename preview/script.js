@@ -32,7 +32,7 @@
 
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let svg,skull,peekShape,pupils=[];
+  let svg,skull,peekShape,revealBlur,pupils=[];
   let smileTimer=0,blinkTimer=0,blinkEnd=0,pupilRaf=0,revealRaf=0,touchRevealTimer=0;
   let touchActive=false;
   let smileActive=false;
@@ -343,15 +343,21 @@
     clearTimeout(touchRevealTimer);
     setRevealTarget(e);
     if(!stage.classList.contains('is-hovering')){
-      revealCurrent={...revealTarget};
-      previousReveal={...revealCurrent};
-      revealVelocity={x:0,y:0};
-      if(!usesFluidCursorReveal()){
+      if(usesFluidCursorReveal()){
+        const rect=svg.getBoundingClientRect();
+        const vb=svg.viewBox.baseVal;
+        revealCurrent={
+          x:clamp((fluidCurrent.x-rect.left)/Math.max(1,rect.width)*vb.width,55,575),
+          y:clamp((fluidCurrent.y-rect.top)/Math.max(1,rect.height)*vb.height,135,640)
+        };
+        revealScale=fluidVisualScale;
+      }else{
+        revealCurrent={...revealTarget};
         revealScale=.04;
         revealScaleTarget=1;
-      }else{
-        revealScale=fluidVisualScale;
       }
+      previousReveal={...revealCurrent};
+      revealVelocity={x:0,y:0};
       stage.classList.remove('is-blinking','is-closing');
       clearTimeout(blinkTimer);
       clearTimeout(blinkEnd);
