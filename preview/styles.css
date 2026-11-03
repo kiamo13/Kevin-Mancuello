@@ -1092,21 +1092,32 @@ section[id],footer[id]{scroll-margin-top:88px}
 
 
 
-/* v50 — el parpadeo cambia de dibujo de forma atómica, sin fotogramas translúcidos. */
-.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro,
-.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
-.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
-.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
-.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito {
-  opacity:0!important;
+/* v52 — expresión por capas discretas: sin interpolación de opacidad al cerrar ni al abrir. */
+.avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-svg #ojos,
+.avatar-svg #pupila_1,
+.avatar-svg #pupila_2,
+.avatar-svg #brillito {
+  display:inline!important;
+  opacity:1!important;
   transition:none!important;
 }
-.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro_copia {
+.avatar-svg #ojos_sonrientes,
+.avatar-svg #cara_ojos_abiertos_neutro_copia {
+  display:none!important;
   opacity:1!important;
   transition:none!important;
 }
 
-/* v51 — blink swap by display: no opacity interpolation on any viewport. */
+/* Sonrisa: alternancia discreta de las dos composiciones faciales. */
+.avatar-stage.is-smiling .avatar-svg #cara_ojos_abiertos_neutro {
+  display:none!important;
+}
+.avatar-stage.is-smiling .avatar-svg #ojos_sonrientes {
+  display:inline!important;
+}
+
+/* Parpadeo: oculta todas las capas de ojos abiertos y muestra solo el frame cerrado. */
 .avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro,
 .avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
 .avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos_sonrientes,
