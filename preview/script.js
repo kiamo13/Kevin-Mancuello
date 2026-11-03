@@ -32,7 +32,7 @@
 
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let svg,skull,peekShape,revealBlur,pupils=[];
+  let svg,skull,peekShape,revealPath,revealBlur,pupils=[];
   let smileTimer=0,blinkTimer=0,blinkEnd=0,pupilRaf=0,revealRaf=0,touchRevealTimer=0;
   let touchActive=false;
   let smileActive=false;
@@ -66,7 +66,7 @@
     const alphaTransfer=svgElement('feComponentTransfer',{in:'skullBlur'});
     alphaTransfer.appendChild(svgElement('feFuncA',{
       type:'table',
-      tableValues:'0 0 0.074 0.316 0.623 0.888 1 1 1 1 1'
+      tableValues:'0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000 0.00392 0.00392 0.00392 0.00784 0.01176 0.01176 0.01569 0.01961 0.02353 0.02745 0.03137 0.03922 0.04314 0.05098 0.05490 0.06275 0.06667 0.07451 0.08235 0.08627 0.09412 0.10196 0.10980 0.11765 0.12941 0.13725 0.14510 0.15294 0.16471 0.17255 0.18431 0.19216 0.20392 0.21176 0.22353 0.23529 0.24314 0.25490 0.26667 0.27843 0.28627 0.29804 0.30980 0.32157 0.33333 0.34510 0.35686 0.36863 0.38039 0.39216 0.40392 0.41569 0.42745 0.44314 0.45490 0.46667 0.47843 0.49020 0.50196 0.51373 0.52549 0.53725 0.55294 0.56471 0.57647 0.58824 0.60000 0.61176 0.62353 0.63529 0.64706 0.65882 0.67059 0.68235 0.69412 0.70588 0.71765 0.72941 0.73725 0.74902 0.76078 0.77255 0.78039 0.79216 0.80000 0.81176 0.81961 0.83137 0.83922 0.85098 0.85882 0.86667 0.87451 0.88235 0.89020 0.89804 0.90588 0.91373 0.92157 0.92941 0.93333 0.94118 0.94902 0.95294 0.95686 0.96471 0.96863 0.97255 0.97647 0.98039 0.98431 0.98824 0.99216 0.99216 0.99608 0.99608 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000'
     }));
     blurFilter.append(revealBlur,alphaTransfer);
 
@@ -78,13 +78,17 @@
       'mask-type':'luminance'
     });
     mask.appendChild(svgElement('rect',{x:0,y:0,width:630.979,height:739.979,fill:'#fff'}));
-    peekShape=svgElement('path',{
+    peekShape=svgElement('g',{
       id:'skull-peek-shape',
       fill:'#000',
       filter:'url(#skullRevealBlur)',
-      opacity:0,
+      opacity:0
+    });
+    revealPath=svgElement('path',{
+      fill:'#000',
       d:'M 315 303 C 342 303 363 330 363 365 C 363 400 342 427 315 427 C 288 427 267 400 267 365 C 267 330 288 303 315 303 Z'
     });
+    peekShape.appendChild(revealPath);
     mask.appendChild(peekShape);
     defs.append(blurFilter,mask);
     svg.insertBefore(defs,svg.firstChild);
@@ -239,20 +243,53 @@
     if(usesFluidCursorReveal()){
       const rect=svg.getBoundingClientRect();
       const vb=svg.viewBox.baseVal;
-      const cx=clamp((fluidCurrent.x-rect.left)/Math.max(1,rect.width)*vb.width,55,575);
-      const cy=clamp((fluidCurrent.y-rect.top)/Math.max(1,rect.height)*vb.height,135,640);
-      const vx=(cx-previousReveal.x)*rect.width/Math.max(1,vb.width);
-      const vy=(cy-previousReveal.y)*rect.height/Math.max(1,vb.height);
-      revealVelocity={x:vx,y:vy};
-      const speed=Math.hypot(vx,vy);
+      const toSvgX=x=>(x-rect.left)/Math.max(1,rect.width)*vb.width;
+      const toSvgY=y=>(y-rect.top)/Math.max(1,rect.height)*vb.height;
+      const cx=toSvgX(fluidCurrent.x);
+      const cy=toSvgY(fluidCurrent.y);
       revealCurrent={x:cx,y:cy};
-      previousReveal={x:cx,y:cy};
       revealScale=fluidVisualScale;
-      if(speed>.08)revealPhase+=Math.min(speed*.012,.13);
+
+      // Reproduce la misma composición del cursor: partículas primero, elipse después.
+      const shapes=[];
+      for(let i=fluidParticles.length-1;i>=0;i--){
+        const p=fluidParticles[i];
+        const life=clamp(p.life/p.maxLife,0,1);
+        const radius=p.radius*(.22+.78*life)*fluidVisualScale;
+        const x=fluidCurrent.x+(p.x-fluidCurrent.x)*fluidVisualScale;
+        const y=fluidCurrent.y+(p.y-fluidCurrent.y)*fluidVisualScale;
+        shapes.push(svgElement('ellipse',{
+          cx:toSvgX(x),
+          cy:toSvgY(y),
+          rx:radius*vb.width/Math.max(1,rect.width),
+          ry:radius*vb.height/Math.max(1,rect.height),
+          opacity:(Math.pow(life,1.15)*.9).toFixed(4),
+          fill:'#000'
+        }));
+      }
+
+      if(fluidActive){
+        const stretch=1+Math.min(fluidCursorSpeed/85,.22);
+        const squash=1-Math.min(fluidCursorSpeed/85,.10);
+        const rotation=fluidCursorSpeed>.35?fluidCursorAngle:0;
+        const points=[];
+        const count=48;
+        for(let i=0;i<count;i++){
+          const a=Math.PI*2*i/count;
+          const localX=Math.cos(a)*104*stretch*fluidVisualScale;
+          const localY=Math.sin(a)*118*squash*fluidVisualScale;
+          const x=fluidCurrent.x+localX*Math.cos(rotation)-localY*Math.sin(rotation);
+          const y=fluidCurrent.y+localX*Math.sin(rotation)+localY*Math.cos(rotation);
+          points.push({x:toSvgX(x),y:toSvgY(y)});
+        }
+        let d='M '+points[0].x.toFixed(2)+' '+points[0].y.toFixed(2);
+        for(let i=1;i<points.length;i++)d+=' L '+points[i].x.toFixed(2)+' '+points[i].y.toFixed(2);
+        d+=' Z';
+        shapes.push(svgElement('path',{d,opacity:'.98',fill:'#000'}));
+      }
+
+      peekShape.replaceChildren(...shapes);
       syncRevealBlur();
-      peekShape.setAttribute('d',organicRevealPath(
-        cx,cy,revealPhase,speed,fluidVisualScale
-      ));
       if(!fluidActive&&fluidVisualScale===0&&stage.classList.contains('is-hovering')){
         stage.classList.remove('is-hovering','is-closing');
         scheduleBlink();
@@ -273,8 +310,9 @@
     revealScale+=(revealScaleTarget-revealScale)*(reducedMotion?1:.12);
     if(Math.abs(revealScaleTarget-revealScale)<.006)revealScale=revealScaleTarget;
     if(speed>.08)revealPhase+=Math.min(speed*.012,.13);
+    if(revealPath.parentNode!==peekShape)peekShape.replaceChildren(revealPath);
     syncRevealBlur();
-    peekShape.setAttribute('d',organicRevealPath(
+    revealPath.setAttribute('d',organicRevealPath(
       revealCurrent.x,revealCurrent.y,revealPhase,speed,revealScale
     ));
     const moving=Math.abs(dx)>.08||Math.abs(dy)>.08||Math.abs(revealScaleTarget-revealScale)>.006;
@@ -362,8 +400,9 @@
       clearTimeout(blinkTimer);
       clearTimeout(blinkEnd);
       stage.classList.add('is-hovering');
+      if(revealPath.parentNode!==peekShape)peekShape.replaceChildren(revealPath);
       syncRevealBlur();
-      peekShape.setAttribute('d',organicRevealPath(
+      revealPath.setAttribute('d',organicRevealPath(
         revealCurrent.x,revealCurrent.y,revealPhase,0,revealScale
       ));
     }
@@ -395,7 +434,7 @@
   const fluidBlur=document.createElement('canvas');
   const fluidBlurCtx=fluidBlur.getContext('2d',{alpha:true,willReadFrequently:true});
   let fluidRaf=0,fluidActive=false,fluidInitialized=false,fluidScale=1,fluidLastFrame=0,fluidIdleTimer=0,fluidLastPointerTime=0;
-  let fluidVisualScale=0,fluidScaleTarget=0;
+  let fluidVisualScale=0,fluidScaleTarget=0,fluidCursorSpeed=0,fluidCursorAngle=0;
   let fluidWidth=0,fluidHeight=0;
   let fluidParticles=[];
   let fluidTarget={x:0,y:0},fluidCurrent={x:0,y:0},fluidPrevious={x:0,y:0};
@@ -481,9 +520,11 @@
     const scaleEase=fluidActive ? 0.018 : 0.012;
     fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*scaleEase;
     if(Math.abs(fluidScaleTarget-fluidVisualScale)<.002)fluidVisualScale=fluidScaleTarget;
-    if(stage.classList.contains('is-hovering'))requestRevealFrame();
     const vx=fluidCurrent.x-fluidPrevious.x,vy=fluidCurrent.y-fluidPrevious.y;
     const speed=Math.hypot(vx,vy),angle=Math.atan2(vy,vx||.0001);
+    fluidCursorSpeed=speed;
+    fluidCursorAngle=angle;
+    if(stage.classList.contains('is-hovering'))requestRevealFrame();
     fluidPrevious={...fluidCurrent};
     fluidSourceCtx.clearRect(0,0,fluidWidth,fluidHeight);
     fluidSourceCtx.save();
