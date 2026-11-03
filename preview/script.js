@@ -303,17 +303,17 @@
 
   const invertLayer=document.getElementById('color-invert');
   const invertShape=document.getElementById('color-invert-shape');
-  let invertPhase=0,invertRaf=0,invertInitialized=false;
+  let invertPhase=0,invertX=0,invertY=0,invertRaf=0,invertInitialized=false;
   let invertTarget={x:0,y:0},invertCurrent={x:0,y:0},invertVelocity={x:0,y:0};
 
   function inversionPath(cx,cy,phase,speed){
     const count=20,rx=116,ry=126,pts=[];
-    const intensity=clamp(speed/24,0,1);
-    const angle=Math.atan2(invertVelocity.y,invertVelocity.x||.0001);
-    const stretch=Math.min(speed*.006,.12);
-    const trail=Math.min(speed*.10,5);
-    const centerX=cx-Math.cos(angle)*trail;
-    const centerY=cy-Math.sin(angle)*trail;
+    const angle=Math.atan2(cy-invertY,cx-invertX);
+    const stretch=Math.min(speed*.012,.18);
+    const travelAngle=Math.atan2(invertVelocity.y,invertVelocity.x||.0001);
+    const trail=Math.min(Math.hypot(invertVelocity.x,invertVelocity.y)*.10,4);
+    const centerX=120-Math.cos(travelAngle)*trail;
+    const centerY=130-Math.sin(travelAngle)*trail;
     for(let i=0;i<count;i++){
       const a=Math.PI*2*i/count;
       const wobble=1+.045*Math.sin(3*a+phase)+.025*Math.sin(5*a-phase*1.2);
@@ -333,9 +333,10 @@
     const oldX=invertCurrent.x,oldY=invertCurrent.y;
     invertCurrent.x+=dx*(reducedMotion?1:.12);
     invertCurrent.y+=dy*(reducedMotion?1:.12);
+    invertX=invertCurrent.x;invertY=invertCurrent.y;
     invertVelocity={x:invertCurrent.x-oldX,y:invertCurrent.y-oldY};
-    const speed=Math.hypot(invertVelocity.x,invertVelocity.y);
-    invertPhase+=Math.min(speed*.0025,.08);
+    const speed=Math.hypot(dx,dy);
+    invertPhase+=Math.min(speed*.0015,.08);
     invertLayer.style.left=invertCurrent.x+'px';
     invertLayer.style.top=invertCurrent.y+'px';
     invertShape.setAttribute('d',inversionPath(120,130,invertPhase,speed));
