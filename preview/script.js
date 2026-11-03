@@ -308,7 +308,7 @@
   const fluidSourceCtx=fluidSource.getContext('2d',{alpha:true,willReadFrequently:true});
   const fluidBlur=document.createElement('canvas');
   const fluidBlurCtx=fluidBlur.getContext('2d',{alpha:true,willReadFrequently:true});
-  let fluidRaf=0,fluidActive=false,fluidInitialized=false,fluidScale=1,fluidLastFrame=0;
+  let fluidRaf=0,fluidActive=false,fluidInitialized=false,fluidScale=1,fluidLastFrame=0,fluidIdleTimer=0;
   let fluidWidth=0,fluidHeight=0;
   let fluidParticles=[];
   let fluidTarget={x:0,y:0},fluidCurrent={x:0,y:0},fluidPrevious={x:0,y:0};
@@ -341,6 +341,8 @@
   function moveFluidCursor(e){
     if(!fluidCanvas||!fluidCtx||window.matchMedia('(max-width: 680px)').matches)return;
     const x=e.clientX,y=e.clientY;
+    clearTimeout(fluidIdleTimer);
+    fluidIdleTimer=window.setTimeout(hideFluidCursor,320);
     if(!fluidInitialized){
       fluidInitialized=true;
       fluidTarget={x,y};fluidCurrent={x,y};fluidPrevious={x,y};
@@ -438,9 +440,16 @@
   }
 
   function hideFluidCursor(){
+    clearTimeout(fluidIdleTimer);
+    fluidIdleTimer=0;
     fluidActive=false;
+    fluidParticles.length=0;
+    fluidInitialized=false;
     invertLayer?.classList.remove('is-visible');
-    if(!fluidRaf)fluidRaf=requestAnimationFrame(renderFluidCursor);
+    fluidCanvas?.classList.remove('is-active');
+    if(fluidRaf){cancelAnimationFrame(fluidRaf);fluidRaf=0;}
+    if(fluidCtx)fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+    fluidLastFrame=0;
   }
   resizeFluidCanvas();
   window.addEventListener('resize',resizeFluidCanvas,{passive:true});
