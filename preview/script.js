@@ -367,7 +367,7 @@
       }
       fluidTarget={x,y};
     }
-    fluidActive=true;fluidScaleTarget=1.18;fluidCanvas.classList.add('is-active');
+    fluidActive=true;fluidScaleTarget=1.08;fluidCanvas.classList.add('is-active');
     invertLayer?.classList.add('is-visible');
     if(!fluidRaf){fluidLastFrame=performance.now();fluidRaf=requestAnimationFrame(renderFluidCursor);}
   }
@@ -382,7 +382,7 @@
       fluidCurrent.x+=(fluidTarget.x-fluidCurrent.x)*.22;
       fluidCurrent.y+=(fluidTarget.y-fluidCurrent.y)*.22;
     }
-    const scaleEase=fluidActive ? 0.22 : 0.11;
+    const scaleEase=fluidActive ? 0.055 : 0.035;
     fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*scaleEase;
     if(Math.abs(fluidScaleTarget-fluidVisualScale)<.002)fluidVisualScale=fluidScaleTarget;
     const vx=fluidCurrent.x-fluidPrevious.x,vy=fluidCurrent.y-fluidPrevious.y;
