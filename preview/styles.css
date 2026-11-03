@@ -542,7 +542,7 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 /*/* Match the softness and timing of both chromatic transitions */
 .avatar-svg #CRÁNEO,
 .avatar-svg #skull-peek-shape{
-  transition:opacity .24s cubic-bezier(.22,1,.36,1)!important;
+  transition:opacity .12s linear!important;
 }
 .color-invert{
   transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1)!important;
