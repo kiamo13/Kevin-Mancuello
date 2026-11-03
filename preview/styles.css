@@ -1054,6 +1054,28 @@ section[id],footer[id]{scroll-margin-top:88px}
 }
 
 
+/* AVATAR FLOAT — gentle vertical levitation with a breathing ground shadow. */
+@keyframes avatar-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-16px)}
+}
+@keyframes avatar-shadow-breathe{
+  0%,100%{transform:scaleX(1);opacity:1}
+  50%{transform:scaleX(.78);opacity:.62}
+}
+.avatar-mount{
+  animation:avatar-float 4.8s cubic-bezier(.42,0,.58,1) infinite;
+  will-change:transform;
+}
+.character-shadow{
+  animation:avatar-shadow-breathe 4.8s cubic-bezier(.42,0,.58,1) infinite;
+  transform-origin:center;
+  will-change:transform,opacity;
+}
+@media(prefers-reduced-motion:reduce){
+  .avatar-mount,.character-shadow{animation:none!important;will-change:auto}
+}
+
 /* BUTTERMAX-INSPIRED FLUID CURSOR — particle trail + metaball fusion */
 .fluid-cursor{
   position:fixed;inset:0;z-index:24;display:block;
