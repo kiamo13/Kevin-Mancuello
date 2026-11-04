@@ -1176,3 +1176,6 @@ html.is-lite .avatar-face-canvas{display:none!important}
 .project-item:has(.project-link) .project-visual{cursor:pointer}
 .project-link:focus-visible::after{outline:2px solid var(--violet,#6e3fff);outline-offset:4px;border-radius:4px}
 video.project-img{background:#14112A}
+/* portadas animadas: el video ocupa la tarjeta; Mariano centrado sobre su gris */
+.visual-mariano video.project-img{object-position:50% 50%;background:#F2F2F2}
+.visual-todegol video.project-img{background:#000}

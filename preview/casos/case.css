@@ -86,3 +86,6 @@ a{color:inherit}
 .cs-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;padding:24px var(--gut);background:#191632;color:#c9c5e4;font:500 13px var(--mono);letter-spacing:.04em}
 .cs-foot a{text-decoration:none}.cs-foot a:hover{color:var(--acid)}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cs-nextcase strong span{transition:none}}
+/* recorte uniforme 4:5 para filas de piezas de distinto formato */
+.cs-grid figure.crop45 img{aspect-ratio:4/5;object-fit:cover;object-position:50% 0}
+@media(max-width:860px){.cs-grid figure.crop45{grid-column:span 6}}
