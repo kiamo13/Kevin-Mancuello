@@ -172,7 +172,7 @@
 
   /* --- campo compartido: rasterizado por capa --- */
   function setupFaceRaster(){
-    if(!fluidCanvas||!fluidCtx)return;
+    if(!fluidOn)return;
     faceCanvas=document.createElement('canvas');
     faceCanvas.className='avatar-face-canvas';
     faceCanvas.setAttribute('aria-hidden','true');
@@ -273,10 +273,12 @@
       faceCtx.drawImage(s.img,ox,oy,w,h);
     }
     // Perforación con el campo del cursor: la misma porción que el canvas global pinta en esa zona.
-    const fx=fluidWidth/Math.max(1,window.innerWidth),fy=fluidHeight/Math.max(1,window.innerHeight);
+    // con WebGL la fuente es el propio lienzo del fluido (se lee en el mismo fotograma en que se dibujó)
+    const src=fluidGL?fluidCanvas:fluidBlur;
+    const fx=(fluidGL?fluidCanvas.width:fluidWidth)/Math.max(1,window.innerWidth),fy=(fluidGL?fluidCanvas.height:fluidHeight)/Math.max(1,window.innerHeight);
     faceCtx.globalAlpha=1;
     faceCtx.globalCompositeOperation='destination-out';
-    faceCtx.drawImage(fluidBlur,r.left*fx,r.top*fy,r.width*fx,r.height*fy,0,0,faceCanvas.width,faceCanvas.height);
+    faceCtx.drawImage(src,r.left*fx,r.top*fy,r.width*fx,r.height*fy,0,0,faceCanvas.width,faceCanvas.height);
     faceCtx.globalCompositeOperation='source-over';
     faceCtx.globalAlpha=1;
   }
@@ -369,7 +371,7 @@
   }
   function sharedReveal(){return usesFluidCursorReveal()&&faceRasterReady&&!!faceCtx;}
   function usesFluidCursorReveal(){
-    return !!(fluidCanvas&&fluidCtx)&&!reducedMotion;
+    return fluidOn&&!reducedMotion;
   }
 
   function syncRevealBlur(){
@@ -525,7 +527,12 @@
 
   const invertLayer=document.getElementById('color-invert');
   const fluidCanvas=document.getElementById('fluid-cursor');
-  const fluidCtx=fluidCanvas?.getContext('2d',{alpha:true,desynchronized:true});
+  /* v79 — el campo se dibuja en la placa de video (WebGL): la grilla sube como una textura chica y un
+     sombreador la suaviza (bicúbica) y recorta el borde. En celular el camino 2D (desenfoque + getImageData
+     por píxel) costaba 30–45 ms por cuadro y el fluido iba a tirones. Sin WebGL queda el camino 2D. */
+  const fluidGL=fluidCanvas?.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false,depth:false,stencil:false,powerPreference:'high-performance'})||null;
+  const fluidCtx=fluidCanvas&&!fluidGL?fluidCanvas.getContext('2d',{alpha:true,desynchronized:true}):null;
+  const fluidOn=!!(fluidGL||fluidCtx);
   const fluidSource=document.createElement('canvas');
   const fluidSourceCtx=fluidSource.getContext('2d',{alpha:true,willReadFrequently:true});
   const fluidBlur=document.createElement('canvas');
@@ -555,18 +562,81 @@
     if(fluidCanvas)fluidCanvas.style.mixBlendMode=FLUID_BLEND[m]||'difference';
   }
 
+  // v79 — WebGL: un triángulo que cubre la pantalla; el sombreador lee la densidad de la grilla con
+  // interpolación bicúbica (4 lecturas) y aplica el mismo recorte de borde que antes (0,26–0,34; anillo 0,42–0,50).
+  let glProg=null,glTex=null,glU=null,glTexW=0,glTexH=0,gTex=null,gBA=null,gBB=null,gKer=null;
+  let fluidCoarse=false,fluidModeAt=-1e9;
+  function initFluidGL(){
+    const gl=fluidGL;if(!gl)return;
+    const sh=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;};
+    const vs=sh(gl.VERTEX_SHADER,'attribute vec2 p;varying vec2 uv;void main(){uv=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}');
+    const fs=sh(gl.FRAGMENT_SHADER,`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform sampler2D t;uniform vec2 res;uniform vec3 col;uniform float ring;varying vec2 uv;
+vec4 cub(float v){vec4 n=vec4(1.,2.,3.,4.)-v;vec4 s=n*n*n;float x=s.x;float y=s.y-4.*s.x;float z=s.z-4.*s.y+6.*s.x;return vec4(x,y,z,6.-x-y-z)/6.;}
+float bic(vec2 c){c=c*res-.5;vec2 f=fract(c);c-=f;vec4 xc=cub(f.x);vec4 yc=cub(f.y);
+vec4 o=c.xxyy+vec2(-.5,1.5).xyxy;vec4 s=vec4(xc.xz+xc.yw,yc.xz+yc.yw);o=(o+vec4(xc.yw,yc.yw)/s)/res.xxyy;
+float a0=texture2D(t,o.xz).r;float a1=texture2D(t,o.yz).r;float a2=texture2D(t,o.xw).r;float a3=texture2D(t,o.yw).r;
+float sx=s.x/(s.x+s.y);float sy=s.z/(s.z+s.w);return mix(mix(a3,a2,sx),mix(a1,a0,sx),sy);}
+void main(){float a=bic(uv);float k=smoothstep(.26,.34,a);k=max(0.,k-ring*smoothstep(.42,.5,a));gl_FragColor=vec4(col*k,k);}`);
+    const pr=gl.createProgram();gl.attachShader(pr,vs);gl.attachShader(pr,fs);gl.linkProgram(pr);
+    if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){console.warn('Fluido: no compiló el sombreador',gl.getShaderInfoLog(fs));glProg=null;return;}
+    glProg=pr;gl.useProgram(pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    const loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    glTex=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,glTex);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
+    gl.uniform1i(gl.getUniformLocation(pr,'t'),0);
+    glU={res:gl.getUniformLocation(pr,'res'),col:gl.getUniformLocation(pr,'col'),ring:gl.getUniformLocation(pr,'ring')};
+    gl.clearColor(0,0,0,0);glTexW=glTexH=0;
+  }
+  if(fluidGL){
+    initFluidGL();
+    fluidCanvas.addEventListener('webglcontextlost',e=>{e.preventDefault();glProg=null;},false);
+    fluidCanvas.addEventListener('webglcontextrestored',()=>{initFluidGL();},false);
+  }
+  // el desenfoque de 12 px de antes, hecho sobre la grilla (separable, pocas celdas) antes de subirla
+  function fluidBlurKernel(cp){
+    const s=Math.sqrt(Math.max(.05,(12/cp)*(12/cp)-1/3)),R=Math.max(1,Math.ceil(s*2.5));
+    gKer=new Float32Array(2*R+1);let sum=0;
+    for(let k=-R;k<=R;k++){const w=Math.exp(-k*k/(2*s*s));gKer[k+R]=w;sum+=w;}
+    for(let k=0;k<gKer.length;k++)gKer[k]/=sum;
+  }
+  function drawFluidGL(any){
+    const gl=fluidGL;
+    gl.viewport(0,0,fluidCanvas.width,fluidCanvas.height);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    if(!any||!glProg)return;
+    const R=(gKer.length-1)>>1,n=GW*GH;
+    for(let id=0;id<n;id++){const v=gD[id];gBA[id]=v>1?1:v;}
+    for(let j=0;j<GH;j++){const row=j*GW;for(let i=0;i<GW;i++){let acc=0;for(let k=-R;k<=R;k++){const x=i+k;acc+=gKer[k+R]*gBA[row+(x<0?0:x>=GW?GW-1:x)];}gBB[row+i]=acc;}}
+    for(let j=0;j<GH;j++)for(let i=0;i<GW;i++){let acc=0;for(let k=-R;k<=R;k++){const y=j+k;acc+=gKer[k+R]*gBB[(y<0?0:y>=GH?GH-1:y)*GW+i];}gTex[j*GW+i]=acc*255+.5;}
+    gl.bindTexture(gl.TEXTURE_2D,glTex);
+    if(glTexW!==GW||glTexH!==GH){gl.texImage2D(gl.TEXTURE_2D,0,gl.LUMINANCE,GW,GH,0,gl.LUMINANCE,gl.UNSIGNED_BYTE,gTex);glTexW=GW;glTexH=GH;}
+    else gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,GW,GH,gl.LUMINANCE,gl.UNSIGNED_BYTE,gTex);
+    const fm=fluidMode;
+    gl.uniform2f(glU.res,GW,GH);gl.uniform3f(glU.col,fm.r/255,fm.g/255,fm.b/255);gl.uniform1f(glU.ring,fm.m==='contorno'?1:0);
+    gl.drawArrays(gl.TRIANGLES,0,3);
+  }
+
   function resizeFluidCanvas(){
-    if(!fluidCanvas||!fluidCtx)return;
+    if(!fluidOn)return;
     const width=Math.max(1,window.innerWidth),height=Math.max(1,window.innerHeight);
-    const dpr=Math.min(window.devicePixelRatio||1,1.5);
+    // en celular y pantallas táctiles el campo se procesa a menor resolución (menos trabajo por cuadro)
+    const coarse=window.matchMedia("(pointer: coarse)").matches||width<680;
+    fluidCoarse=coarse;
+    const dpr=Math.min(window.devicePixelRatio||1,coarse?1.25:1.5);
     fluidCanvas.width=Math.round(width*dpr);
     fluidCanvas.height=Math.round(height*dpr);
     fluidCanvas.style.width=width+'px';
     fluidCanvas.style.height=height+'px';
-    fluidCtx.setTransform(dpr,0,0,dpr,0,0);
-    fluidCtx.imageSmoothingEnabled=true;
-    // en celular y pantallas táctiles el campo se procesa a menor resolución (menos trabajo por cuadro)
-    const coarse=window.matchMedia("(pointer: coarse)").matches||width<680;
+    if(fluidCtx){fluidCtx.setTransform(dpr,0,0,dpr,0,0);fluidCtx.imageSmoothingEnabled=true;}
     fluidScale=Math.min(1,(coarse?400:640)/Math.max(width,height));   // v78: campo más chico = menos trabajo por cuadro (sin lag)
     fluidWidth=Math.max(1,Math.ceil(width*fluidScale));
     fluidHeight=Math.max(1,Math.ceil(height*fluidScale));
@@ -580,7 +650,9 @@
       gU=new Float32Array(n);gV=new Float32Array(n);gU0=new Float32Array(n);gV0=new Float32Array(n);
       gD=new Float32Array(n);gD0=new Float32Array(n);gP=new Float32Array(n);gDiv=new Float32Array(n);gCurl=new Float32Array(n);
       fluidGrid.width=GW;fluidGrid.height=GH;gImg=fluidGridCtx.createImageData(GW,GH);
+      gTex=new Uint8Array(n);gBA=new Float32Array(n);gBB=new Float32Array(n);
     }
+    fluidBlurKernel(width/GW);
     if((fluidActive||fluidAlive)&&!fluidRaf){
       fluidRaf=requestAnimationFrame(renderFluidCursor);
     }
@@ -589,12 +661,13 @@
   const cellPx=()=>window.innerWidth/GW;   // celdas cuadradas: mismo tamaño en x e y
 
   function moveFluidCursor(e){
-    if(!fluidCanvas||!fluidCtx||reducedMotion)return;
+    if(!fluidOn||reducedMotion)return;
     const x=e.clientX,y=e.clientY;
-    setFluidMode(x,y);
+    const pointerNow=performance.now();
+    // elementFromPoint fuerza el cálculo de la página: con leerlo cada 100 ms alcanza para saber la zona
+    if(pointerNow-fluidModeAt>100){fluidModeAt=pointerNow;setFluidMode(x,y);}
     clearTimeout(fluidIdleTimer);
     fluidIdleTimer=window.setTimeout(hideFluidCursor,320);
-    const pointerNow=performance.now();
     if(!fluidInitialized){
       fluidInitialized=true;
       fluidTarget={x,y};fluidCurrent={x,y};fluidPrevious={x,y};
@@ -643,12 +716,13 @@
     for(let j=2;j<GH-2;j++)for(let i=2;i<GW-2;i++){
       const id=i+j*GW;
       const nx=(Math.abs(gCurl[id+1])-Math.abs(gCurl[id-1]))*.5,ny=(Math.abs(gCurl[id+GW])-Math.abs(gCurl[id-GW]))*.5;
-      const l=Math.hypot(nx,ny)+1e-5,c=gCurl[id];
+      const l=Math.sqrt(nx*nx+ny*ny)+1e-5,c=gCurl[id];
       gU[id]+=eps*(ny/l)*c;gV[id]-=eps*(nx/l)*c;
     }
     // proyección: el fluido no se comprime, así que el empuje se reparte en remolinos
     for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gDiv[id]=-.5*(gU[id+1]-gU[id-1]+gV[id+GW]-gV[id-GW]);gP[id]=0;}
-    for(let k=0;k<14;k++)for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gP[id]=(gDiv[id]+gP[id-1]+gP[id+1]+gP[id-GW]+gP[id+GW])*.25;}
+    const iters=fluidCoarse?10:14;
+    for(let k=0;k<iters;k++)for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gP[id]=(gDiv[id]+gP[id-1]+gP[id+1]+gP[id-GW]+gP[id+GW])*.25;}
     for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gU[id]-=.5*(gP[id+1]-gP[id-1]);gV[id]-=.5*(gP[id+GW]-gP[id-GW]);}
     gU0.set(gU);gV0.set(gV);fluidAdvect(gU,gU0,dt);fluidAdvect(gV,gV0,dt);
     gD0.set(gD);fluidAdvect(gD,gD0,dt);
@@ -658,7 +732,7 @@
 
   function renderFluidCursor(now){
     fluidRaf=0;
-    if(!fluidCanvas||!fluidCtx||!fluidBlurCtx||!GW)return;
+    if(!fluidOn||!GW)return;
     const elapsed=Math.min(34,Math.max(1,now-fluidLastFrame||16.67));
     const dt=elapsed/16.67;
     fluidLastFrame=now;
@@ -688,16 +762,19 @@
     if(fluidActive)fluidSplat(fluidCurrent.x/cp,fluidCurrent.y/cp,0,0,.16*dt*fluidVisualScale,rCells*1.1*fluidVisualScale);
     fluidStep(dt);
 
-    // densidad → alfa; caja de la zona con tinta (para saber si toca al avatar)
-    const d=gImg.data;let any=false,x0=GW,y0=GH,x1=0,y1=0;
+    // caja de la zona con tinta (para saber si toca al avatar)
+    let any=false,x0=GW,y0=GH,x1=0,y1=0;
     for(let j=0;j<GH;j++)for(let i=0;i<GW;i++){
-      const id=i+j*GW,v=gD[id],a=v>1?255:(v*255)|0,o=id*4;
-      d[o]=255;d[o+1]=255;d[o+2]=255;d[o+3]=a;
-      if(a>8){any=true;if(i<x0)x0=i;if(i>x1)x1=i;if(j<y0)y0=j;if(j>y1)y1=j;}
+      if(gD[i+j*GW]>.032){any=true;if(i<x0)x0=i;if(i>x1)x1=i;if(j<y0)y0=j;if(j>y1)y1=j;}
     }
-    fluidGridCtx.putImageData(gImg,0,0);
     fluidAlive=any;
     fluidBox={x0:x0*cp,y0:y0*cp,x1:(x1+1)*cp,y1:(y1+1)*cp};
+    if(fluidGL){drawFluidGL(any);fluidFrameEnd();return;}
+
+    // camino 2D (sin WebGL): densidad → alfa
+    const d=gImg.data;
+    for(let id=0,n=GW*GH;id<n;id++){const v=gD[id],o=id*4;d[o]=255;d[o+1]=255;d[o+2]=255;d[o+3]=v>1?255:(v*255)|0;}
+    fluidGridCtx.putImageData(gImg,0,0);
 
     // de la grilla al campo compartido: se agranda con suavizado, se desenfoca y se recorta con
     // una curva suave para que el borde sea líquido y nítido a la vez
@@ -721,13 +798,16 @@
     fluidBlurCtx.putImageData(pixels,0,0);
     fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
     fluidCtx.drawImage(fluidBlur,0,0,fluidWidth,fluidHeight,0,0,window.innerWidth,window.innerHeight);
+    fluidFrameEnd();
+  }
+  function fluidFrameEnd(){
     composeFaceRaster();
     if(fluidAlive||fluidActive){
       fluidCanvas.classList.add('is-active');
       fluidRaf=requestAnimationFrame(renderFluidCursor);
     }else{
       fluidCanvas.classList.remove('is-active');
-      fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      if(fluidGL)fluidGL.clear(fluidGL.COLOR_BUFFER_BIT);else fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
       gU.fill(0);gV.fill(0);
       fluidInitialized=false;fluidLastFrame=0;fluidVisualScale=0;
       composeFaceRaster();
