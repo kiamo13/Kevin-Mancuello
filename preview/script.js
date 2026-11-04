@@ -809,3 +809,12 @@
     if(revealRaf)cancelAnimationFrame(revealRaf);
   });
 })();
+// Loops de las tarjetas de proyecto: corren solo cuando se ven; nunca en modo Lite ni con movimiento reducido.
+(()=>{
+  const loops=[...document.querySelectorAll('video[data-loop]')];
+  if(!loops.length)return;
+  const still=document.documentElement.classList.contains('is-lite')||window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(still||!('IntersectionObserver' in window))return;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.play().catch(()=>{});else e.target.pause();}),{threshold:.3});
+  loops.forEach(v=>io.observe(v));
+})();

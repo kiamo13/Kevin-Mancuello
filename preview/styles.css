@@ -1169,3 +1169,10 @@ html.is-lite .avatar-face-canvas{display:none!important}
 @media(max-width:680px){.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:11px!important}}
 /* v62 — el efecto negativo (cursor fluido por diferencia) también al tocar en celular */
 @media(max-width:680px){.fluid-cursor{display:block}}
+/* v64 — tarjetas que abren su página de caso */
+.project-item{position:relative}
+.project-link{position:static}
+.project-link::after{content:"";position:absolute;inset:0;z-index:3}
+.project-item:has(.project-link) .project-visual{cursor:pointer}
+.project-link:focus-visible::after{outline:2px solid var(--violet,#6e3fff);outline-offset:4px;border-radius:4px}
+video.project-img{background:#14112A}
