@@ -170,3 +170,43 @@ a{color:inherit}
 #personal .cs-inline:hover{color:var(--paper)}
 #personal .cs-grid figcaption{color:#a9a4c9}
 #personal .cs-grid img{background:rgba(255,255,255,.06)}
+
+/* v104 — tiras de proceso (storyboard, objetos, carrusel completo): fila de N piezas, en celular se desliza */
+.cs-strip{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:10px;margin-top:clamp(24px,3vw,40px)}
+.cs-strip img{width:100%;height:auto;border-radius:12px;display:block;background:var(--paper-2)}
+@media(max-width:700px){.cs-strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}.cs-strip img{flex:0 0 42%;scroll-snap-align:start}}
+/* v105 — libritos: tapa clicable + lector */
+.cs-book{all:unset;display:block;position:relative;cursor:pointer;border-radius:var(--r);box-sizing:border-box;transition:transform .25s}
+.cs-book img{display:block;box-shadow:0 18px 36px rgba(20,17,42,.20)}
+.cs-book::before{content:"";position:absolute;left:0;top:0;width:10px;height:100%;background:linear-gradient(90deg,rgba(20,17,42,.32),rgba(20,17,42,0));border-radius:var(--r) 0 0 var(--r);z-index:1;pointer-events:none}
+.cs-book::after{content:"Leer ↗";position:absolute;right:12px;bottom:12px;font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;background:var(--plum);color:var(--acid);padding:8px 12px;border-radius:999px}
+.cs-book:hover{transform:translateY(-6px)}
+.cs-book:focus-visible{outline:3px solid var(--acid);outline-offset:4px}
+html.cr-open{overflow:hidden}
+.cr{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#14112a;color:var(--paper);overflow:hidden}
+.cr::backdrop{background:#14112a}
+.cr[open]{display:flex;flex-direction:column}
+.cr-bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,3vw,32px);font:500 13px var(--mono);letter-spacing:.06em}
+.cr-title{margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;color:var(--paper)}
+.cr-count{color:#a9a4c9;white-space:nowrap}
+.cr-link{color:var(--acid);text-decoration:none;white-space:nowrap}
+.cr-close,.cr-nav{all:unset;box-sizing:border-box;display:inline-grid;place-items:center;width:44px;height:44px;border:1px solid rgba(244,242,237,.35);border-radius:50%;cursor:pointer;font-size:16px;color:var(--paper)}
+.cr-close{order:-1}
+.cr-close:hover,.cr-nav:hover:not(:disabled){border-color:var(--acid);color:var(--acid)}
+.cr-close:focus-visible,.cr-nav:focus-visible{outline:3px solid var(--acid);outline-offset:3px}
+.cr-nav:disabled{opacity:.2;cursor:default}
+.cr-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:clamp(12px,2vw,32px);padding:0 clamp(12px,2vw,32px) clamp(16px,3vh,32px)}
+.cr-book{--hmax:calc(100dvh - 140px);display:flex;height:min(var(--hmax),calc((100vw - 240px) / var(--ar)));cursor:pointer;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+.cr-book.is-spread{height:min(var(--hmax),calc((100vw - 240px) / (2 * var(--ar))))}
+.cr-book img{height:100%;width:auto;display:block;background:#221d40}
+.cr-book.is-spread{position:relative}
+.cr-book.is-spread::after{content:"";position:absolute;left:calc(50% - 20px);top:0;width:40px;height:100%;background:linear-gradient(90deg,transparent,rgba(20,17,42,.28),transparent);pointer-events:none}
+.cr-book.turn-r{animation:crR .3s ease-out}.cr-book.turn-l{animation:crL .3s ease-out}
+@keyframes crR{from{opacity:.4;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes crL{from{opacity:.4;transform:translateX(-18px)}to{opacity:1;transform:none}}
+@media(max-width:760px){
+  .cr-stage{flex-wrap:wrap;align-content:center;padding:0 16px 20px}
+  .cr-book{order:-1;flex:0 0 auto;height:min(calc(100dvh - 190px),calc((100vw - 32px) / var(--ar)))}
+  .cr-link{display:none}
+}
+@media(prefers-reduced-motion:reduce){.cs-book{transition:none}.cs-book:hover{transform:none}}
