@@ -16,7 +16,8 @@
   const triggers=[...document.querySelectorAll('[data-comic]')];
   if(!triggers.length)return;
   const reduce=matchMedia('(prefers-reduced-motion: reduce)');
-  const narrow=matchMedia('(max-width:760px)');
+  // De a una página en celular y en tablet vertical (a doble página, las viñetas quedan demasiado chicas)
+  const narrow=matchMedia('(max-width:760px), (orientation:portrait) and (max-width:1100px)');
 
   const dlg=document.createElement('dialog');
   dlg.className='cr';

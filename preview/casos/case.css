@@ -171,7 +171,7 @@ a{color:inherit}
 #personal .cs-grid figcaption{color:#a9a4c9}
 #personal .cs-grid img{background:rgba(255,255,255,.06)}
 
-/* v104 — tiras de proceso (storyboard, objetos, carrusel completo): fila de N piezas, en celular se desliza */
+/* v104 — tira de proceso (storyboard de Atlas): fila de N piezas, en celular se desliza */
 .cs-strip{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:10px;margin-top:clamp(24px,3vw,40px)}
 .cs-strip img{width:100%;height:auto;border-radius:12px;display:block;background:var(--paper-2)}
 @media(max-width:700px){.cs-strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}.cs-strip img{flex:0 0 42%;scroll-snap-align:start}}
@@ -210,3 +210,12 @@ html.cr-open{overflow:hidden}
   .cr-link{display:none}
 }
 @media(prefers-reduced-motion:reduce){.cs-book{transition:none}.cs-book:hover{transform:none}}
+/* v106 — piezas de una misma fila con la misma proporción (4:3, sobre fondo claro) */
+.cs-grid figure.eq img{aspect-ratio:4/3;object-fit:contain;background:#fff;padding:clamp(12px,2.4vw,40px);box-sizing:border-box}
+@media(max-width:860px){.cs-grid figure.eq{grid-column:span 12}}
+/* v106 — filas de altura pareja: cada pieza ocupa un ancho proporcional a su formato (--a = ancho/alto) */
+.cs-grid.row{display:flex;align-items:flex-start}
+.cs-grid.row>figure{flex:var(--a,1) 1 0;min-width:0}
+@media(max-width:600px){.cs-grid.row{flex-wrap:wrap}.cs-grid.row>figure{flex:1 1 100%}}
+/* v106 — borde fino cuando la imagen se confunde con el fondo */
+.cs-grid img.ln,.cs-grid figure.eq img,.cs-feedmini img{border:1px solid rgba(35,31,70,.14);box-sizing:border-box}
