@@ -1266,3 +1266,27 @@ html.is-lite .hands-menu .hand{transition:none}
   .hands-menu .hand-motion{left:27vw;right:auto;top:auto;bottom:64px}
   .hands-menu .hand span{font-size:12px;padding:8px 12px}
 }
+/* v70 — al deslizar, el avatar se queda a la vista más tiempo (baja con la página) y se achica */
+.hero-character{translate:0 calc(var(--hp,0) * var(--hh,0px) * .62);scale:calc(1 - var(--hp,0) * .45)}
+.hero.hands-open .hero-character{translate:none}
+/* v70 — botón «Cerrar» del menú y cara chica flotante que lo abre desde cualquier sección */
+.hands-close{position:absolute;left:50%;bottom:clamp(28px,5vh,56px);transform:translateX(-50%);z-index:2;
+  font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:var(--paper);background:transparent;
+  border:1px solid rgba(244,242,237,.5);border-radius:999px;padding:12px 20px;min-height:44px;cursor:pointer;
+  opacity:0;visibility:hidden;transition:opacity .2s steps(2),visibility 0s .2s}
+.hero.hands-open .hands-close{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .2s steps(2) .2s,visibility 0s}
+.hands-close:hover,.hands-close:focus-visible{background:var(--paper);color:var(--violet)}
+@media(max-width:900px){.hands-close{left:auto;right:16px;transform:none;bottom:auto;top:86px}}
+.avatar-mini{position:fixed;right:clamp(14px,2.4vw,32px);bottom:clamp(14px,2.4vw,32px);z-index:60;display:flex;align-items:center;gap:0;
+  padding:0;border:0;background:none;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(20px) scale(.7);
+  transition:opacity .24s steps(3),transform .24s steps(3),visibility 0s .24s}
+.avatar-mini.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .24s steps(3),transform .24s steps(3),visibility 0s}
+.avatar-mini img{width:clamp(58px,5vw,76px);height:auto;aspect-ratio:1;border-radius:50%;border:3px solid var(--acid);
+  box-shadow:0 10px 24px rgba(20,16,50,.35);background:var(--plum);display:block}
+.avatar-mini span{order:-1;margin-right:-10px;padding:7px 18px 7px 12px;border-radius:999px 0 0 999px;background:var(--acid);color:var(--plum);
+  font:500 11px var(--mono,"DM Mono",monospace);letter-spacing:.14em}
+.avatar-mini:hover img{transform:rotate(-8deg)}
+.avatar-mini:focus-visible{outline:2px solid var(--acid);outline-offset:4px;border-radius:999px}
+@media(prefers-reduced-motion:reduce){.avatar-mini{transition:none}}
+/* v70 — en celular la pista también se ve: sin ella no se descubre que la cara abre el menú */
+@media(hover:none),(max-width:900px){.avatar-hint{display:block!important;opacity:1;bottom:36%;font-size:11px;white-space:nowrap}}

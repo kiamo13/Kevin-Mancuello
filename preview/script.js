@@ -625,7 +625,7 @@
     const n=GW*GH;
     // confinamiento de vorticidad: devuelve los remolinos que la grilla gruesa aplana
     for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gCurl[id]=(gV[id+1]-gV[id-1]-gU[id+GW]+gU[id-GW])*.5;}
-    const eps=.32*dt;
+    const eps=.05*dt;
     for(let j=2;j<GH-2;j++)for(let i=2;i<GW-2;i++){
       const id=i+j*GW;
       const nx=(Math.abs(gCurl[id+1])-Math.abs(gCurl[id-1]))*.5,ny=(Math.abs(gCurl[id+GW])-Math.abs(gCurl[id-GW]))*.5;
@@ -638,7 +638,7 @@
     for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gU[id]-=.5*(gP[id+1]-gP[id-1]);gV[id]-=.5*(gP[id+GW]-gP[id-GW]);}
     gU0.set(gU);gV0.set(gV);fluidAdvect(gU,gU0,dt);fluidAdvect(gV,gV0,dt);
     gD0.set(gD);fluidAdvect(gD,gD0,dt);
-    const vd=Math.pow(.975,dt),dd=Math.pow(.972,dt);
+    const vd=Math.pow(.93,dt),dd=Math.pow(.962,dt);
     for(let id=0;id<n;id++){gU[id]*=vd;gV[id]*=vd;gD[id]*=dd;if(gD[id]<.004)gD[id]=0;}
   }
 
@@ -660,13 +660,13 @@
     fluidPrevious={...fluidCurrent};
 
     // empuje del cursor: cada tramo del recorrido inyecta velocidad y tinta a lo largo del camino
-    const cp=cellPx(),rCells=clamp(46/cp,3,14);
+    const cp=cellPx(),rCells=clamp(40/cp,3,12);
     for(const s of fluidPendingSplats){
       const len=Math.hypot(s.dx,s.dy),steps=Math.max(1,Math.min(16,Math.ceil(len/(cp*1.5))));
-      const fx=s.dx/cp*.55/steps*2,fy=s.dy/cp*.55/steps*2;
+      const fx=s.dx/cp*.32/steps,fy=s.dy/cp*.32/steps;
       for(let k=1;k<=steps;k++){
         const t=k/steps,px=(s.x-s.dx*(1-t))/cp,py=(s.y-s.dy*(1-t))/cp;
-        fluidSplat(px,py,clamp(fx,-6,6),clamp(fy,-6,6),.5/steps+.12,rCells*(.85+.3*Math.min(1,len/120)));
+        fluidSplat(px,py,clamp(fx,-2.5,2.5),clamp(fy,-2.5,2.5),.75/steps+.16,rCells*(.9+.2*Math.min(1,len/160)));
       }
     }
     fluidPendingSplats=[];
@@ -696,7 +696,7 @@
     const pixels=fluidBlurCtx.getImageData(0,0,fluidWidth,fluidHeight);
     const data=pixels.data;
     for(let i=3;i<data.length;i+=4){
-      const t=clamp((data[i]/255-.16)/.34,0,1);
+      const t=clamp((data[i]/255-.22)/.16,0,1);
       data[i]=Math.round(t*t*(3-2*t)*255);
     }
     fluidBlurCtx.putImageData(pixels,0,0);
@@ -850,7 +850,7 @@
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.play().catch(()=>{});else e.target.pause();}),{threshold:.3});
   loops.forEach(v=>io.observe(v));
 })();
-// v68 — al deslizar, el avatar baja más lento que la página (se hunde en el hero) y el nombre sube un poco.
+// v70 — al deslizar, el avatar acompaña la página casi como si estuviera fijo y se achica; el nombre sube un poco.
 (()=>{
   const hero=document.querySelector('.hero'),ch=document.querySelector('.hero-character'),giant=document.querySelector('.hero-giant');
   if(!hero||!ch||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
@@ -858,7 +858,7 @@
   const update=()=>{
     raf=0;
     const h=hero.offsetHeight||1,p=Math.min(1,Math.max(0,window.scrollY/h));
-    ch.style.translate=`0 ${(p*h*.42).toFixed(1)}px`;
+    hero.style.setProperty("--hp",p.toFixed(4));hero.style.setProperty("--hh",h+"px");
     if(giant)giant.style.translate=`0 ${(-p*h*.12).toFixed(1)}px`;
   };
   window.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(update);},{passive:true});

@@ -342,7 +342,7 @@ function sceneBtn(S){                               // la mano oprime el botón 
  draw(reduced?2:0);
  const set=v=>{
   open=v;hero.classList.toggle('hands-open',v);stage.setAttribute('aria-expanded',String(v));
-  nav.querySelectorAll('a').forEach(a=>a.tabIndex=v?0:-1);
+  nav.querySelectorAll('a,button').forEach(a=>a.tabIndex=v?0:-1);
   clearInterval(timer);
   if(v&&!reduced){frame=0;draw(0);timer=setInterval(()=>{frame=(frame+1)%3;draw(frame)},230);}
  };
@@ -350,6 +350,27 @@ function sceneBtn(S){                               // la mano oprime el botón 
  nav.addEventListener('click',e=>{if(e.target.closest('a'))set(false)});
  document.addEventListener('click',e=>{if(open&&!e.target.closest('#hands-menu')&&!e.target.closest('#avatar-stage'))set(false)});
  document.addEventListener('keydown',e=>{if(open&&e.key==='Escape'){set(false);stage.focus()}});
+ // botón «Cerrar» dentro del menú
+ const close=document.createElement('button');close.type='button';close.className='hands-close';close.textContent='CERRAR ✕';close.tabIndex=-1;
+ close.addEventListener('click',e=>{e.stopPropagation();set(false);stage.focus()});
+ nav.appendChild(close);
+ // en pantallas táctiles la pista dice «tocá»
+ if(hint&&window.matchMedia('(hover: none)').matches)hint.textContent='TOCÁ MI CARA PARA VER MIS ÁREAS';
+ // si se desliza lejos del hero con el menú abierto, se cierra solo
+ window.addEventListener('scroll',()=>{if(open&&window.scrollY>hero.offsetHeight*.35)set(false)},{passive:true});
+ // cara chica flotante: aparece cuando el hero sale de la vista y abre el mismo menú desde cualquier parte
+ const mini=document.createElement('button');
+ mini.type='button';mini.className='avatar-mini';mini.setAttribute('aria-label','Abrir el menú de mis áreas de trabajo');
+ mini.innerHTML='<img src="assets/avatar-mini.jpg" alt="" width="96" height="96"><span>MENÚ</span>';
+ document.body.appendChild(mini);
+ if('IntersectionObserver' in window){
+  new IntersectionObserver(([e])=>mini.classList.toggle('is-on',!e.isIntersecting),{rootMargin:'0px 0px -55% 0px'}).observe(hero);
+ }
+ mini.addEventListener('click',e=>{
+  e.stopPropagation();
+  const go=()=>{if(window.scrollY<4){set(true);stage.focus({preventScroll:true});return}requestAnimationFrame(go)};
+  window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});requestAnimationFrame(go);
+ });
 })();
 
 /* ---------- Sobre mí: el personaje camina mientras deslizás y pasa de joven a viejo ---------- */
