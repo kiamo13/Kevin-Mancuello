@@ -1406,3 +1406,9 @@ html.is-lite .clients-track{animation:none}
 .clients-row img.keep{filter:none;opacity:1}
 .clients-row img[src*="ma-natural"],.clients-row img[src*="mariano"]{height:clamp(40px,4.4vw,62px)}
 .clients-row img[src*="etidol"]{height:clamp(22px,2.4vw,34px)}
+/* v76 — auditoría: entre 901 y 1200 px la línea de ubicación no entra con el menú; objetivos táctiles mínimos */
+@media(min-width:901px) and (max-width:1480px){.location-line{display:none!important}}
+.brand-code,.hero-scroll{min-height:32px;display:inline-flex;align-items:center}
+/* v76 — en pantallas bajas (laptops de 720–800 px de alto) el nombre se escala también por la altura para no pisar el saludo ni el rol */
+@media(min-width:681px){.hero-giant{font-size:clamp(150px,min(31vw,50vh),480px)!important}}
+@media(min-width:681px){.hero-greeting{z-index:9!important;bottom:clamp(64px,8.5vh,104px)!important}.hero-greeting .hero-kicker{max-width:none;white-space:nowrap}}
