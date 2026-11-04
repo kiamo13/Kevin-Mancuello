@@ -1243,3 +1243,26 @@ html.is-lite .hands-menu .hand{transition:none}
     background:rgba(25,22,50,.94);border-radius:24px;opacity:0;transform:translateY(16px);transition:opacity .2s steps(2),transform .2s steps(2)}
   .hero.hands-open .hands-menu::before{opacity:1;transform:none}
 }
+/* v69 — el menú de manos como pantalla propia: fondo violeta, la cara se achica al centro,
+   las manos crecen y todo el texto del hero se va para que nada se mezcle */
+.hero{transition:background-color .24s steps(3)}
+.hero.hands-open{background:var(--violet)}
+.hero-character{transition:scale .3s steps(3),top .3s steps(3),transform .3s steps(3)}
+.hero.hands-open .hero-character{scale:.5;transform:translateX(-100%)}
+.hero-giant,.hero-greeting,.hero-role,.hero-meta,.avatar-hint,.hero-scroll,.hero-coordinate,.hero-stamp,.character-index{transition:opacity .2s steps(2),visibility 0s}
+.hero.hands-open :is(.hero-giant,.hero-greeting,.hero-role,.hero-meta,.avatar-hint,.hero-scroll,.hero-coordinate,.hero-stamp,.character-index){opacity:0;visibility:hidden;transition:opacity .2s steps(2),visibility 0s .2s}
+.hero.hands-open .hero-grain{opacity:.07}
+.hands-menu .hand{width:clamp(250px,26vw,430px)}
+.hands-menu .hand span{font-size:14px;padding:10px 16px}
+.hand-brand{left:calc(50% - clamp(125px,13vw,215px));right:auto;top:7%}
+.hand-ilu{left:calc(50% - clamp(400px,41vw,680px));top:47%}
+.hand-motion{right:calc(50% - clamp(400px,41vw,680px));left:auto;top:47%}
+@media(max-width:900px){
+  .hands-menu::before{display:none}
+  .hero.hands-open .hero-character{scale:.52;transform-origin:50% 0;top:120px!important}
+  .hands-menu .hand{width:46vw}
+  .hands-menu .hand-ilu{left:3vw;top:auto;bottom:calc(46vw * .75 + 120px)}
+  .hands-menu .hand-brand{left:auto;right:3vw;top:auto;bottom:calc(46vw * .75 + 120px)}
+  .hands-menu .hand-motion{left:27vw;right:auto;top:auto;bottom:64px}
+  .hands-menu .hand span{font-size:12px;padding:8px 12px}
+}
