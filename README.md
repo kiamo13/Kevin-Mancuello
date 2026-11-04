@@ -2,6 +2,8 @@
 
 Portfolio personal de Kevin Mancuello. Sitio estático construido en HTML, CSS y JavaScript.
 
+**El sitio vigente está en `preview/`** (https://kiamo13.github.io/Kevin-Mancuello/preview/). El `index.html` de la raíz solo redirige ahí; `script.js`, `styles.css` y `assets/` de la raíz son la versión anterior.
+
 ## Estructura
 
 - `index.html`: contenido y estructura del portfolio.
