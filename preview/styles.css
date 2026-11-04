@@ -1400,3 +1400,9 @@ html.is-lite .clients-track{animation:none}
 /* v74 — Branding tiene 4 piezas: van de a dos por fila */
 #branding-projects{flex-wrap:wrap}
 #branding-projects>.project-item{flex:1 1 calc(50% - clamp(14px,2vw,28px))}
+/* v75 — clientes con sus logos reales, en blanco sobre el violeta (Banco Atlas usa su versión blanca oficial) */
+.clients-row{align-items:center}
+.clients-row img{height:clamp(30px,3.4vw,48px);width:auto;max-width:200px;object-fit:contain;filter:brightness(0) invert(1);opacity:.92}
+.clients-row img.keep{filter:none;opacity:1}
+.clients-row img[src*="ma-natural"],.clients-row img[src*="mariano"]{height:clamp(40px,4.4vw,62px)}
+.clients-row img[src*="etidol"]{height:clamp(22px,2.4vw,34px)}
