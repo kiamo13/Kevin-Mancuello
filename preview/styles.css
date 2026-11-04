@@ -1179,3 +1179,13 @@ video.project-img{background:#14112A}
 /* portadas animadas: el video ocupa la tarjeta; Mariano centrado sobre su gris */
 .visual-mariano video.project-img{object-position:50% 50%;background:#F2F2F2}
 .visual-todegol video.project-img{background:#000}
+/* v66 — auditoría: título del pie entero en móvil, mínimos de lectura y de toque */
+.main-nav a{white-space:nowrap}
+.lite-toggle,.about-link{font-size:11px}
+.footer-links a{display:inline-flex;align-items:center;min-height:32px}
+@media(max-width:680px){
+  .footer-email{font-size:min(17.5vw,135px);letter-spacing:-.1em;overflow-wrap:normal;white-space:nowrap}
+  .footer-links{gap:4px}
+  .footer-links a{min-height:40px}
+  .hero-scroll,.brand-code{min-height:32px;display:inline-flex;align-items:center}
+}
