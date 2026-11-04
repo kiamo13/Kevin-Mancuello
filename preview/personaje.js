@@ -427,7 +427,7 @@ function walkerAge(age){
 (()=>{
  /* títulos grandes que se deslizan de costado según su paso por la pantalla (alternando el sentido) */
  if(reduced)return;
- const els=[...document.querySelectorAll('.works-heading h2,.discipline-main h3,.footer-email')];
+ const els=[...document.querySelectorAll('.works-heading h2,.discipline-main h3,.services h2,.footer-email')];
  if(!els.length)return;
  let raf=0;
  const update=()=>{
