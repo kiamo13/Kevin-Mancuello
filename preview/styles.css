@@ -1426,3 +1426,9 @@ html.is-lite .clients-track{animation:none}
 .project-item .project-cover{position:absolute;inset:0;z-index:3;display:block;font-size:0;color:transparent}
 .project-item.has-cover .project-link::after{content:none}
 .project-item .project-cover:focus-visible{outline:2px solid var(--violet,#6e3fff);outline-offset:4px;border-radius:4px}
+
+/* v97 — tira de herramientas en «Sobre mí» */
+.about-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:22px}
+.about-tools-label{flex:0 0 100%;margin:0 0 2px;font:500 11px var(--mono);letter-spacing:.14em;opacity:.7}
+.about-tools img{width:44px;height:44px;object-fit:contain;border-radius:12px;overflow:hidden}
+@media(max-width:520px){.about-tools img{width:38px;height:38px}}

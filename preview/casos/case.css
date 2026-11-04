@@ -141,3 +141,20 @@ a{color:inherit}
 @media(max-width:700px){.cs-feed12{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .cs-grid figure.bare img{background:transparent;border-radius:0;object-fit:contain}
 .cs-grid figure.sq img{aspect-ratio:1/1}
+
+/* v97 — logofolio en blanco y negro: tablero de 5 columnas, logos a una tinta */
+.bw-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:clamp(28px,3vw,48px);border:1px solid #111;border-radius:var(--r);overflow:hidden}
+.bw{margin:0;position:relative;aspect-ratio:1/1;display:grid;place-items:center;background:#fff;color:#111}
+.bw:nth-child(even){background:#111;color:#fff}
+.bw img{max-width:62%;max-height:46%;width:auto;height:auto;object-fit:contain;filter:brightness(0)}
+.bw:nth-child(even) img{filter:brightness(0) invert(1)}
+.bw figcaption{position:absolute;left:10px;right:10px;bottom:8px;font:500 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.6;text-align:left}
+@media(max-width:620px){.bw-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bw:nth-child(even){background:#fff;color:#111}.bw:nth-child(even) img{filter:brightness(0)}.bw:nth-child(4n+2),.bw:nth-child(4n+3){background:#111;color:#fff}.bw:nth-child(4n+2) img,.bw:nth-child(4n+3) img{filter:brightness(0) invert(1)}}
+
+/* v97 — logofolio como en Behance: seis identidades en negro sobre gris claro, con su rubro */
+.lf-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:clamp(28px,3vw,48px);background:#F0EFF1;border-radius:var(--r);overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.lf{margin:0;background:#F0EFF1;box-shadow:0 0 0 .5px var(--line)}
+.lf img{display:block;width:100%;height:auto}
+.lf figcaption{display:flex;flex-direction:column;gap:2px;padding:0 clamp(12px,1.6vw,22px) clamp(12px,1.4vw,18px);font:500 clamp(12px,1vw,14px) var(--sans,inherit);color:#111}
+.lf figcaption span{font:500 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#6b6b72}
+@media(max-width:620px){.lf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
