@@ -1204,3 +1204,42 @@ video.project-img{background:#14112A}
 .works-heading h2{font-size:clamp(84px,13vw,220px)}
 @media(max-width:680px){.works-heading h2{font-size:19vw}}
 @media(max-width:900px){.avatar-hint{display:none}}
+/* v68 — menú de 3 manos: aparecen alrededor de la cara al hacer clic, cuadro por cuadro */
+.hands-menu{position:absolute;inset:0;z-index:9;pointer-events:none}
+.hands-menu .hand{position:absolute;width:clamp(190px,22vw,340px);display:flex;flex-direction:column;align-items:center;gap:6px;
+  text-decoration:none;color:var(--paper);opacity:0;transform:scale(.4) rotate(-8deg);visibility:hidden;
+  transition:opacity .27s steps(3),transform .27s steps(3),visibility 0s .27s}
+.hands-menu .hand svg{width:100%;height:auto;overflow:visible;filter:drop-shadow(0 10px 18px rgba(10,6,30,.35))}
+.hands-menu .hand span{font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.12em;text-transform:uppercase;
+  background:var(--acid);color:var(--plum);padding:8px 12px;border-radius:999px;white-space:nowrap}
+.hands-menu .hand:hover span,.hands-menu .hand:focus-visible span{background:var(--paper)}
+.hands-menu .hand:hover svg{transform:scale(1.06)}
+.hand-ilu{left:calc(50% - clamp(330px,38vw,620px));top:42%}
+.hand-brand{right:calc(50% - clamp(330px,38vw,620px));top:24%}
+.hand-motion{right:calc(50% - clamp(290px,33vw,540px));top:58%}
+.hero.hands-open .hands-menu{pointer-events:auto}
+.hero.hands-open .hands-menu .hand{opacity:1;transform:none;visibility:visible;pointer-events:auto;
+  transition:opacity .27s steps(3) calc(var(--i)*90ms),transform .27s steps(3) calc(var(--i)*90ms),visibility 0s}
+.hero.hands-open .hero-greeting,.hero.hands-open .hero-role,.hero.hands-open .hero-meta,.hero.hands-open .avatar-hint{opacity:.18;transition:opacity .2s}
+.hero.hands-open .hands-menu{pointer-events:none}
+@media(max-width:900px){
+  .hands-menu .hand{width:31vw;top:auto;bottom:clamp(70px,11vh,120px)}
+  .hand-ilu{left:2vw}.hand-brand{left:34.5vw;right:auto}.hand-motion{right:2vw}
+  .hands-menu .hand span{font-size:11px;padding:7px 9px;letter-spacing:.06em}
+}
+@media(prefers-reduced-motion:reduce){.hands-menu .hand{transition:none!important}}
+html.is-lite .hands-menu .hand{transition:none}
+
+/* v68 — Sobre mí: el personaje camina por el borde inferior mientras deslizás, de 2015 a «más adelante» */
+.about-section{overflow:clip}
+.about-walk{position:sticky;bottom:0;z-index:1;height:clamp(170px,26vh,250px);margin-top:calc(clamp(170px,26vh,250px) * -1);pointer-events:none}
+.walk-mover{position:absolute;left:0;bottom:6px;height:100%;display:flex;flex-direction:column;align-items:center;will-change:transform}
+.walk-mover svg{height:calc(100% - 26px);width:auto;overflow:visible}
+.walk-ages{position:relative;height:20px;margin:0 0 6px;font:500 11px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:var(--acid);white-space:nowrap}
+.walk-ages span{position:absolute;left:50%;transform:translateX(-50%);opacity:0;transition:opacity .2s steps(2)}
+.walk-ages span.is-on{opacity:1}
+@media(max-width:900px){
+  .hands-menu::before{content:"";position:absolute;left:8px;right:8px;bottom:calc(clamp(70px,11vh,120px) - 14px);height:calc(31vw * .75 + 62px);
+    background:rgba(25,22,50,.94);border-radius:24px;opacity:0;transform:translateY(16px);transition:opacity .2s steps(2),transform .2s steps(2)}
+  .hero.hands-open .hands-menu::before{opacity:1;transform:none}
+}

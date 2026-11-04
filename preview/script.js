@@ -226,7 +226,7 @@
     const r=stage.getBoundingClientRect(),pad=260;
     const inside=(x,y)=>x>r.left-pad&&x<r.right+pad&&y>r.top-pad&&y<r.bottom+pad;
     if((fluidActive||fluidVisualScale>.002)&&inside(fluidCurrent.x,fluidCurrent.y))return true;
-    for(let i=0;i<fluidParticles.length;i++){if(inside(fluidParticles[i].x,fluidParticles[i].y))return true;}
+    if(fluidAlive&&fluidBox.x1>r.left-pad&&fluidBox.x0<r.right+pad&&fluidBox.y1>r.top-pad&&fluidBox.y0<r.bottom+pad)return true;
     return false;
   }
 
@@ -387,7 +387,7 @@
     if(sharedReveal()){
       // El dibujo lo hace composeFaceRaster() dentro del fotograma del cursor.
       // Acá solo se cierra el estado cuando el campo terminó de desaparecer.
-      if(!fluidActive&&fluidVisualScale===0&&!fluidParticles.length&&stage.classList.contains('is-hovering')){
+      if(!fluidActive&&fluidVisualScale===0&&!fluidAlive&&stage.classList.contains('is-hovering')){
         stage.classList.remove('is-hovering','is-closing');
         scheduleBlink();
       }
@@ -533,8 +533,16 @@
   let fluidRaf=0,fluidActive=false,fluidInitialized=false,fluidScale=1,fluidLastFrame=0,fluidIdleTimer=0,fluidLastPointerTime=0;
   let fluidVisualScale=0,fluidScaleTarget=0,fluidCursorSpeed=0,fluidCursorAngle=0;
   let fluidWidth=0,fluidHeight=0;
-  let fluidParticles=[];
   let fluidTarget={x:0,y:0},fluidCurrent={x:0,y:0},fluidPrevious={x:0,y:0};
+  /* v68 — fluido tipo Buttermax: una grilla chica de velocidad y densidad (fluido estable:
+     advección semilagrangiana + proyección + confinamiento de vorticidad). El cursor empuja
+     el fluido y le suma tinta; la estela se curva, se estira y se disuelve como humo.
+     La densidad es el mismo campo (fluidBlur) que invierte la página y perfora el cráneo. */
+  const fluidGrid=document.createElement('canvas');
+  const fluidGridCtx=fluidGrid.getContext('2d',{alpha:true,willReadFrequently:true});
+  let GW=0,GH=0,gU,gV,gU0,gV0,gD,gD0,gP,gDiv,gCurl,gImg=null;
+  let fluidAlive=false,fluidBox={x0:0,y0:0,x1:0,y1:0};
+  let fluidPendingSplats=[];
 
   function resizeFluidCanvas(){
     if(!fluidCanvas||!fluidCtx)return;
@@ -551,133 +559,157 @@
     fluidHeight=Math.max(1,Math.ceil(height*fluidScale));
     fluidSource.width=fluidWidth;fluidSource.height=fluidHeight;
     fluidBlur.width=fluidWidth;fluidBlur.height=fluidHeight;
-    if((fluidActive||fluidParticles.length)&&!fluidRaf){
+    // la grilla: ~150 celdas en el lado largo (en celular, ~1 celda cada 3 px; en escritorio, cada 10 px)
+    const long=Math.max(width,height),cells=150;
+    const nw=Math.max(16,Math.round(width/long*cells)),nh=Math.max(16,Math.round(height/long*cells));
+    if(nw!==GW||nh!==GH){
+      GW=nw;GH=nh;const n=GW*GH;
+      gU=new Float32Array(n);gV=new Float32Array(n);gU0=new Float32Array(n);gV0=new Float32Array(n);
+      gD=new Float32Array(n);gD0=new Float32Array(n);gP=new Float32Array(n);gDiv=new Float32Array(n);gCurl=new Float32Array(n);
+      fluidGrid.width=GW;fluidGrid.height=GH;gImg=fluidGridCtx.createImageData(GW,GH);
+    }
+    if((fluidActive||fluidAlive)&&!fluidRaf){
       fluidRaf=requestAnimationFrame(renderFluidCursor);
     }
   }
 
-  function addFluidParticle(x,y,radius,life,vx=0,vy=0){
-    fluidParticles.push({x,y,radius,life,maxLife:life,vx,vy});
-    if(fluidParticles.length>190)fluidParticles.splice(0,fluidParticles.length-190);
-  }
+  const cellPx=()=>window.innerWidth/GW;   // celdas cuadradas: mismo tamaño en x e y
 
   function moveFluidCursor(e){
     if(!fluidCanvas||!fluidCtx||reducedMotion)return;
     const x=e.clientX,y=e.clientY;
     clearTimeout(fluidIdleTimer);
     fluidIdleTimer=window.setTimeout(hideFluidCursor,320);
+    const pointerNow=performance.now();
     if(!fluidInitialized){
       fluidInitialized=true;
       fluidTarget={x,y};fluidCurrent={x,y};fluidPrevious={x,y};
-      fluidLastPointerTime=performance.now();
       fluidScaleTarget=1;
-      addFluidParticle(x,y,76,560);
+      fluidPendingSplats.push({x,y,dx:0,dy:0,ink:1});
     }else{
       const dx=x-fluidTarget.x,dy=y-fluidTarget.y;
       const distance=Math.hypot(dx,dy);
-      const pointerNow=performance.now();
-      const pointerDelta=Math.max(8,pointerNow-fluidLastPointerTime);
-      const pointerSpeed=distance/pointerDelta;
-      fluidLastPointerTime=pointerNow;
-      const distanceFactor=clamp(distance/150,0,1);
-      const speedFactor=clamp(pointerSpeed/1.15,0,1);
-      const movementIntensity=Math.max(distanceFactor,speedFactor);
-      fluidScaleTarget=1+movementIntensity*.24;
-      if(distance>1.5){
-        const steps=Math.min(24,Math.max(1,Math.ceil(distance/13)));
-        const speed=Math.min(distance,90);
-        for(let i=1;i<=steps;i++){
-          const t=i/steps,px=fluidTarget.x+dx*t,py=fluidTarget.y+dy*t;
-          addFluidParticle(px,py,clamp(50+speed*.10,50,68),560+Math.random()*260,dx/steps*.16,dy/steps*.16);
-          if(distance>32&&i%3===0){
-            const side=(Math.random()-.5)*2,length=Math.hypot(dx,dy)||1;
-            const nx=-dy/length,ny=dx/length,offset=side*(17+Math.random()*20);
-            addFluidParticle(px+nx*offset,py+ny*offset,13+Math.random()*12,
-              320+Math.random()*150,dx/steps*.09+nx*side*.25,dy/steps*.09+ny*side*.25);
-          }
-        }
-      }
+      const pointerSpeed=distance/Math.max(8,pointerNow-fluidLastPointerTime);
+      fluidScaleTarget=1+Math.max(clamp(distance/150,0,1),clamp(pointerSpeed/1.15,0,1))*.24;
+      if(distance>.5)fluidPendingSplats.push({x,y,dx,dy,ink:1});
       fluidTarget={x,y};
     }
+    fluidLastPointerTime=pointerNow;
     fluidActive=true;fluidCanvas.classList.add('is-active');
     invertLayer?.classList.add('is-visible');
     if(!fluidRaf){fluidLastFrame=performance.now();fluidRaf=requestAnimationFrame(renderFluidCursor);}
   }
 
+  // tinta y empuje con caída gaussiana alrededor de (cx,cy), en celdas
+  function fluidSplat(cx,cy,fx,fy,ink,r){
+    const R=Math.ceil(r*2.2),i0=Math.max(1,Math.floor(cx-R)),i1=Math.min(GW-2,Math.ceil(cx+R));
+    const j0=Math.max(1,Math.floor(cy-R)),j1=Math.min(GH-2,Math.ceil(cy+R)),k=1/(r*r);
+    for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){
+      const d2=(i-cx)*(i-cx)+(j-cy)*(j-cy),g=Math.exp(-d2*k);
+      if(g<.01)continue;
+      const id=i+j*GW;
+      gU[id]+=fx*g;gV[id]+=fy*g;
+      gD[id]=Math.min(1.6,gD[id]+ink*g);
+    }
+  }
+  function fluidAdvect(dst,src,dt){
+    for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){
+      const id=i+j*GW;
+      let x=i-dt*gU[id],y=j-dt*gV[id];
+      x=x<.5?.5:x>GW-1.5?GW-1.5:x;y=y<.5?.5:y>GH-1.5?GH-1.5:y;
+      const i0=x|0,j0=y|0,s=x-i0,t=y-j0,a=i0+j0*GW;
+      dst[id]=(1-t)*((1-s)*src[a]+s*src[a+1])+t*((1-s)*src[a+GW]+s*src[a+GW+1]);
+    }
+  }
+  function fluidStep(dt){
+    const n=GW*GH;
+    // confinamiento de vorticidad: devuelve los remolinos que la grilla gruesa aplana
+    for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gCurl[id]=(gV[id+1]-gV[id-1]-gU[id+GW]+gU[id-GW])*.5;}
+    const eps=.32*dt;
+    for(let j=2;j<GH-2;j++)for(let i=2;i<GW-2;i++){
+      const id=i+j*GW;
+      const nx=(Math.abs(gCurl[id+1])-Math.abs(gCurl[id-1]))*.5,ny=(Math.abs(gCurl[id+GW])-Math.abs(gCurl[id-GW]))*.5;
+      const l=Math.hypot(nx,ny)+1e-5,c=gCurl[id];
+      gU[id]+=eps*(ny/l)*c;gV[id]-=eps*(nx/l)*c;
+    }
+    // proyección: el fluido no se comprime, así que el empuje se reparte en remolinos
+    for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gDiv[id]=-.5*(gU[id+1]-gU[id-1]+gV[id+GW]-gV[id-GW]);gP[id]=0;}
+    for(let k=0;k<14;k++)for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gP[id]=(gDiv[id]+gP[id-1]+gP[id+1]+gP[id-GW]+gP[id+GW])*.25;}
+    for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gU[id]-=.5*(gP[id+1]-gP[id-1]);gV[id]-=.5*(gP[id+GW]-gP[id-GW]);}
+    gU0.set(gU);gV0.set(gV);fluidAdvect(gU,gU0,dt);fluidAdvect(gV,gV0,dt);
+    gD0.set(gD);fluidAdvect(gD,gD0,dt);
+    const vd=Math.pow(.975,dt),dd=Math.pow(.972,dt);
+    for(let id=0;id<n;id++){gU[id]*=vd;gV[id]*=vd;gD[id]*=dd;if(gD[id]<.004)gD[id]=0;}
+  }
+
   function renderFluidCursor(now){
     fluidRaf=0;
-    if(!fluidCanvas||!fluidCtx||!fluidSourceCtx||!fluidBlurCtx)return;
+    if(!fluidCanvas||!fluidCtx||!fluidBlurCtx||!GW)return;
     const elapsed=Math.min(34,Math.max(1,now-fluidLastFrame||16.67));
-    const frameScale=elapsed/16.67;
+    const dt=elapsed/16.67;
     fluidLastFrame=now;
     if(fluidActive){
-      fluidCurrent.x+=(fluidTarget.x-fluidCurrent.x)*.22;
-      fluidCurrent.y+=(fluidTarget.y-fluidCurrent.y)*.22;
+      fluidCurrent.x+=(fluidTarget.x-fluidCurrent.x)*.35;
+      fluidCurrent.y+=(fluidTarget.y-fluidCurrent.y)*.35;
     }
-    const scaleEase=fluidActive ? 0.018 : 0.012;
-    fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*scaleEase;
+    fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*(fluidActive?.08:.05);
     if(Math.abs(fluidScaleTarget-fluidVisualScale)<.002)fluidVisualScale=fluidScaleTarget;
     const vx=fluidCurrent.x-fluidPrevious.x,vy=fluidCurrent.y-fluidPrevious.y;
-    const speed=Math.hypot(vx,vy),angle=Math.atan2(vy,vx||.0001);
-    fluidCursorSpeed=speed;
-    fluidCursorAngle=angle;
+    fluidCursorSpeed=Math.hypot(vx,vy);fluidCursorAngle=Math.atan2(vy,vx||.0001);
     if(stage.classList.contains('is-hovering'))requestRevealFrame();
     fluidPrevious={...fluidCurrent};
-    fluidSourceCtx.clearRect(0,0,fluidWidth,fluidHeight);
-    fluidSourceCtx.save();
-    fluidSourceCtx.translate(fluidCurrent.x*fluidScale,fluidCurrent.y*fluidScale);
-    fluidSourceCtx.scale(fluidVisualScale,fluidVisualScale);
-    fluidSourceCtx.translate(-fluidCurrent.x*fluidScale,-fluidCurrent.y*fluidScale);
-    fluidSourceCtx.fillStyle='#fff';
-    fluidSourceCtx.globalCompositeOperation='source-over';
-    for(let i=fluidParticles.length-1;i>=0;i--){
-      const p=fluidParticles[i];
-      p.life-=elapsed;
-      if(p.life<=0){fluidParticles.splice(i,1);continue;}
-      p.x+=p.vx*frameScale;p.y+=p.vy*frameScale;
-      p.vx*=Math.pow(.935,frameScale);p.vy*=Math.pow(.935,frameScale);
-      const life=clamp(p.life/p.maxLife,0,1);
-      const radius=p.radius*(.22+.78*life);
-      fluidSourceCtx.globalAlpha=Math.pow(life,1.15)*.9;
-      fluidSourceCtx.beginPath();
-      fluidSourceCtx.arc(p.x*fluidScale,p.y*fluidScale,radius*fluidScale,0,Math.PI*2);
-      fluidSourceCtx.fill();
-    }
-    if(fluidActive){
-      const stretch=1+Math.min(speed/85,.22),squash=1-Math.min(speed/85,.10);
-      fluidSourceCtx.globalAlpha=.98;
-      fluidSourceCtx.save();
-      fluidSourceCtx.translate(fluidCurrent.x*fluidScale,fluidCurrent.y*fluidScale);
-      if(speed>.35)fluidSourceCtx.rotate(angle);
-      fluidSourceCtx.beginPath();
-      fluidSourceCtx.ellipse(0,0,104*fluidScale*stretch,118*fluidScale*squash,0,0,Math.PI*2);
-      fluidSourceCtx.fill();
-      fluidSourceCtx.restore();
-    }
-    fluidSourceCtx.restore();
 
+    // empuje del cursor: cada tramo del recorrido inyecta velocidad y tinta a lo largo del camino
+    const cp=cellPx(),rCells=clamp(46/cp,3,14);
+    for(const s of fluidPendingSplats){
+      const len=Math.hypot(s.dx,s.dy),steps=Math.max(1,Math.min(16,Math.ceil(len/(cp*1.5))));
+      const fx=s.dx/cp*.55/steps*2,fy=s.dy/cp*.55/steps*2;
+      for(let k=1;k<=steps;k++){
+        const t=k/steps,px=(s.x-s.dx*(1-t))/cp,py=(s.y-s.dy*(1-t))/cp;
+        fluidSplat(px,py,clamp(fx,-6,6),clamp(fy,-6,6),.5/steps+.12,rCells*(.85+.3*Math.min(1,len/120)));
+      }
+    }
+    fluidPendingSplats=[];
+    // mientras el cursor está quieto sobre la página, la mancha bajo el puntero se sostiene
+    if(fluidActive)fluidSplat(fluidCurrent.x/cp,fluidCurrent.y/cp,0,0,.09*dt*fluidVisualScale,rCells*fluidVisualScale);
+    fluidStep(dt);
+
+    // densidad → alfa; caja de la zona con tinta (para saber si toca al avatar)
+    const d=gImg.data;let any=false,x0=GW,y0=GH,x1=0,y1=0;
+    for(let j=0;j<GH;j++)for(let i=0;i<GW;i++){
+      const id=i+j*GW,v=gD[id],a=v>1?255:(v*255)|0,o=id*4;
+      d[o]=255;d[o+1]=255;d[o+2]=255;d[o+3]=a;
+      if(a>8){any=true;if(i<x0)x0=i;if(i>x1)x1=i;if(j<y0)y0=j;if(j>y1)y1=j;}
+    }
+    fluidGridCtx.putImageData(gImg,0,0);
+    fluidAlive=any;
+    fluidBox={x0:x0*cp,y0:y0*cp,x1:(x1+1)*cp,y1:(y1+1)*cp};
+
+    // de la grilla al campo compartido: se agranda con suavizado, se desenfoca y se recorta con
+    // una curva suave para que el borde sea líquido y nítido a la vez
     fluidBlurCtx.clearRect(0,0,fluidWidth,fluidHeight);
     fluidBlurCtx.save();
-    fluidBlurCtx.filter='blur(7px)';
-    fluidBlurCtx.drawImage(fluidSource,0,0);
+    fluidBlurCtx.imageSmoothingEnabled=true;
+    fluidBlurCtx.filter='blur(6px)';
+    fluidBlurCtx.drawImage(fluidGrid,0,0,GW,GH,0,0,fluidWidth,fluidHeight);
     fluidBlurCtx.restore();
     const pixels=fluidBlurCtx.getImageData(0,0,fluidWidth,fluidHeight);
     const data=pixels.data;
-    for(let i=0;i<data.length;i+=4){
-      const alpha=data[i+3]/255,t=clamp((alpha-.12)/.48,0,1),smooth=t*t*(3-2*t);
-      data[i]=255;data[i+1]=255;data[i+2]=255;data[i+3]=Math.round(smooth*255);
+    for(let i=3;i<data.length;i+=4){
+      const t=clamp((data[i]/255-.16)/.34,0,1);
+      data[i]=Math.round(t*t*(3-2*t)*255);
     }
     fluidBlurCtx.putImageData(pixels,0,0);
     fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
     fluidCtx.drawImage(fluidBlur,0,0,fluidWidth,fluidHeight,0,0,window.innerWidth,window.innerHeight);
     composeFaceRaster();
-    const pointerLag=fluidActive?Math.hypot(fluidTarget.x-fluidCurrent.x,fluidTarget.y-fluidCurrent.y):0;
-    if(fluidParticles.length||pointerLag>.35||Math.abs(fluidScaleTarget-fluidVisualScale)>.002||fluidVisualScale>.002){
+    if(fluidAlive||fluidActive){
       fluidCanvas.classList.add('is-active');
       fluidRaf=requestAnimationFrame(renderFluidCursor);
-    }else if(!fluidActive){
+    }else{
       fluidCanvas.classList.remove('is-active');
       fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      gU.fill(0);gV.fill(0);
       fluidInitialized=false;fluidLastFrame=0;fluidVisualScale=0;
       composeFaceRaster();
     }
@@ -817,4 +849,19 @@
   if(still||!('IntersectionObserver' in window))return;
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.play().catch(()=>{});else e.target.pause();}),{threshold:.3});
   loops.forEach(v=>io.observe(v));
+})();
+// v68 — al deslizar, el avatar baja más lento que la página (se hunde en el hero) y el nombre sube un poco.
+(()=>{
+  const hero=document.querySelector('.hero'),ch=document.querySelector('.hero-character'),giant=document.querySelector('.hero-giant');
+  if(!hero||!ch||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  let raf=0;
+  const update=()=>{
+    raf=0;
+    const h=hero.offsetHeight||1,p=Math.min(1,Math.max(0,window.scrollY/h));
+    ch.style.translate=`0 ${(p*h*.42).toFixed(1)}px`;
+    if(giant)giant.style.translate=`0 ${(-p*h*.12).toFixed(1)}px`;
+  };
+  window.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(update);},{passive:true});
+  window.addEventListener('resize',update,{passive:true});
+  update();
 })();
