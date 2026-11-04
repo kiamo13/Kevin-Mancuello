@@ -123,3 +123,4 @@ a{color:inherit}
 .cs-mont img{width:100%;height:auto;border-radius:var(--r);display:block}
 .cs-ext{display:inline-block;margin-top:6px;font:500 14px var(--mono);letter-spacing:.06em;color:inherit;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--acid,#84FF00);text-decoration-thickness:2px}
 .cs-ext:hover{background:var(--acid,#84FF00);color:#231F46;text-decoration-color:transparent}
+.cs-grid figure.bare img{background:transparent;border-radius:0}
