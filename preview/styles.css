@@ -1440,3 +1440,8 @@ html.is-lite .clients-track{animation:none}
 .footer-topline{gap:24px}
 .footer-available{text-align:right;text-wrap:balance}
 @media(max-width:680px){.footer-topline{flex-direction:column;align-items:flex-start;gap:8px}.footer-available{text-align:left}}
+
+/* v103 — rol de la portada con cuatro áreas: cada área no se corta y, en celular, el bloque gana ancho hacia la izquierda */
+.hero-role small span{white-space:nowrap}
+@media(max-width:680px){.hero-role small{width:212px;max-width:none!important;margin-left:-67px}}
+@media(min-width:681px){.hero-role small{max-width:330px!important;width:auto!important;margin-left:auto}}

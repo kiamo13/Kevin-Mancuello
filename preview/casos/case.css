@@ -158,3 +158,15 @@ a{color:inherit}
 .lf figcaption{display:flex;flex-direction:column;gap:2px;padding:0 clamp(12px,1.6vw,22px) clamp(12px,1.4vw,18px);font:500 clamp(12px,1vw,14px) var(--sans,inherit);color:#111}
 .lf figcaption span{font:500 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#6b6b72}
 @media(max-width:620px){.lf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* v103 — en pantallas angostas, un dato largo de la ficha ocupa el ancho completo */
+@media(max-width:860px){.cs-meta .cs-meta-wide{grid-column:1/-1}}
+
+/* v103 — Ilustración: la obra personal en su propia banda oscura, para que no parezca material secundario */
+#personal{background:var(--plum);color:var(--paper);margin-top:clamp(48px,6vw,96px);padding-top:clamp(56px,7vw,112px);padding-bottom:clamp(56px,7vw,112px)}
+#personal .cs-label{color:#84ff00}
+#personal .cs-text{color:rgba(244,242,237,.82)}
+#personal .cs-inline{color:#84ff00}
+#personal .cs-inline:hover{color:var(--paper)}
+#personal .cs-grid figcaption{color:#a9a4c9}
+#personal .cs-grid img{background:rgba(255,255,255,.06)}
