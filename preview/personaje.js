@@ -361,6 +361,9 @@ function sceneBtn(S){                               // la mano oprime el botón 
  mini.type='button';mini.className='avatar-mini';mini.setAttribute('aria-label','Abrir el menú de mis áreas de trabajo');
  mini.innerHTML='<img src="assets/avatar-mini.jpg" alt="" width="96" height="96"><span>MENÚ</span>';
  document.body.appendChild(mini);
+ // sobre el contacto, la cara flotante se esconde para no tapar los enlaces
+ const foot=document.getElementById('contact');
+ if(foot&&'IntersectionObserver' in window)new IntersectionObserver(([e])=>mini.classList.toggle('is-hidden',e.isIntersecting)).observe(foot);
  if('IntersectionObserver' in window){
   new IntersectionObserver(([e])=>mini.classList.toggle('is-on',!e.isIntersecting),{rootMargin:'0px 0px -55% 0px'}).observe(hero);
  }
@@ -387,12 +390,15 @@ function walkerAge(age){
  return s;
 }
 (()=>{
- const strip=document.querySelector('.about-walk'),about=document.getElementById('about');
- if(!strip||!about)return;
- const svg=strip.querySelector('svg'),wk=strip.querySelector('.wk'),mover=strip.querySelector('.walk-mover'),ages=[...strip.querySelectorAll('[data-age]')];
+ /* «Mi recorrido»: escena fija mientras se desliza. El personaje camina de izquierda a derecha sobre una
+    línea con 6 hitos; arriba, el título grande del hito; abajo, su descripción. La edad sale del hito. */
+ const sec=document.getElementById('recorrido');
+ if(!sec)return;
+ const steps=[...sec.querySelectorAll('.journey-steps li')],marks=[...sec.querySelectorAll('.journey-line i')];
+ const walker=sec.querySelector('.journey-walker'),wk=sec.querySelector('.wk'),road=sec.querySelector('.journey-road'),count=sec.querySelector('.journey-count b');
  const WP=[{lF:24,lB:-24,kF:4,kB:30,aF:-26,aB:26,y:0},{lF:0,lB:0,kF:0,kB:0,aF:0,aB:0,y:-10},{lF:-24,lB:24,kF:30,kB:4,aF:26,aB:-26,y:0}];
- const CYCLE=[0,1,2,1];
- let age=-1,raf=0;
+ const CYCLE=[0,1,2,1],N=steps.length;
+ let age=-1,cur=-1,raf=0;
  const pose=f=>{const P=WP[f],q=c=>wk.querySelector(c);if(!q('.legF'))return;
   q('.legF').setAttribute('transform',`rotate(${P.lF})`);q('.legB').setAttribute('transform',`rotate(${P.lB})`);
   q('.lFk').setAttribute('transform',`translate(0,120) rotate(${-P.kF})`);q('.lBk').setAttribute('transform',`translate(0,120) rotate(${-P.kB})`);
@@ -400,18 +406,40 @@ function walkerAge(age){
   wk.setAttribute('transform',`translate(0 ${P.y})`)};
  const update=()=>{
   raf=0;
-  const r=about.getBoundingClientRect(),vh=window.innerHeight;
-  const p=Math.min(1,Math.max(0,(vh-r.top)/Math.max(1,r.height)));
-  const a=p<.36?0:p<.7?1:2;
-  if(a!==age){age=a;wk.innerHTML=walkerAge(a);ages.forEach(x=>x.classList.toggle('is-on',+x.dataset.age===a));strip.dataset.age=a;}
-  const track=strip.clientWidth-svg.getBoundingClientRect().width;
-  mover.style.transform=`translateX(${(p*Math.max(0,track)).toFixed(1)}px)`;
-  const step=a===2?90:64;                         // de viejo, el paso es más lento
-  pose(reduced?1:CYCLE[Math.floor(window.scrollY/step)%4]);
+  const r=sec.getBoundingClientRect(),run=Math.max(1,r.height-window.innerHeight);
+  const p=Math.min(1,Math.max(0,-r.top/run));
+  const i=Math.min(N-1,Math.floor(p*N*.999));
+  if(i!==cur){
+   cur=i;steps.forEach((s,k)=>s.classList.toggle('is-on',k===i));marks.forEach((m,k)=>m.classList.toggle('is-on',k<=i));
+   if(count)count.textContent=String(i+1).padStart(2,'0');
+   const a=+steps[i].dataset.age;
+   if(a!==age){age=a;wk.innerHTML=walkerAge(a);}
+  }
+  const track=road.clientWidth-walker.offsetWidth;
+  walker.style.transform=`translateX(${(p*Math.max(0,track)).toFixed(1)}px)`;
+  pose(reduced?1:CYCLE[Math.floor(window.scrollY/(age===2?90:60))%4]);
  };
  const req=()=>{if(!raf)raf=requestAnimationFrame(update)};
  window.addEventListener('scroll',req,{passive:true});
  window.addEventListener('resize',req,{passive:true});
+ update();
+})();
+(()=>{
+ /* títulos grandes que se deslizan de costado según su paso por la pantalla (alternando el sentido) */
+ if(reduced)return;
+ const els=[...document.querySelectorAll('.works-heading h2,.discipline-main h3,.footer-email')];
+ if(!els.length)return;
+ let raf=0;
+ const update=()=>{
+  raf=0;const vh=window.innerHeight,vw=window.innerWidth;
+  els.forEach((el,k)=>{
+   const r=el.getBoundingClientRect();if(r.bottom<-200||r.top>vh+200)return;
+   const p=(vh-r.top)/(vh+r.height);                 // 0 entrando por abajo → 1 saliendo por arriba
+   el.style.translate=`${((.5-p)*(k%2?-1:1)*vw*.12).toFixed(1)}px 0`;
+  });
+ };
+ const req=()=>{if(!raf)raf=requestAnimationFrame(update)};
+ window.addEventListener('scroll',req,{passive:true});window.addEventListener('resize',req,{passive:true});
  update();
 })();
 })();

@@ -55,9 +55,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261104-71">
-  <script src="script.js?v=20261104-71" defer></script>
-  <script src="personaje.js?v=20261104-71" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261104-72">
+  <script src="script.js?v=20261104-72" defer></script>
+  <script src="personaje.js?v=20261104-72" defer></script>
 </head>
 <body>
   <canvas class="fluid-cursor" id="fluid-cursor" aria-hidden="true"></canvas>
@@ -80,14 +80,11 @@
   <main id="top" tabindex="-1">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-grain" aria-hidden="true"></div>
-      <div class="hero-meta hero-meta-left">DISEÑADOR VISUAL<br>ASUNCIÓN / PARAGUAY</div>
-      <div class="hero-meta hero-meta-right">BRANDING<br>ILUSTRACIÓN<br>MOTION DESIGN</div>
 
       <div class="hero-giant" aria-hidden="true">
         <span>KEVIN</span>
         <span>MANCUELLO</span>
       </div>
-      <span class="hero-stamp" aria-hidden="true">KM<span>✳</span></span>
 
       <div class="hero-greeting">
         <p class="hero-kicker">PORTFOLIO PERSONAL / 2026</p>
@@ -107,12 +104,10 @@
         <button id="avatar-stage" class="avatar-stage" type="button" aria-label="Retrato interactivo. Activar sonrisa." aria-describedby="avatar-hint">
           <div id="avatar-mount" class="avatar-mount" aria-hidden="true"></div>
         </button>
-        <span class="character-index">[01 — AUTORRETRATO]</span>
         <span class="avatar-hint" id="avatar-hint">HACÉ CLICK PARA CAMBIAR LA EXPRESIÓN</span>
       </div>
 
       <a class="hero-scroll" href="#works"><span class="scroll-line"></span> VER PROYECTOS <span>↓</span></a>
-      <div class="hero-coordinate">25°18' S / 57°38' W</div>
       
     </section>
 
@@ -247,24 +242,28 @@
         <div class="about-text">
           <p class="about-lead">Diseño sistemas visuales, construyo personajes y exploro nuevas formas de contar historias.</p>
           <p>Trabajo en diseño visual desde 2015. Mi experiencia combina branding, ilustración, diseño editorial, motion y producción audiovisual. Actualmente desarrollo proyectos para marcas y campañas desde Periferia Comunicación, mientras profundizo en dirección de arte y nuevas tecnologías creativas.</p>
-          <div class="about-timeline" id="about-timeline" aria-label="Recorrido profesional">
-            <div><span>2015</span><p>Inicio de mi recorrido profesional en diseño y comunicación visual.</p></div>
-            <div><span>FORMACIÓN</span><p>Tecnicatura en Diseño Gráfico (Universidad Columbia del Paraguay) y Artista Secuencial (Art Studium).</p></div>
-            <div><span>2017—2020</span><p>Diseño gráfico y packaging en Electropar S.A.</p></div>
-            <div><span>2022—2025</span><p>Identidad, personaje, campañas y web para Todegol.</p></div>
-            <div><span>2025—HOY</span><p>Diseñador gráfico e ilustrador en Periferia Comunicación: identidad, campañas, ilustración, motion e IA generativa.</p></div>
-          </div>
           <div class="about-tags"><span>BRANDING</span><span>ILUSTRACIÓN</span><span>MOTION</span><span>DIRECCIÓN DE ARTE</span></div>
-          <a class="about-link" href="#about-timeline">VER MI RECORRIDO <span>↘</span></a>
+          <a class="about-link" href="#recorrido">VER MI RECORRIDO <span>↘</span></a>
         </div>
       </div>
-      <div class="about-walk" aria-hidden="true">
-        <div class="walk-mover">
-          <p class="walk-ages"><span data-age="0">2015</span><span data-age="1">HOY</span><span data-age="2">MÁS ADELANTE</span></p>
-          <svg viewBox="-150 -455 310 735"><g class="wk"></g></svg>
+    </section>
+
+    <section class="journey" id="recorrido" aria-labelledby="journey-title">
+      <div class="journey-pin">
+        <div class="journey-top"><span id="journey-title">MI RECORRIDO / 05</span><span class="journey-count"><b>01</b> / 06</span></div>
+        <ol class="journey-steps">
+          <li data-age="0"><h3>2015</h3><p>Inicio de mi recorrido profesional en diseño y comunicación visual.</p></li>
+          <li data-age="0"><h3>FORMACIÓN</h3><p>Tecnicatura en Diseño Gráfico (Universidad Columbia del Paraguay) y Artista Secuencial (Art Studium).</p></li>
+          <li data-age="1"><h3>2017—2020</h3><p>Diseño gráfico y packaging en Electropar S.A.</p></li>
+          <li data-age="1"><h3>2022—2025</h3><p>Identidad, personaje, campañas y web para Todegol.</p></li>
+          <li data-age="1"><h3>2025—HOY</h3><p>Diseñador gráfico e ilustrador en Periferia Comunicación: identidad, campañas, ilustración, motion e IA generativa.</p></li>
+          <li data-age="2"><h3>MÁS ADELANTE</h3><p>Seguir diseñando, dibujando y contando historias.</p></li>
+        </ol>
+        <div class="journey-road" aria-hidden="true">
+          <div class="journey-walker"><svg viewBox="-150 -455 310 735"><g class="wk"></g></svg></div>
+          <div class="journey-line"><i></i><i></i><i></i><i></i><i></i><i></i></div>
         </div>
       </div>
-      <div class="about-giant" aria-hidden="true">PENSAMIENTO VISUAL / PENSAMIENTO VISUAL /</div>
     </section>
   </main>
 

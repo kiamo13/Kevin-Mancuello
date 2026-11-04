@@ -554,13 +554,15 @@
     fluidCanvas.style.height=height+'px';
     fluidCtx.setTransform(dpr,0,0,dpr,0,0);
     fluidCtx.imageSmoothingEnabled=true;
-    fluidScale=Math.min(1,960/Math.max(width,height));
+    // en celular y pantallas táctiles el campo se procesa a menor resolución (menos trabajo por cuadro)
+    const coarse=window.matchMedia("(pointer: coarse)").matches||width<680;
+    fluidScale=Math.min(1,(coarse?540:960)/Math.max(width,height));
     fluidWidth=Math.max(1,Math.ceil(width*fluidScale));
     fluidHeight=Math.max(1,Math.ceil(height*fluidScale));
     fluidSource.width=fluidWidth;fluidSource.height=fluidHeight;
     fluidBlur.width=fluidWidth;fluidBlur.height=fluidHeight;
     // la grilla: ~150 celdas en el lado largo (en celular, ~1 celda cada 3 px; en escritorio, cada 10 px)
-    const long=Math.max(width,height),cells=150;
+    const long=Math.max(width,height),cells=coarse?110:150;
     const nw=Math.max(16,Math.round(width/long*cells)),nh=Math.max(16,Math.round(height/long*cells));
     if(nw!==GW||nh!==GH){
       GW=nw;GH=nh;const n=GW*GH;

@@ -1288,3 +1288,46 @@ html.is-lite .hands-menu .hand{transition:none}
 /* v71 — el hero se fija un tramo al inicio del scroll (ver script.js) */
 .hero-pin{position:relative}
 .hero-pin>.hero{position:sticky}
+.avatar-mini.is-on.is-hidden{opacity:0;visibility:hidden;transform:translateY(20px) scale(.7);transition:opacity .24s steps(3),transform .24s steps(3),visibility 0s .24s}
+
+/* v72 — celular: las manos rodean la cabeza (una arriba, dos a los costados de abajo) */
+@media(max-width:900px){
+  .hero.hands-open .hero-character{top:clamp(250px,36svh,330px)!important}
+  .hands-menu .hand{width:40vw}
+  .hands-menu .hand-brand{left:30vw;right:auto;top:clamp(84px,11svh,110px);bottom:auto}
+  .hands-menu .hand-ilu{left:2vw;right:auto;top:calc(clamp(250px,36svh,330px) + 47vw);bottom:auto}
+  .hands-menu .hand-motion{right:2vw;left:auto;top:calc(clamp(250px,36svh,330px) + 47vw);bottom:auto}
+  .hands-close{top:auto;bottom:24px;right:auto;left:50%;transform:translateX(-50%)}
+}
+
+/* v72 — «Mi recorrido»: escena fija; el personaje camina sobre la línea, título grande arriba y descripción abajo */
+.journey{position:relative;height:calc(100svh + 6 * 55svh);background:var(--plum);color:var(--paper)}
+.journey-pin{position:sticky;top:0;height:100svh;overflow:hidden;padding:0 clamp(20px,5vw,76px)}
+.journey-top{position:absolute;left:clamp(20px,5vw,76px);right:clamp(20px,5vw,76px);top:clamp(84px,11svh,110px);display:flex;justify-content:space-between;
+  font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:rgba(244,242,237,.72);z-index:3}
+.journey-count b{color:var(--acid);font-weight:500}
+.journey-steps{list-style:none;margin:0;padding:0}
+.journey-steps li{position:absolute;inset:clamp(118px,16svh,150px) clamp(20px,5vw,76px) clamp(28px,5svh,56px);display:flex;flex-direction:column;justify-content:space-between;
+  opacity:0;visibility:hidden;transform:translateY(24px);transition:opacity .25s steps(3),transform .25s steps(3),visibility 0s .25s;z-index:2}
+.journey-steps li.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .25s steps(3),transform .25s steps(3),visibility 0s}
+.journey-steps h3{margin:0 0 0 -.05em;font-size:clamp(64px,14.5vw,250px);line-height:.8;letter-spacing:-.1em;font-weight:700;color:var(--acid);white-space:nowrap}
+.journey-steps p{margin:0;max-width:38ch;font-size:clamp(19px,1.9vw,28px);line-height:1.3;letter-spacing:-.02em;color:var(--paper)}
+.journey-road{position:absolute;left:clamp(20px,5vw,76px);right:clamp(20px,5vw,76px);top:50%;height:clamp(190px,36svh,360px);transform:translateY(-42%);z-index:1}
+.journey-walker{position:absolute;left:0;bottom:0;height:100%;will-change:transform}
+.journey-walker svg{height:100%;width:auto;overflow:visible}
+.journey-line{position:absolute;left:0;right:0;bottom:-6px;height:2px;background:rgba(244,242,237,.22);display:flex;justify-content:space-between}
+.journey-line i{width:12px;height:12px;margin-top:-5px;border-radius:50%;background:var(--plum);border:2px solid rgba(244,242,237,.4)}
+.journey-line i.is-on{background:var(--acid);border-color:var(--acid)}
+@media(max-width:680px){
+  .journey-steps h3{font-size:clamp(52px,15vw,96px);white-space:normal;text-wrap:balance}
+  .journey-road{height:clamp(170px,30svh,260px);top:52%}
+}
+
+/* v72 — tipografía con intención (A./CHEN): los títulos llenan el ancho, se salen por el borde y se deslizan al bajar */
+.works-heading{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"eyebrow" "title" "intro"!important}
+.works-heading h2{font-size:clamp(90px,18.6vw,330px)!important;margin-left:-.05em!important;line-height:.8;white-space:nowrap}
+.works-heading .works-intro{justify-self:end;max-width:32ch;text-align:right}
+.discipline-main h3{font-size:clamp(80px,17vw,300px)!important;white-space:nowrap;margin-left:-.05em}
+.footer{overflow:clip}
+.footer-email{font-size:min(21vw,330px)!important;white-space:nowrap;margin-left:-.04em}
+@media(max-width:680px){.works-intro{text-align:left!important;justify-self:start!important}}
