@@ -119,7 +119,11 @@ a{color:inherit}
 .cs-feedmini{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;max-width:680px;margin-top:clamp(24px,3vw,40px)}
 .cs-feedmini img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:12px;background:var(--paper-2);display:block}
 @media(max-width:560px){.cs-feedmini{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.cs-mont{margin:clamp(24px,3vw,40px) 0 0;max-width:600px}
+.cs-mont{margin:clamp(24px,3vw,40px) 0 0;max-width:680px}
 .cs-mont img{width:100%;height:auto;border-radius:var(--r);display:block}
 .cs-ext{display:inline-block;margin-top:6px;font:500 14px var(--mono);letter-spacing:.06em;color:inherit;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--acid,#84FF00);text-decoration-thickness:2px}
 .cs-ext:hover{background:var(--acid,#84FF00);color:#231F46;text-decoration-color:transparent}
+
+/* v90 — Melvi sin fondo: las imágenes tienen transparencia, así que van directo sobre la página */
+.cs-grid figure.bare img{background:transparent;border-radius:0;padding:0;object-fit:contain}
+.cs-stickers.bare{background:transparent;padding:0}
