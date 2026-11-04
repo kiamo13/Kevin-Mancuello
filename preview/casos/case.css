@@ -127,3 +127,10 @@ a{color:inherit}
 /* v90 — Melvi sin fondo: las imágenes tienen transparencia, así que van directo sobre la página */
 .cs-grid figure.bare img{background:transparent;border-radius:0;padding:0;object-fit:contain}
 .cs-stickers.bare{background:transparent;padding:0}
+
+/* v93 — piezas verticales de motion: una fila, misma altura, cada una con el ancho de su proporción */
+.cs-motion3{display:flex;gap:var(--gap);align-items:flex-start;margin-top:clamp(24px,3vw,40px);max-width:860px}
+.cs-motion3 figure{flex:var(--ar,.5625) 1 0;min-width:0}
+.cs-motion3 video{width:100%;height:auto;display:block;border-radius:var(--r);background:var(--paper-2)}
+.cs-motion3 figcaption{margin-top:10px;font:500 13px var(--mono);letter-spacing:.04em;color:var(--muted)}
+@media(max-width:560px){.cs-motion3{flex-direction:column;align-items:stretch}.cs-motion3 figure{flex:none;max-width:320px}}
