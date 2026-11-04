@@ -89,3 +89,15 @@ a{color:inherit}
 /* recorte uniforme 4:5 para filas de piezas de distinto formato */
 .cs-grid figure.crop45 img{aspect-ratio:4/5;object-fit:cover;object-position:50% 0}
 @media(max-width:860px){.cs-grid figure.crop45{grid-column:span 6}}
+/* v67 — piezas sobre fondo (PNG con transparencia), stickers, enlaces en texto y anchos 5/7 */
+.cs-grid figure.s7{grid-column:span 7}.cs-grid figure.s5{grid-column:span 5}
+.cs-grid figure.card img{background:var(--acc,var(--paper-2));padding:clamp(16px,4vw,56px);object-fit:contain}
+.cs-feature.is-portrait img{max-height:78vh;width:auto;justify-self:center}
+.cs-stickers{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--gap);margin-top:var(--gap);background:#0F1B3F;border-radius:var(--r);padding:clamp(16px,3vw,40px)}
+.cs-stickers img{width:100%;height:auto}
+.cs-gridnote{margin-top:10px;font:500 13px var(--mono);letter-spacing:.04em;color:var(--muted)}
+.cs-inline{display:inline-flex;align-items:center;min-height:32px;font:500 14px var(--mono);letter-spacing:.06em;color:var(--violet);text-decoration:none;border-bottom:1px solid currentColor}
+.cs-inline:hover{color:var(--ink)}
+@media(max-width:860px){.cs-grid figure.s7,.cs-grid figure.s5{grid-column:span 12}.cs-stickers{grid-template-columns:repeat(3,minmax(0,1fr))}.cs-feature.is-portrait img{max-height:none;width:100%}}
+.cs-grid figure.card.logo img{padding:clamp(24px,6vw,96px) clamp(24px,16vw,260px)}
+.cs-section[id]{scroll-margin-top:72px}

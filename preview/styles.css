@@ -1189,3 +1189,18 @@ video.project-img{background:#14112A}
   .footer-links a{min-height:40px}
   .hero-scroll,.brand-code{min-height:32px;display:inline-flex;align-items:center}
 }
+/* v67 — en móvil el apellido queda entero: el nombre se ancla bajo el saludo y el personaje
+   toma la proporción exacta del SVG (631×740) y su caja arranca, con el pelo, justo debajo de MANCUELLO */
+@media(max-width:680px){
+  .hero-giant{top:300px!important}
+  .hero-character{
+    --cw:min(94vw,440px);
+    width:var(--cw)!important;height:auto!important;aspect-ratio:631/740;
+    top:374px!important;bottom:auto!important;
+  }
+  .character-index{display:none}
+}
+/* v67 — «PROYECTOS» tiene 9 letras (WORKS tenía 5): el título se escala para entrar en su columna */
+.works-heading h2{font-size:clamp(84px,13vw,220px)}
+@media(max-width:680px){.works-heading h2{font-size:19vw}}
+@media(max-width:900px){.avatar-hint{display:none}}
