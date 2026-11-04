@@ -543,6 +543,17 @@
   let GW=0,GH=0,gU,gV,gU0,gV0,gD,gD0,gP,gDiv,gCurl,gImg=null;
   let fluidAlive=false,fluidBox={x0:0,y0:0,x1:0,y1:0};
   let fluidPendingSplats=[];
+  // v77 — cada zona de la página elige cómo se comporta el fluido (atributos data-fluid y data-fluid-color)
+  let fluidMode={m:'negativo',c:'#FFFFFF',r:255,g:255,b:255};
+  const FLUID_BLEND={negativo:'difference',tinta:'multiply',contorno:'normal'};
+  function setFluidMode(x,y){
+    const el=document.elementFromPoint(x,y),z=el&&el.closest('[data-fluid]');
+    const m=z?z.dataset.fluid:'negativo',c=(z&&z.dataset.fluidColor)||'#FFFFFF';
+    if(m===fluidMode.m&&c===fluidMode.c)return;
+    const n=parseInt(c.slice(1),16);
+    fluidMode={m,c,r:n>>16&255,g:n>>8&255,b:n&255};
+    if(fluidCanvas)fluidCanvas.style.mixBlendMode=FLUID_BLEND[m]||'difference';
+  }
 
   function resizeFluidCanvas(){
     if(!fluidCanvas||!fluidCtx)return;
@@ -580,6 +591,7 @@
   function moveFluidCursor(e){
     if(!fluidCanvas||!fluidCtx||reducedMotion)return;
     const x=e.clientX,y=e.clientY;
+    setFluidMode(x,y);
     clearTimeout(fluidIdleTimer);
     fluidIdleTimer=window.setTimeout(hideFluidCursor,320);
     const pointerNow=performance.now();
@@ -627,7 +639,7 @@
     const n=GW*GH;
     // confinamiento de vorticidad: devuelve los remolinos que la grilla gruesa aplana
     for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gCurl[id]=(gV[id+1]-gV[id-1]-gU[id+GW]+gU[id-GW])*.5;}
-    const eps=.05*dt;
+    const eps=.02*dt;
     for(let j=2;j<GH-2;j++)for(let i=2;i<GW-2;i++){
       const id=i+j*GW;
       const nx=(Math.abs(gCurl[id+1])-Math.abs(gCurl[id-1]))*.5,ny=(Math.abs(gCurl[id+GW])-Math.abs(gCurl[id-GW]))*.5;
@@ -640,7 +652,7 @@
     for(let j=1;j<GH-1;j++)for(let i=1;i<GW-1;i++){const id=i+j*GW;gU[id]-=.5*(gP[id+1]-gP[id-1]);gV[id]-=.5*(gP[id+GW]-gP[id-GW]);}
     gU0.set(gU);gV0.set(gV);fluidAdvect(gU,gU0,dt);fluidAdvect(gV,gV0,dt);
     gD0.set(gD);fluidAdvect(gD,gD0,dt);
-    const vd=Math.pow(.93,dt),dd=Math.pow(.962,dt);
+    const vd=Math.pow(.84,dt),dd=Math.pow(.945,dt);   // v77: más viscoso (rígido) y estela más corta
     for(let id=0;id<n;id++){gU[id]*=vd;gV[id]*=vd;gD[id]*=dd;if(gD[id]<.004)gD[id]=0;}
   }
 
@@ -665,7 +677,7 @@
     const cp=cellPx(),rCells=clamp(40/cp,3,12);
     for(const s of fluidPendingSplats){
       const len=Math.hypot(s.dx,s.dy),steps=Math.max(1,Math.min(16,Math.ceil(len/(cp*1.5))));
-      const fx=s.dx/cp*.32/steps,fy=s.dy/cp*.32/steps;
+      const fx=s.dx/cp*.22/steps,fy=s.dy/cp*.22/steps;
       for(let k=1;k<=steps;k++){
         const t=k/steps,px=(s.x-s.dx*(1-t))/cp,py=(s.y-s.dy*(1-t))/cp;
         fluidSplat(px,py,clamp(fx,-2.5,2.5),clamp(fy,-2.5,2.5),.75/steps+.16,rCells*(.9+.2*Math.min(1,len/160)));
@@ -673,7 +685,7 @@
     }
     fluidPendingSplats=[];
     // mientras el cursor está quieto sobre la página, la mancha bajo el puntero se sostiene
-    if(fluidActive)fluidSplat(fluidCurrent.x/cp,fluidCurrent.y/cp,0,0,.09*dt*fluidVisualScale,rCells*fluidVisualScale);
+    if(fluidActive)fluidSplat(fluidCurrent.x/cp,fluidCurrent.y/cp,0,0,.16*dt*fluidVisualScale,rCells*1.1*fluidVisualScale);
     fluidStep(dt);
 
     // densidad → alfa; caja de la zona con tinta (para saber si toca al avatar)
@@ -692,14 +704,19 @@
     fluidBlurCtx.clearRect(0,0,fluidWidth,fluidHeight);
     fluidBlurCtx.save();
     fluidBlurCtx.imageSmoothingEnabled=true;
-    fluidBlurCtx.filter='blur(6px)';
+    fluidBlurCtx.filter='blur(8px)';
     fluidBlurCtx.drawImage(fluidGrid,0,0,GW,GH,0,0,fluidWidth,fluidHeight);
     fluidBlurCtx.restore();
     const pixels=fluidBlurCtx.getImageData(0,0,fluidWidth,fluidHeight);
     const data=pixels.data;
-    for(let i=3;i<data.length;i+=4){
-      const t=clamp((data[i]/255-.22)/.16,0,1);
-      data[i]=Math.round(t*t*(3-2*t)*255);
+    // v77 — el modo depende de la zona: negativo (relleno blanco + difference), tinta (relleno de color + multiply)
+    // o contorno (solo el borde del fluido, en color). El borde es más duro para que se sienta como un gel.
+    const fm=fluidMode,ring=fm.m==='contorno';
+    for(let i=0;i<data.length;i+=4){
+      const a=data[i+3]/255;
+      let t=clamp((a-.26)/.08,0,1);t=t*t*(3-2*t);
+      if(ring){let u=clamp((a-.42)/.08,0,1);u=u*u*(3-2*u);t=Math.max(0,t-u);}
+      data[i]=fm.r;data[i+1]=fm.g;data[i+2]=fm.b;data[i+3]=Math.round(t*255);
     }
     fluidBlurCtx.putImageData(pixels,0,0);
     fluidCtx.clearRect(0,0,window.innerWidth,window.innerHeight);

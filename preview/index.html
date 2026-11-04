@@ -55,9 +55,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261104-76">
-  <script src="script.js?v=20261104-76" defer></script>
-  <script src="personaje.js?v=20261104-76" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261104-77">
+  <script src="script.js?v=20261104-77" defer></script>
+  <script src="personaje.js?v=20261104-77" defer></script>
 </head>
 <body>
   <canvas class="fluid-cursor" id="fluid-cursor" aria-hidden="true"></canvas>
@@ -79,7 +79,7 @@
   </header>
 
   <main id="top" tabindex="-1">
-    <section class="hero" aria-labelledby="hero-title">
+    <section class="hero" aria-labelledby="hero-title" data-fluid="negativo">
       <div class="hero-grain" aria-hidden="true"></div>
 
       <div class="hero-giant" aria-hidden="true">
@@ -111,7 +111,7 @@
       
     </section>
 
-    <section class="works-section" id="works">
+    <section class="works-section" id="works" data-fluid="tinta" data-fluid-color="#6E3FFF">
       <div class="works-heading">
         <p class="eyebrow">SELECCIÓN / 2021—2026</p>
         <h2>PROYECTOS<span>↘</span></h2>
@@ -236,7 +236,7 @@
       </div>
     </section>
 
-    <section class="services" id="servicios" aria-labelledby="services-title">
+    <section class="services" id="servicios" aria-labelledby="services-title" data-fluid="contorno" data-fluid-color="#84FF00">
       <div class="services-top"><span>QUÉ HAGO / 04</span><span>PARA MARCAS, AGENCIAS Y PROYECTOS PROPIOS</span></div>
       <h2 id="services-title">QUÉ HAGO<span>↘</span></h2>
       <ol class="services-list">
@@ -252,7 +252,7 @@
       </div>
     </section>
 
-    <section class="about-section" id="about">
+    <section class="about-section" id="about" data-fluid="contorno" data-fluid-color="#F4F2ED">
       <div class="about-topline"><span>SOBRE MÍ / 05</span><span>ASUNCIÓN, PARAGUAY</span></div>
       <div class="about-layout">
         <div class="about-heading">
@@ -269,7 +269,7 @@
       </div>
     </section>
 
-    <section class="journey" id="recorrido" aria-labelledby="journey-title">
+    <section class="journey" id="recorrido" aria-labelledby="journey-title" data-fluid="negativo">
       <div class="journey-pin">
         <div class="journey-top"><span id="journey-title">MI RECORRIDO / 06</span><span class="journey-count"><b>01</b> / 07</span></div>
         <ol class="journey-steps">
@@ -289,7 +289,7 @@
     </section>
   </main>
 
-  <footer class="footer" id="contact">
+  <footer class="footer" id="contact" data-fluid="tinta" data-fluid-color="#231F46">
     <div class="footer-topline"><span>HABLEMOS</span><span>DISPONIBLE PARA COLABORACIONES</span></div>
     <a class="footer-email" href="mailto:kevin13.kiamo@gmail.com">HABLEMOS<span>↗</span></a>
     <div class="footer-links">
