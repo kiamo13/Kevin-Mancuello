@@ -114,3 +114,12 @@ a{color:inherit}
 .cs-top a{min-height:40px;display:inline-flex;align-items:center}
 .cs-foot a{min-height:32px;display:inline-flex;align-items:center}
 .cs-grid figure.s6{grid-column:span 6}@media(max-width:860px){.cs-grid figure.s6{grid-column:span 12}}
+
+/* v84 — el feed de Player y el montaje de la web de Todegol son material de apoyo: chicos y con enlace */
+.cs-feedmini{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;max-width:680px;margin-top:clamp(24px,3vw,40px)}
+.cs-feedmini img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:var(--paper-2);display:block}
+@media(max-width:560px){.cs-feedmini{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cs-mont{margin:clamp(24px,3vw,40px) 0 0;max-width:600px}
+.cs-mont img{width:100%;height:auto;border-radius:var(--r);display:block}
+.cs-ext{display:inline-block;margin-top:6px;font:500 14px var(--mono);letter-spacing:.06em;color:inherit;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--acid,#84FF00);text-decoration-thickness:2px}
+.cs-ext:hover{background:var(--acid,#84FF00);color:#231F46;text-decoration-color:transparent}
