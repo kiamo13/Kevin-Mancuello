@@ -1435,3 +1435,8 @@ html.is-lite .clients-track{animation:none}
 
 /* v101 — sin la raya oscura bajo la imagen de cada tarjeta */
 .project-caption{border-top:0!important;border-bottom:0!important}
+
+/* v102 — pie: disponibilidad con la lista de servicios, alineada a la derecha */
+.footer-topline{gap:24px}
+.footer-available{text-align:right;text-wrap:balance}
+@media(max-width:680px){.footer-topline{flex-direction:column;align-items:flex-start;gap:8px}.footer-available{text-align:left}}
