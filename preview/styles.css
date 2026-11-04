@@ -1331,3 +1331,44 @@ html.is-lite .hands-menu .hand{transition:none}
 .footer{overflow:clip}
 .footer-email{font-size:min(21vw,330px)!important;white-space:nowrap;margin-left:-.04em}
 @media(max-width:680px){.works-intro{text-align:left!important;justify-self:start!important}}
+
+/* v73 — el recorrido en celular: la descripción sube para que la cara flotante «MENÚ» no la tape */
+@media(max-width:680px){.journey-steps li{bottom:clamp(96px,14svh,120px)}.journey-steps p{padding-right:8px}}
+
+/* v73 — nombre del hero más agresivo: más grande, KEVIN se sale por la izquierda y MANCUELLO por la derecha;
+   entra cuadro por cuadro desde los costados y, mientras el hero está fijo, cada línea se abre hacia su lado */
+@keyframes km-in-left{from{translate:-70vw 0}to{translate:calc(var(--hd,0) * -1vw) 0}}
+@keyframes km-in-right{from{translate:70vw 0}to{translate:calc(var(--hd,0) * 1vw) 0}}
+.hero-giant span:first-child{translate:calc(var(--hd,0) * -1vw) 0;animation:km-in-left .66s steps(6) .1s backwards}
+.hero-giant span:last-child{translate:calc(var(--hd,0) * 1vw) 0;animation:km-in-right .66s steps(6) .24s backwards}
+@media(min-width:681px){
+  .hero-giant{font-size:clamp(170px,31vw,480px)!important;top:45%!important;line-height:.7!important}
+  .hero-giant span:first-child{margin-left:-14vw}
+  .hero-giant span:last-child{font-size:.6em!important;margin-right:-12vw;margin-top:.12em}
+  .hero-greeting{top:auto!important;bottom:clamp(86px,12vh,120px)}
+  .hero-role{bottom:clamp(40px,6vh,64px)!important}
+}
+@media(prefers-reduced-motion:reduce){.hero-giant span{animation:none!important}}
+html.is-lite .hero-giant span{animation:none}
+
+/* v73 — tarjetas con la forma de su contenido: cada fila tiene la misma altura y cada pieza el ancho que pide
+   su proporción (ilustraciones verticales 4:5, marcas 5:3, spot 16:9, Atlas 9:16) */
+.project-shelf{display:flex!important;align-items:flex-start;gap:clamp(14px,2vw,28px)!important}
+.project-shelf>.project-item{flex:calc(var(--ar,4/3)) 1 0;min-width:0}
+.project-shelf .project-visual{aspect-ratio:var(--ar,4/3)!important;height:auto!important;min-height:0!important;max-height:none!important}
+.project-shelf .project-visual .project-img{width:100%;height:100%;object-fit:cover}
+@media(max-width:760px){
+  .project-shelf{flex-direction:column;align-items:stretch}
+  .project-shelf>.project-item{flex:none;width:100%}
+  .project-shelf .project-visual{max-height:78svh!important;margin-inline:auto}
+  .project-shelf>.project-item[style*="9/16"] .project-visual{width:min(100%,calc(78svh * 9 / 16))}
+}
+
+/* v73 — todas las formas redondeadas */
+:root{--km-r:clamp(20px,2.2vw,32px)}
+.project-visual,.project-visual .project-img{border-radius:var(--km-r)!important;overflow:hidden}
+.about-tags span,.lite-toggle,.watch-link,.about-link{border-radius:999px}
+.watch-link,.about-link{padding:12px 18px!important;border:1px solid currentColor!important}
+.works-section,.about-section,.journey,.footer{border-radius:var(--km-r) var(--km-r) 0 0;margin-top:calc(var(--km-r) * -1);position:relative}
+.works-section{z-index:2}.about-section{z-index:3}.journey{z-index:4}.footer{z-index:5}
+.journey-line{border-radius:2px}

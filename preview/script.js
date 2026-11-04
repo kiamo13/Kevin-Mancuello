@@ -865,6 +865,10 @@
     pin.style.height=Math.round(h+vh*.45)+'px';
     hero.style.top=Math.min(0,vh-h)+'px';          // si el hero es más alto que la pantalla, se fija mostrando su borde inferior
   };
+  // mientras el hero está fijo, KEVIN y MANCUELLO se abren hacia sus lados (hasta 10 vw)
+  let hdRaf=0;
+  const drift=()=>{hdRaf=0;const run=Math.max(1,pin.offsetHeight-hero.offsetHeight);hero.style.setProperty('--hd',(Math.min(1.4,Math.max(0,window.scrollY/run))*10).toFixed(2));};
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)window.addEventListener('scroll',()=>{if(!hdRaf)hdRaf=requestAnimationFrame(drift)},{passive:true});
   window.addEventListener('resize',fit,{passive:true});
   fit();
 })();
