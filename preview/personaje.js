@@ -381,10 +381,10 @@ function walkerAge(age){
   s=s.replace(new RegExp(`<path [^>]*fill="${C.beard}"/>`,'g'),'').replace(new RegExp(`<path [^>]*stroke="${C.beardL}"[^>]*/>`,'g'),'');
  }
  if(age===2){                                    // más adelante: canas, anteojos y un poco encorvado
-  s=s.split(C.hairL).join('#F1EEF6').split(C.hair).join('#D8D3E3').split(C.beardL).join('#E7E3EF').split(C.beard).join('#C4BED2');
+  s=s.split(C.hairL).join('#CFC9DD').split(C.hair).join('#A7A0BA').split(C.beardL).join('#C2BCD1').split(C.beard).join('#8F88A5');
   s=s.replace(/(<ellipse cx="18" cy="-60"[^>]*\/>)/,`$1<circle cx="34" cy="-84" r="15" fill="rgba(255,255,255,.18)" stroke="${C.deep}" stroke-width="4"/><path d="M49,-86 L58,-88 M19,-86 L-8,-92" stroke="${C.deep}" stroke-width="4" stroke-linecap="round"/>`);
   const iLB=s.indexOf('<g class="legB">'),iT=s.indexOf('<g class="torso">'),iLF=s.indexOf('<g class="legF">'),iAF=s.indexOf('<g class="armF"');
-  const lean=x=>`<g transform="rotate(7)">${x}</g>`;
+  const lean=x=>`<g transform="rotate(3)">${x}</g>`;
   s=lean(s.slice(0,iLB))+s.slice(iLB,iT)+lean(s.slice(iT,iLF))+s.slice(iLF,iAF)+lean(s.slice(iAF));
  }
  return s;

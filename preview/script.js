@@ -969,3 +969,11 @@ void main(){float a=bic(uv);float k=smoothstep(.26,.34,a);k=max(0.,k-ring*smooth
   window.addEventListener('resize',fit,{passive:true});
   fit();
 })();
+/* v80 — enlace real que cubre cada tarjeta de proyecto (el overlay con ::after fallaba con clic del medio / menú contextual) */
+(()=>{
+  document.querySelectorAll('.project-item').forEach(it=>{
+    const l=it.querySelector('.project-link');if(!l||it.querySelector('.project-cover'))return;
+    const c=document.createElement('a');c.className='project-cover';c.href=l.getAttribute('href');c.tabIndex=-1;c.setAttribute('aria-hidden','true');c.textContent=l.getAttribute('aria-label')||'';
+    it.appendChild(c);it.classList.add('has-cover');
+  });
+})();

@@ -1417,3 +1417,12 @@ html.is-lite .clients-track{animation:none}
 .motion-reel video{display:block;width:100%;aspect-ratio:16/9;border-radius:var(--km-r);background:#14112A}
 .motion-reel figcaption{margin-top:12px;font:500 13px var(--mono,"DM Mono",monospace);letter-spacing:.04em;color:var(--muted,#5e5a78)}
 .motion-reel figcaption b{color:var(--violet,#6E3FFF);font-weight:500;margin-right:8px}
+
+/* v80 — «Mi recorrido»: la descripción de cada hito se lee de entrada (más grande, con marca ácida) */
+.journey-steps p{font-size:clamp(22px,2.5vw,38px);line-height:1.22;max-width:30ch;font-weight:500;padding-left:clamp(14px,1.4vw,22px);border-left:4px solid var(--acid)}
+@media(max-width:680px){.journey-steps p{font-size:clamp(20px,5.6vw,26px);max-width:none;padding-right:64px}}
+/* v80 — cada tarjeta de proyecto lleva un enlace real que la cubre (clic del medio, Ctrl+clic y menú contextual) */
+.project-item{position:relative}
+.project-item .project-cover{position:absolute;inset:0;z-index:3;display:block;font-size:0;color:transparent}
+.project-item.has-cover .project-link::after{content:none}
+.project-item .project-cover:focus-visible{outline:2px solid var(--violet,#6e3fff);outline-offset:4px;border-radius:4px}
