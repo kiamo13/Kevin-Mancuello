@@ -1445,3 +1445,8 @@ html.is-lite .clients-track{animation:none}
 .hero-role small span{white-space:nowrap}
 @media(max-width:680px){.hero-role small{width:212px;max-width:none!important;margin-left:-67px}}
 @media(min-width:681px){.hero-role small{max-width:330px!important;width:auto!important;margin-left:auto}}
+
+/* v108 — aviso de mail copiado */
+.mail-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#231f46;color:#f4f2ed;border:1px solid #84ff00;padding:12px 18px;border-radius:999px;font:500 13px "DM Mono",monospace;letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:10000;max-width:calc(100vw - 32px)}
+.mail-toast.is-on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){.mail-toast{transition:none}}

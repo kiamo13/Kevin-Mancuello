@@ -977,3 +977,20 @@ void main(){float a=bic(uv);float k=smoothstep(.26,.34,a);k=max(0.,k-ring*smooth
     it.appendChild(c);it.classList.add('has-cover');
   });
 })();
+
+// v108 — mail: si la computadora no tiene un programa de correo configurado, el enlace "mailto" no hace nada.
+// Al hacer clic, además de intentar abrirlo, se copia la dirección y se avisa.
+(()=>{
+  const links=document.querySelectorAll('a[href^="mailto:"]');
+  if(!links.length)return;
+  const toast=document.createElement('div');
+  toast.className='mail-toast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');
+  document.body.appendChild(toast);
+  let t=0;
+  links.forEach(a=>a.addEventListener('click',()=>{
+    const mail=a.getAttribute('href').replace(/^mailto:/,'').split('?')[0];
+    const show=msg=>{toast.textContent=msg;toast.classList.add('is-on');clearTimeout(t);t=setTimeout(()=>toast.classList.remove('is-on'),3200);};
+    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(mail).then(()=>show('Mail copiado: '+mail),()=>show(mail));}
+    else show(mail);
+  }));
+})();
