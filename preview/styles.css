@@ -1266,9 +1266,6 @@ html.is-lite .hands-menu .hand{transition:none}
   .hands-menu .hand-motion{left:27vw;right:auto;top:auto;bottom:64px}
   .hands-menu .hand span{font-size:12px;padding:8px 12px}
 }
-/* v70 — al deslizar, el avatar se queda a la vista más tiempo (baja con la página) y se achica */
-.hero-character{translate:0 calc(var(--hp,0) * var(--hh,0px) * .62);scale:calc(1 - var(--hp,0) * .45)}
-.hero.hands-open .hero-character{translate:none}
 /* v70 — botón «Cerrar» del menú y cara chica flotante que lo abre desde cualquier sección */
 .hands-close{position:absolute;left:50%;bottom:clamp(28px,5vh,56px);transform:translateX(-50%);z-index:2;
   font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:var(--paper);background:transparent;
@@ -1288,5 +1285,6 @@ html.is-lite .hands-menu .hand{transition:none}
 .avatar-mini:hover img{transform:rotate(-8deg)}
 .avatar-mini:focus-visible{outline:2px solid var(--acid);outline-offset:4px;border-radius:999px}
 @media(prefers-reduced-motion:reduce){.avatar-mini{transition:none}}
-/* v70 — en celular la pista también se ve: sin ella no se descubre que la cara abre el menú */
-@media(hover:none),(max-width:900px){.avatar-hint{display:block!important;opacity:1;bottom:36%;font-size:11px;white-space:nowrap}}
+/* v71 — el hero se fija un tramo al inicio del scroll (ver script.js) */
+.hero-pin{position:relative}
+.hero-pin>.hero{position:sticky}

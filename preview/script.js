@@ -850,18 +850,19 @@
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.play().catch(()=>{});else e.target.pause();}),{threshold:.3});
   loops.forEach(v=>io.observe(v));
 })();
-// v70 — al deslizar, el avatar acompaña la página casi como si estuviera fijo y se achica; el nombre sube un poco.
+// v71 — al empezar a deslizar, el hero se queda quieto un tramo (45 % de la pantalla) para jugar con la cara
+// y el rayo X antes de que la página siga. Va en un contenedor más alto con el hero en position:sticky.
 (()=>{
-  const hero=document.querySelector('.hero'),ch=document.querySelector('.hero-character'),giant=document.querySelector('.hero-giant');
-  if(!hero||!ch||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  let raf=0;
-  const update=()=>{
-    raf=0;
-    const h=hero.offsetHeight||1,p=Math.min(1,Math.max(0,window.scrollY/h));
-    hero.style.setProperty("--hp",p.toFixed(4));hero.style.setProperty("--hh",h+"px");
-    if(giant)giant.style.translate=`0 ${(-p*h*.12).toFixed(1)}px`;
+  const hero=document.querySelector('.hero');
+  if(!hero)return;
+  const pin=document.createElement('div');
+  pin.className='hero-pin';
+  hero.parentNode.insertBefore(pin,hero);pin.appendChild(hero);
+  const fit=()=>{
+    const h=hero.offsetHeight,vh=window.innerHeight;
+    pin.style.height=Math.round(h+vh*.45)+'px';
+    hero.style.top=Math.min(0,vh-h)+'px';          // si el hero es más alto que la pantalla, se fija mostrando su borde inferior
   };
-  window.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(update);},{passive:true});
-  window.addEventListener('resize',update,{passive:true});
-  update();
+  window.addEventListener('resize',fit,{passive:true});
+  fit();
 })();

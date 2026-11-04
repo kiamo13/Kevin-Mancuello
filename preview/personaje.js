@@ -354,8 +354,6 @@ function sceneBtn(S){                               // la mano oprime el botón 
  const close=document.createElement('button');close.type='button';close.className='hands-close';close.textContent='CERRAR ✕';close.tabIndex=-1;
  close.addEventListener('click',e=>{e.stopPropagation();set(false);stage.focus()});
  nav.appendChild(close);
- // en pantallas táctiles la pista dice «tocá»
- if(hint&&window.matchMedia('(hover: none)').matches)hint.textContent='TOCÁ MI CARA PARA VER MIS ÁREAS';
  // si se desliza lejos del hero con el menú abierto, se cierra solo
  window.addEventListener('scroll',()=>{if(open&&window.scrollY>hero.offsetHeight*.35)set(false)},{passive:true});
  // cara chica flotante: aparece cuando el hero sale de la vista y abre el mismo menú desde cualquier parte
