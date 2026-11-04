@@ -1432,3 +1432,6 @@ html.is-lite .clients-track{animation:none}
 .about-tools-label{flex:0 0 100%;margin:0 0 2px;font:500 11px var(--mono);letter-spacing:.14em;opacity:.7}
 .about-tools img{width:44px;height:44px;object-fit:contain;border-radius:12px;overflow:hidden}
 @media(max-width:520px){.about-tools img{width:38px;height:38px}}
+
+/* v101 — sin la raya oscura bajo la imagen de cada tarjeta */
+.project-caption{border-top:0!important;border-bottom:0!important}
