@@ -1412,3 +1412,8 @@ html.is-lite .clients-track{animation:none}
 /* v76 — en pantallas bajas (laptops de 720–800 px de alto) el nombre se escala también por la altura para no pisar el saludo ni el rol */
 @media(min-width:681px){.hero-giant{font-size:clamp(150px,min(31vw,50vh),480px)!important}}
 @media(min-width:681px){.hero-greeting{z-index:9!important;bottom:clamp(64px,8.5vh,104px)!important}.hero-greeting .hero-kicker{max-width:none;white-space:nowrap}}
+/* v78 — reel de motion debajo de las tarjetas de Motion */
+.motion-reel{margin:clamp(20px,3vw,40px) 0 0}
+.motion-reel video{display:block;width:100%;aspect-ratio:16/9;border-radius:var(--km-r);background:#14112A}
+.motion-reel figcaption{margin-top:12px;font:500 13px var(--mono,"DM Mono",monospace);letter-spacing:.04em;color:var(--muted,#5e5a78)}
+.motion-reel figcaption b{color:var(--violet,#6E3FFF);font-weight:500;margin-right:8px}

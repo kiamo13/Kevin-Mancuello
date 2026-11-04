@@ -376,7 +376,7 @@
     if(!revealBlur||!svg)return;
     const rect=svg.getBoundingClientRect();
     const vb=svg.viewBox.baseVal;
-    const blurPixels=7/Math.max(.1,fluidScale);
+    const blurPixels=12;   // mismo desenfoque (en px de pantalla) que el campo del fluido
     const sx=blurPixels*svgUnitsPerCssPx();
     const sy=sx;
     revealBlur.setAttribute('stdDeviation',sx.toFixed(2)+' '+sy.toFixed(2));
@@ -567,7 +567,7 @@
     fluidCtx.imageSmoothingEnabled=true;
     // en celular y pantallas táctiles el campo se procesa a menor resolución (menos trabajo por cuadro)
     const coarse=window.matchMedia("(pointer: coarse)").matches||width<680;
-    fluidScale=Math.min(1,(coarse?540:960)/Math.max(width,height));
+    fluidScale=Math.min(1,(coarse?400:640)/Math.max(width,height));   // v78: campo más chico = menos trabajo por cuadro (sin lag)
     fluidWidth=Math.max(1,Math.ceil(width*fluidScale));
     fluidHeight=Math.max(1,Math.ceil(height*fluidScale));
     fluidSource.width=fluidWidth;fluidSource.height=fluidHeight;
@@ -666,7 +666,7 @@
       fluidCurrent.x+=(fluidTarget.x-fluidCurrent.x)*.35;
       fluidCurrent.y+=(fluidTarget.y-fluidCurrent.y)*.35;
     }
-    fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*(fluidActive?.08:.05);
+    fluidVisualScale+=(fluidScaleTarget-fluidVisualScale)*(fluidActive?.022:.05);   // v78: crece despacio hasta su tamaño
     if(Math.abs(fluidScaleTarget-fluidVisualScale)<.002)fluidVisualScale=fluidScaleTarget;
     const vx=fluidCurrent.x-fluidPrevious.x,vy=fluidCurrent.y-fluidPrevious.y;
     fluidCursorSpeed=Math.hypot(vx,vy);fluidCursorAngle=Math.atan2(vy,vx||.0001);
@@ -680,7 +680,7 @@
       const fx=s.dx/cp*.22/steps,fy=s.dy/cp*.22/steps;
       for(let k=1;k<=steps;k++){
         const t=k/steps,px=(s.x-s.dx*(1-t))/cp,py=(s.y-s.dy*(1-t))/cp;
-        fluidSplat(px,py,clamp(fx,-2.5,2.5),clamp(fy,-2.5,2.5),.75/steps+.16,rCells*(.9+.2*Math.min(1,len/160)));
+        fluidSplat(px,py,clamp(fx,-2.5,2.5),clamp(fy,-2.5,2.5),(.75/steps+.16)*(.35+.65*fluidVisualScale),rCells*(.9+.2*Math.min(1,len/160))*(.45+.55*fluidVisualScale));
       }
     }
     fluidPendingSplats=[];
@@ -704,7 +704,7 @@
     fluidBlurCtx.clearRect(0,0,fluidWidth,fluidHeight);
     fluidBlurCtx.save();
     fluidBlurCtx.imageSmoothingEnabled=true;
-    fluidBlurCtx.filter='blur(8px)';
+    fluidBlurCtx.filter='blur('+(12*fluidScale).toFixed(1)+'px)';
     fluidBlurCtx.drawImage(fluidGrid,0,0,GW,GH,0,0,fluidWidth,fluidHeight);
     fluidBlurCtx.restore();
     const pixels=fluidBlurCtx.getImageData(0,0,fluidWidth,fluidHeight);
