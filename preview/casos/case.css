@@ -113,3 +113,4 @@ a{color:inherit}
 /* v76 — auditoría: enlaces de la barra y del pie con área táctil mínima */
 .cs-top a{min-height:40px;display:inline-flex;align-items:center}
 .cs-foot a{min-height:32px;display:inline-flex;align-items:center}
+.cs-grid figure.s6{grid-column:span 6}@media(max-width:860px){.cs-grid figure.s6{grid-column:span 12}}
