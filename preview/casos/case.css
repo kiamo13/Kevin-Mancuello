@@ -117,7 +117,7 @@ a{color:inherit}
 
 /* v84 — el feed de Player y el montaje de la web de Todegol son material de apoyo: chicos y con enlace */
 .cs-feedmini{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;max-width:680px;margin-top:clamp(24px,3vw,40px)}
-.cs-feedmini img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:var(--paper-2);display:block}
+.cs-feedmini img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:12px;background:var(--paper-2);display:block}
 @media(max-width:560px){.cs-feedmini{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .cs-mont{margin:clamp(24px,3vw,40px) 0 0;max-width:600px}
 .cs-mont img{width:100%;height:auto;border-radius:var(--r);display:block}
