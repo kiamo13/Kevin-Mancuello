@@ -139,3 +139,5 @@ a{color:inherit}
 .cs-feed12{grid-template-columns:repeat(6,minmax(0,1fr));max-width:860px}
 .cs-feed12 img{aspect-ratio:4/5}
 @media(max-width:700px){.cs-feed12{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cs-grid figure.bare img{background:transparent;border-radius:0;object-fit:contain}
+.cs-grid figure.sq img{aspect-ratio:1/1}
