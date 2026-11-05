@@ -290,11 +290,9 @@
     stage.classList.remove('is-blinking');
     smileActive=true;
     stage.classList.add('is-smiling');
-    stage.setAttribute('aria-label','Retrato interactivo: sonrisa activada.');
     smileTimer=window.setTimeout(()=>{
       smileActive=false;
       stage.classList.remove('is-smiling');
-      stage.setAttribute('aria-label','Retrato interactivo. Activar sonrisa.');
       scheduleBlink();
     },1050);
   }

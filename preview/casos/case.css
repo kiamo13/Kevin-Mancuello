@@ -12,7 +12,7 @@ html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font:400 18px/1.55 var(--display);-webkit-font-smoothing:antialiased}
 img,video{display:block;max-width:100%;height:auto}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:4px}
+:focus-visible{outline:2px solid #231F46;outline-offset:3px;border-radius:4px;box-shadow:0 0 0 5px #84FF00}
 .skip-link{position:absolute;left:-999px}.skip-link:focus{left:16px;top:16px;z-index:99;background:#fff;padding:8px 12px}
 
 /* barra superior */
@@ -220,3 +220,20 @@ html.cr-open{overflow:hidden}
 /* v106 — borde fino cuando la imagen se confunde con el fondo */
 .cs-grid img.ln,.cs-grid figure.eq img,.cs-feedmini img{border:1px solid rgba(35,31,70,.14);box-sizing:border-box}
 .cs-strip img.ln{border:1px solid rgba(35,31,70,.14);box-sizing:border-box;background:#fff}
+/* v110 — sin viudas, borde fino por defecto, objetivos de 44 px, piezas verticales completas */
+p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
+.cs-credits dt{text-wrap:balance}
+.cs-grid figure:not(.bare):not(.card) img{border:1px solid rgba(35,31,70,.14);box-sizing:border-box}
+#personal .cs-grid img{border-color:rgba(255,255,255,.08)}
+.cs-top a,.cs-inline,.cs-foot a{min-height:44px;display:inline-flex;align-items:center}
+.cs-book::after{top:12px;bottom:auto}
+.cs-grid figure.fit img{object-fit:contain;object-position:50% 50%;background:var(--paper-2)}
+/* v110 — cierre de cada caso: contacto */
+.cs-contact{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,72px);align-items:end;margin:clamp(56px,7vw,112px) var(--gut) 0;padding:clamp(32px,4vw,56px);background:var(--paper-2);border-radius:var(--r)}
+.cs-contact h2{font-size:clamp(28px,3.4vw,52px);letter-spacing:-.04em;line-height:1;margin-top:10px}
+.cs-contact-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end}
+.cs-contact-links a{display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border-radius:999px;background:var(--plum);color:var(--paper);text-decoration:none;font:500 14px var(--mono);letter-spacing:.04em}
+.cs-contact-links a:hover{background:var(--acid);color:var(--plum)}
+@media(max-width:860px){.cs-contact{grid-template-columns:1fr}.cs-contact-links{justify-content:flex-start}}
+.mail-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--plum);color:var(--paper);border:1px solid var(--acid);padding:12px 18px;border-radius:999px;font:500 13px var(--mono);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:10000;max-width:calc(100vw - 32px)}
+.mail-toast.is-on{opacity:1;transform:translate(-50%,0)}

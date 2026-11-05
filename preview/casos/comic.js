@@ -41,7 +41,7 @@
     book.classList.toggle('is-spread',c.length===2);
     book.innerHTML=c.map(p=>`<img src="${B.pages[p]}" alt="${B.title}, página ${p+1} de ${n}" width="1000" height="${Math.round(1000/B.ar)}">`).join('');
     count.textContent=k===0?'Tapa':c.length===2?`${c[0]+1}–${c[1]+1} / ${n}`:`${c[0]+1} / ${n}`;
-    prev.disabled=k===0;next.disabled=k===spreads.length-1;
+    const fe=document.activeElement;prev.disabled=k===0;next.disabled=k===spreads.length-1;if(fe&&fe.disabled)(fe===next&&!prev.disabled?prev:fe===prev&&!next.disabled?next:$(".cr-close")).focus();
     if(dir&&!reduce.matches){book.classList.remove('turn-l','turn-r');void book.offsetWidth;book.classList.add(dir>0?'turn-r':'turn-l')}
     preload(k+1);preload(k-1);
   };
