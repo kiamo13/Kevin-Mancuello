@@ -255,3 +255,10 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 .cs-feed12{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:900px){.cs-feed12{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.cs-feedmini,.cs-feed12{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* v114 — arte del personaje al costado del título, laptops reales sin tarjeta */
+.cs-hero.has-art{position:relative;overflow:hidden}
+.cs-hero-art{position:absolute;right:calc(var(--gut) - 2vw);top:clamp(24px,4vw,64px);width:min(40vw,600px);height:auto;pointer-events:none}
+.cs-hero.has-art .cs-meta{position:relative;z-index:1}
+@media(max-width:1000px){.cs-hero-art{display:none}}
+.cs-laptops{align-items:flex-end}
+.cs-laptops figure.bare img{border:0}
