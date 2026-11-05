@@ -219,3 +219,4 @@ html.cr-open{overflow:hidden}
 @media(max-width:600px){.cs-grid.row{flex-wrap:wrap}.cs-grid.row>figure{flex:1 1 100%}}
 /* v106 — borde fino cuando la imagen se confunde con el fondo */
 .cs-grid img.ln,.cs-grid figure.eq img,.cs-feedmini img{border:1px solid rgba(35,31,70,.14);box-sizing:border-box}
+.cs-strip img.ln{border:1px solid rgba(35,31,70,.14);box-sizing:border-box;background:#fff}
