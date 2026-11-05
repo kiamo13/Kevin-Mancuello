@@ -1401,3 +1401,12 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 .works-heading{min-height:0!important}
 .discipline{margin-top:clamp(40px,4vw,64px)!important}
 .discipline-main,.discipline-illustration .discipline-main{min-height:clamp(150px,16vw,240px)!important}
+
+/* v112 — Motion: animaciones de Todegol en una fila propia */
+.project-item-wide{grid-column:1/-1}
+.motion-trio{display:flex;gap:clamp(12px,2vw,28px);justify-content:center;align-items:flex-start;background:var(--plum);border-radius:18px;padding:clamp(18px,3vw,40px)}
+.motion-trio video{flex:1 1 0;min-width:0;max-width:300px;aspect-ratio:9/16;object-fit:cover;border-radius:12px;background:rgba(255,255,255,.06)}
+@media(max-width:700px){.motion-trio{gap:8px;padding:14px}}
+#motion-projects{flex-wrap:wrap}
+#motion-projects .project-item-wide{flex:0 0 100%!important;width:100%}
+.motion-trio video{max-width:340px}

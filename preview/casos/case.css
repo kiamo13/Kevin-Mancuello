@@ -237,3 +237,21 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 @media(max-width:860px){.cs-contact{grid-template-columns:1fr}.cs-contact-links{justify-content:flex-start}}
 .mail-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--plum);color:var(--paper);border:1px solid var(--acid);padding:12px 18px;border-radius:999px;font:500 13px var(--mono);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:10000;max-width:calc(100vw - 32px)}
 .mail-toast.is-on{opacity:1;transform:translate(-50%,0)}
+/* v112 — feeds más grandes, animaciones destacadas en banda oscura y montajes anchos */
+.cs-feedmini{max-width:none;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,1.4vw,20px)}
+.cs-feed12{max-width:none;grid-template-columns:repeat(6,minmax(0,1fr))}
+@media(max-width:700px){.cs-feedmini,.cs-feed12{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cs-dark{background:var(--plum);color:var(--paper);margin-top:clamp(48px,6vw,96px);padding-top:clamp(56px,7vw,112px);padding-bottom:clamp(56px,7vw,112px)}
+.cs-dark .cs-label{color:#84ff00}
+.cs-dark .cs-text{color:rgba(244,242,237,.82)}
+.cs-dark figcaption{color:#a9a4c9}
+.cs-dark .cs-motion3 video{background:rgba(255,255,255,.06)}
+.cs-motion3{max-width:none;gap:clamp(14px,3vw,48px);justify-content:center}
+.cs-motion3 figure{flex:var(--ar,.5625) 1 0}
+.cs-mont{max-width:none}
+/* v112 — la tapa clicable ocupa todo el ancho de su figura (un botón en bloque se achica al contenido) */
+.cs-book{width:100%}
+.cs-grid figure.crop45 [data-comic="1pct"] img{object-position:50% 100%}
+.cs-feed12{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.cs-feed12{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.cs-feedmini,.cs-feed12{grid-template-columns:repeat(2,minmax(0,1fr))}}
