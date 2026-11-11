@@ -1410,3 +1410,56 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 #motion-projects{flex-wrap:wrap}
 #motion-projects .project-item-wide{flex:0 0 100%!important;width:100%}
 .motion-trio video{max-width:340px}
+
+/* v115 — avatar nuevo: el pelo alterna tres cuadros (neutro, 1, 2) */
+.avatar-svg #cabello-base,.avatar-svg #cabello-parpadeo,.avatar-svg #cabello-frame3{visibility:visible!important;transform:none!important;pointer-events:none;animation-duration:.6s!important;animation-timing-function:steps(1,end)!important;animation-iteration-count:infinite!important}
+.avatar-svg #cabello-base{animation-name:hair3-a!important}
+.avatar-svg #cabello-parpadeo{animation-name:hair3-b!important}
+.avatar-svg #cabello-frame3{opacity:0;animation-name:hair3-c!important}
+@keyframes hair3-a{0%,33.32%{opacity:1}33.33%,100%{opacity:0}}
+@keyframes hair3-b{0%,33.32%{opacity:0}33.33%,66.65%{opacity:1}66.66%,100%{opacity:0}}
+@keyframes hair3-c{0%,66.65%{opacity:0}66.66%,100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.avatar-svg #cabello-base{opacity:1!important;animation:none!important}.avatar-svg #cabello-parpadeo,.avatar-svg #cabello-frame3{opacity:0!important;animation:none!important}}
+/* v116 — pelo: un movimiento corto cada 2 s y después quieto en el cuadro neutro */
+.avatar-svg #cabello-base,.avatar-svg #cabello-parpadeo,.avatar-svg #cabello-frame3{animation-duration:2s!important}
+@keyframes hair3-a{0%,19.99%{opacity:0}20%,100%{opacity:1}}
+@keyframes hair3-b{0%,9.99%{opacity:1}10%,100%{opacity:0}}
+@keyframes hair3-c{0%,9.99%{opacity:0}10%,19.99%{opacity:1}20%,100%{opacity:0}}
+/* v116 — la sombra del rostro se calcula sobre el conjunto (no cae dentro de los ojos) */
+.avatar-face-canvas{filter:none!important}
+#avatar-mount{filter:drop-shadow(0 24px 26px rgba(0,0,0,.24))}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro_copia{animation-duration:.3s!important}
+.avatar-svg{filter:none!important}
+@media(prefers-reduced-motion:reduce){#avatar-mount{filter:none}}
+html.is-lite #avatar-mount{filter:none}
+
+/* v117 — tarjetas de proyecto: jerarquía clara (rubro chico → título → bajada) y sin etiquetas repetidas sobre la imagen */
+.project-visual.has-img .visual-overline{display:none!important}
+.project-caption{padding:16px 0 0!important;gap:20px!important;align-items:flex-start}
+.project-caption small{display:block;font:500 11px/1.4 var(--mono,"DM Mono",monospace)!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--muted,#5E5A78)!important;margin:0 0 8px!important}
+.project-caption h4{font-size:clamp(18px,1.5vw,22px)!important;line-height:1.15!important;letter-spacing:-.02em;margin:0 0 6px!important}
+.project-caption p{font-size:14px!important;line-height:1.5!important;max-width:46ch;margin:0!important;color:var(--muted,#5E5A78)}
+.project-caption .project-link{flex:none;margin-top:-2px}
+
+/* v118 — barra superior: enlaces en una sola línea, alineados al centro (sin año colgando ni botón Lite) */
+@media(min-width:861px){
+  .main-nav{align-items:center}
+  .main-nav a{display:inline-flex!important;flex-direction:row!important;align-items:center!important;min-height:44px}
+  .main-nav a small{display:none!important}
+}
+.topbar{align-items:center}
+@media(min-width:861px){.topbar .main-nav{grid-column:3;justify-self:end}.topbar .location-line{grid-column:2;justify-self:center}}
+/* v118 — celular: el rol sube junto al saludo y deja la cara del avatar despejada */
+@media(max-width:680px){
+  .hero-role{top:142px!important;bottom:auto!important;right:18px!important;left:auto!important;transform:none!important}
+  .hero-role small{margin-left:auto!important;width:auto!important;max-width:150px!important}
+}
+@media(max-width:680px){.hero-role small{display:none!important}}
+
+/* v119 — portada limpia: nombre, avatar, una línea de oficio, rol y botón */
+.hero-kicker,.hero-role small,.topbar .location-line{display:none!important}

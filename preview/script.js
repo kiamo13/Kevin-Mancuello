@@ -9,7 +9,9 @@
   let savedMode=null;
   try{savedMode=localStorage.getItem('km-site-mode');}catch(e){}
   const autoLite=weakNetwork||lowMemory||lowCpu||systemReducedMotion;
-  let liteMode=savedMode==='lite'||(savedMode!=='full'&&autoLite);
+  // v118 — sin botón: la versión liviana solo se activa sola en equipos o conexiones limitadas
+  try{localStorage.removeItem('km-site-mode');}catch(e){}
+  let liteMode=autoLite;
   const liteToggle=document.getElementById('lite-toggle');
   function applyLiteMode(){
     root.classList.toggle('is-lite',liteMode);
@@ -54,7 +56,7 @@
      alpha y desaparición son idénticos por construcción, no por imitación.
      El SVG conserva cráneo, ojos, pupilas y brillos debajo del canvas.
      ------------------------------------------------------------------ */
-  const FACE_LAYERS=['cara_ojos_abiertos_neutro','ojos_sonrientes','cara_ojos_abiertos_neutro_copia','cabello-silueta','cabello-base','cabello-parpadeo','BARBA'];
+  const FACE_LAYERS=['cara_ojos_abiertos_neutro','ojos_sonrientes','cara_ojos_abiertos_neutro_copia','cabello-silueta','cabello-base','cabello-parpadeo','cabello-frame3','BARBA'];
   let svgSource='',faceCanvas=null,faceCtx=null,faceBitmaps=new Map(),faceLayerEls=[];
   let faceRasterReady=false,faceRasterScale=0,faceRasterJob=0,faceRasterOn=false,revealFullHide=null;
   let faceState=[],faceStateTick=0,faceStateDirty=true;
@@ -121,7 +123,8 @@
       'BARBA',
       'cabello-silueta',
       'cabello-base',
-      'cabello-parpadeo'
+      'cabello-parpadeo',
+      'cabello-frame3'
     ].forEach(id=>{
       const layer=svg.querySelector('#'+id);
       if(layer)layer.setAttribute('mask','url(#avatarFaceMask)');
@@ -129,7 +132,7 @@
   }
 
   function loadAvatar(){
-    fetch(new URL('assets/avatar.svg?v=20261103-50',document.baseURI),{cache:'no-store'})
+    fetch(new URL('assets/avatar.svg?v=20261111-2',document.baseURI),{cache:'no-store'})
       .then(response=>{
         if(!response.ok)throw new Error('No se pudo cargar el SVG del avatar.');
         return response.text();
@@ -466,11 +469,11 @@
         blinkEnd=window.setTimeout(()=>{
           stage.classList.remove('is-blinking');
           scheduleBlink();
-        },210);
+        },300);
       }else{
         scheduleBlink();
       }
-    },2400+Math.random()*3000);
+    },1600+Math.random()*2200);
   }
 
   function activateReveal(e){
