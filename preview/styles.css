@@ -1480,3 +1480,8 @@ html.is-lite #avatar-mount{filter:none}
 .services-ctas .services-cta{margin:0}
 .services-cta-alt{background:transparent!important;color:inherit!important;box-shadow:inset 0 0 0 1.5px currentColor}
 .services-ctas{margin-top:clamp(28px,3vw,44px)}
+
+/* v122 — «Sobre mí»: texto en papel sólido (5:1 sobre el violeta, antes 3,3:1) */
+.about-text>p:not(.about-lead),.about-timeline p,.about-text p,.about-tools-label,.about-tags span,.about-topline span{color:var(--paper,#F4F2ED)!important;opacity:1!important}
+/* v122 — disciplinas sin «Ver proyectos»: la lista de casos ocupa el resto del ancho */
+@media(min-width:861px){.discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr)!important}.discipline-motion .discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr) auto!important}}
