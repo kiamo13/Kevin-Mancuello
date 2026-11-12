@@ -315,7 +315,7 @@ body{background:var(--paper);color:var(--plum)}
 .about-kicker,.about-timeline span{color:var(--acid)}
 .about-heading h2 span{color:var(--acid)}
 .about-signature{color:var(--gold)}
-.about-text>p:not(.about-lead),.about-timeline p{color:rgba(255,255,255,.82)}
+.about-text>p:not(.about-lead),.about-timeline p{color:var(--paper)}
 .about-link{border-color:var(--acid)}
 .about-link span{color:var(--acid)}
 .footer{background:var(--acid);color:var(--plum)}
@@ -1485,3 +1485,7 @@ html.is-lite #avatar-mount{filter:none}
 .about-text>p:not(.about-lead),.about-timeline p,.about-text p,.about-tools-label,.about-tags span,.about-topline span{color:var(--paper,#F4F2ED)!important;opacity:1!important}
 /* v122 — disciplinas sin «Ver proyectos»: la lista de casos ocupa el resto del ancho */
 @media(min-width:861px){.discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr)!important}.discipline-motion .discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr) auto!important}}
+
+/* v123 — la cinta de clientes se puede pausar: al pasar el mouse, al enfocarla o con un toque/Enter (WCAG 2.2.2) */
+.clients:hover .clients-track,.clients:focus-within .clients-track,.clients.is-paused .clients-track{animation-play-state:paused}
+.clients{cursor:pointer;border-radius:12px}

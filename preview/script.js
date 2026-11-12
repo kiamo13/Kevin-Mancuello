@@ -995,3 +995,6 @@ void main(){float a=bic(uv);float k=smoothstep(.26,.34,a);k=max(0.,k-ring*smooth
     else show(mail);
   }));
 })();
+
+// v123 — pausa de la cinta de clientes con toque o teclado
+(()=>{const c=document.querySelector('.clients');if(!c)return;const t=()=>c.classList.toggle('is-paused');c.addEventListener('click',t);c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t();}});})();
