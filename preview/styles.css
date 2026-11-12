@@ -1463,3 +1463,20 @@ html.is-lite #avatar-mount{filter:none}
 
 /* v119 — portada limpia: nombre, avatar, una línea de oficio, rol y botón */
 .hero-kicker,.hero-role small,.topbar .location-line{display:none!important}
+
+/* v120 — celular: piso de lectura (12 px en monoespaciada, 14 px en texto) */
+@media(max-width:680px){
+  .about-kicker,.about-link,.about-signature,.about-tools-label,.brand-code,.discipline-number,.discipline-tools,.eyebrow,
+  .footer-copyright,.hero-scroll,.skip-link,.watch-link,.project-caption small,.discipline-projects a span,.about-tags span,
+  .about-topline span,.footer-topline,.journey-top,.clients-label{font-size:12px!important;letter-spacing:.06em!important}
+  .discipline-projects a,.footer-links{font-size:14px!important}
+  .project-caption p{font-size:14px!important}
+}
+
+/* v121 — «Qué hago» cierra la página antes del contacto, con dos formas de escribir */
+.services{position:relative;z-index:4}
+.footer{z-index:6}
+.services-ctas{display:flex;flex-wrap:wrap;gap:12px}
+.services-ctas .services-cta{margin:0}
+.services-cta-alt{background:transparent!important;color:inherit!important;box-shadow:inset 0 0 0 1.5px currentColor}
+.services-ctas{margin-top:clamp(28px,3vw,44px)}
