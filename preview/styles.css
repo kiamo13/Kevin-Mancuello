@@ -484,8 +484,8 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 
 /* HERO REFINEMENT — readable name, balanced portrait, continuous expressions */
 .hero-giant{
-  top:39%!important;
-  font-size:clamp(138px,23vw,340px)!important;
+  top:39%;
+  font-size:clamp(138px,23vw,340px);
 }
 .hero-character{
   width:min(44vw,580px)!important;
@@ -494,11 +494,11 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 }
 @media(max-width:680px){
   .hero-giant{
-    top:37%!important;
-    font-size:clamp(105px,23vw,158px)!important;
-    line-height:.76!important;
+    top:37%;
+    font-size:clamp(105px,23vw,158px);
+    line-height:.76;
   }
-  .hero-giant span:last-child{font-size:.62em!important}
+  .hero-giant span:last-child{font-size:.62em}
   .hero-character{
     width:min(88vw,420px)!important;
     height:61%!important;
@@ -510,12 +510,12 @@ html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:
 /*/* Match the softness and timing of both chromatic transitions */
 .avatar-svg #CRÁNEO,
 .avatar-svg #skull-peek-shape{
-  transition:opacity .12s linear!important;
+  transition:opacity .12s linear;
 }
 .color-invert{
-  transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1)!important;
+  transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1);
 }
-.color-invert path{fill:url(#color-invert-gradient)!important}
+.color-invert path{fill:url(#color-invert-gradient)}
 
 
 /* Cabello: alternancia original de fotogramas, sin fundidos. */
@@ -983,7 +983,7 @@ section[id],footer[id]{scroll-margin-top:88px}
 }
 .fluid-cursor.is-active{opacity:.96}
 .color-invert{
-  visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+  visibility:hidden;opacity:0;pointer-events:none;
 }
 @media(max-width:680px){.fluid-cursor{display:none}}
 @media(prefers-reduced-motion:reduce){.fluid-cursor{display:none!important}}
@@ -1002,9 +1002,9 @@ section[id],footer[id]{scroll-margin-top:88px}
 .avatar-svg #brillito,
 .avatar-svg #ojos_sonrientes,
 .avatar-svg #cara_ojos_abiertos_neutro_copia {
-  display:inline!important;
-  opacity:1!important;
-  transition:none!important;
+  display:inline;
+  opacity:1;
+  transition:none;
 }
 
 /* Estado de reposo: solo el frame de ojos abiertos está visible. */
@@ -1066,8 +1066,8 @@ html.is-lite .avatar-face-canvas{display:none!important}
 
 /* v62 — PROYECTOS CON IMAGEN REAL (reemplaza los espacios reservados) */
 .project-visual.has-img{background:#14112A}
-.project-visual.has-img::before,.project-visual.has-img::after{display:none!important}
-.project-visual.has-img strong,.project-visual.has-img i,.project-visual.has-img .visual-foot{display:none!important}
+.project-visual.has-img::before,.project-visual.has-img::after{display:none}
+.project-visual.has-img strong,.project-visual.has-img i,.project-visual.has-img .visual-foot{display:none}
 .project-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:transform .5s cubic-bezier(.22,1,.36,1)}
 .project-item:hover .project-img{transform:scale(1.035)}
 .project-visual.has-img .visual-overline{align-self:flex-start;z-index:2;background:rgba(20,17,42,.78);color:#fff;padding:7px 12px;border-radius:999px;font-size:11px;letter-spacing:.08em;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
@@ -1086,27 +1086,27 @@ html.is-lite .avatar-face-canvas{display:none!important}
 .hero-greeting{max-width:230px}
 /* En pantallas bajas (notebooks de 650–760 px) el CTA y el autorretrato quedan dentro del primer pliegue */
 @media(min-width:681px) and (max-height:780px){
-  .hero{min-height:max(620px,100svh)!important;height:100svh!important;max-height:none!important}
+  .hero{min-height:max(620px,100svh);height:100svh;max-height:none}
   .hero-character{height:82%!important;bottom:0!important}
-  .hero-role{bottom:clamp(84px,13vh,140px)!important}
+  .hero-role{bottom:clamp(84px,13vh,140px)}
 }
 /* ayuda del avatar legible sobre la ilustración */
 .avatar-hint{background:rgba(35,31,70,.78);color:var(--paper);padding:6px 12px;border-radius:999px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .visual-mariano .project-img{object-position:0% 50%}
 /* celular: About entra completo en el ancho (antes se cortaba 21 px a la derecha) */
 @media(max-width:680px){
-  .about-layout{display:block!important;width:auto!important;max-width:100%!important;grid-template-columns:1fr!important}
-  .about-layout>*,.about-heading,.about-text{width:auto!important;max-width:100%!important;min-width:0!important}
+  .about-layout{display:block;width:auto;max-width:100%;grid-template-columns:1fr}
+  .about-layout>*,.about-heading,.about-text{width:auto;max-width:100%;min-width:0}
   .about-text p,.about-timeline{overflow-wrap:anywhere}
 }
 /* pantallas táctiles: sin la ayuda «hacé click» (choca con el rol y el verbo no aplica al tacto) */
 @media(hover:none),(max-width:680px){.avatar-hint{display:none!important}}
-@media(max-width:680px){.about-heading h2{font-size:min(17.5vw,78px)!important}.about-heading h2 span{font-size:1em!important}}
+@media(max-width:680px){.about-heading h2{font-size:min(17.5vw,78px)}.about-heading h2 span{font-size:1em}}
 /* mínimo legible de 11 px para rótulos monoespaciados (antes 7–9 px) */
 .hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.location-line,.main-nav small,.footer-topline{font-size:max(11px,1em)!important}
 @media(max-width:680px){.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.footer-topline{font-size:11px!important}}
-.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:max(11px,1em)!important}
-@media(max-width:680px){.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:11px!important}}
+.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:max(11px,1em)}
+@media(max-width:680px){.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:11px}}
 /* v62 — el efecto negativo (cursor fluido por diferencia) también al tocar en celular */
 @media(max-width:680px){.fluid-cursor{display:block}}
 /* v64 — tarjetas que abren su página de caso */
@@ -1132,7 +1132,7 @@ video.project-img{background:#14112A}
 /* v67 — en móvil el apellido queda entero: el nombre se ancla bajo el saludo y el personaje
    toma la proporción exacta del SVG (631×740) y su caja arranca, con el pelo, justo debajo de MANCUELLO */
 @media(max-width:680px){
-  .hero-giant{top:300px!important}
+  .hero-giant{top:300px}
   .hero-character{
     --cw:min(94vw,440px);
     width:var(--cw)!important;height:auto!important;aspect-ratio:631/740;
@@ -1259,11 +1259,11 @@ html.is-lite .hands-menu .hand{transition:none}
 
 /* v72 — tipografía con intención (A./CHEN): los títulos llenan el ancho, se salen por el borde y se deslizan al bajar */
 .works-heading{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"eyebrow" "title" "intro"!important}
-.works-heading h2{font-size:clamp(90px,18.6vw,330px)!important;margin-left:-.05em!important;line-height:.8;white-space:nowrap}
+.works-heading h2{font-size:clamp(90px,18.6vw,330px);margin-left:-.05em;line-height:.8;white-space:nowrap}
 .works-heading .works-intro{justify-self:end;max-width:32ch;text-align:right}
-.discipline-main h3{font-size:clamp(80px,17vw,300px)!important;white-space:nowrap;margin-left:-.05em}
+.discipline-main h3{font-size:clamp(80px,17vw,300px);white-space:nowrap;margin-left:-.05em}
 .footer{overflow:clip}
-.footer-email{font-size:min(21vw,330px)!important;white-space:nowrap;margin-left:-.04em}
+.footer-email{font-size:min(21vw,330px);white-space:nowrap;margin-left:-.04em}
 @media(max-width:680px){.works-intro{text-align:left!important;justify-self:start!important}}
 
 /* v73 — el recorrido en celular: la descripción sube para que la cara flotante «MENÚ» no la tape */
@@ -1276,11 +1276,11 @@ html.is-lite .hands-menu .hand{transition:none}
 .hero-giant span:first-child{translate:calc(var(--hd,0) * -1vw) 0;animation:km-in-left .66s steps(6) .1s backwards}
 .hero-giant span:last-child{translate:calc(var(--hd,0) * 1vw) 0;animation:km-in-right .66s steps(6) .24s backwards}
 @media(min-width:681px){
-  .hero-giant{font-size:clamp(170px,31vw,480px)!important;top:45%!important;line-height:.7!important}
+  .hero-giant{font-size:clamp(170px,31vw,480px);top:45%;line-height:.7}
   .hero-giant span:first-child{margin-left:-14vw}
-  .hero-giant span:last-child{font-size:.6em!important;margin-right:-12vw;margin-top:.12em}
-  .hero-greeting{top:auto!important;bottom:clamp(86px,12vh,120px)}
-  .hero-role{bottom:clamp(40px,6vh,64px)!important}
+  .hero-giant span:last-child{font-size:.6em;margin-right:-12vw;margin-top:.12em}
+  .hero-greeting{top:auto;bottom:clamp(86px,12vh,120px)}
+  .hero-role{bottom:clamp(40px,6vh,64px)}
 }
 @media(prefers-reduced-motion:reduce){.hero-giant span{animation:none!important}}
 html.is-lite .hero-giant span{animation:none}
@@ -1289,20 +1289,20 @@ html.is-lite .hero-giant span{animation:none}
    su proporción (ilustraciones verticales 4:5, marcas 5:3, spot 16:9, Atlas 9:16) */
 .project-shelf{display:flex!important;align-items:flex-start;gap:clamp(14px,2vw,28px)!important}
 .project-shelf>.project-item{flex:calc(var(--ar,4/3)) 1 0;min-width:0}
-.project-shelf .project-visual{aspect-ratio:var(--ar,4/3)!important;height:auto!important;min-height:0!important;max-height:none!important}
+.project-shelf .project-visual{aspect-ratio:var(--ar,4/3);height:auto;min-height:0;max-height:none}
 .project-shelf .project-visual .project-img{width:100%;height:100%;object-fit:cover}
 @media(max-width:760px){
   .project-shelf{flex-direction:column;align-items:stretch}
   .project-shelf>.project-item{flex:none;width:100%}
-  .project-shelf .project-visual{max-height:78svh!important;margin-inline:auto}
+  .project-shelf .project-visual{max-height:78svh;margin-inline:auto}
   .project-shelf>.project-item[style*="9/16"] .project-visual{width:min(100%,calc(78svh * 9 / 16))}
 }
 
 /* v73 — todas las formas redondeadas */
 :root{--km-r:clamp(20px,2.2vw,32px)}
-.project-visual,.project-visual .project-img{border-radius:var(--km-r)!important;overflow:hidden}
+.project-visual,.project-visual .project-img{border-radius:var(--km-r);overflow:hidden}
 .about-tags span,.lite-toggle,.watch-link,.about-link{border-radius:999px}
-.watch-link,.about-link{padding:12px 18px!important;border:1px solid currentColor!important}
+.watch-link,.about-link{padding:12px 18px;border:1px solid currentColor}
 .works-section,.about-section,.journey,.footer{border-radius:var(--km-r) var(--km-r) 0 0;margin-top:calc(var(--km-r) * -1);position:relative}
 .works-section{z-index:2}.about-section{z-index:3}.journey{z-index:4}.footer{z-index:5}
 .journey-line{border-radius:2px}
@@ -1341,11 +1341,11 @@ html.is-lite .clients-track{animation:none}
 .clients-row img[src*="ma-natural"],.clients-row img[src*="mariano"]{height:clamp(40px,4.4vw,62px)}
 .clients-row img[src*="etidol"]{height:clamp(22px,2.4vw,34px)}
 /* v76 — auditoría: entre 901 y 1200 px la línea de ubicación no entra con el menú; objetivos táctiles mínimos */
-@media(min-width:901px) and (max-width:1480px){.location-line{display:none!important}}
+@media(min-width:901px) and (max-width:1480px){.location-line{display:none}}
 .brand-code,.hero-scroll{min-height:32px;display:inline-flex;align-items:center}
 /* v76 — en pantallas bajas (laptops de 720–800 px de alto) el nombre se escala también por la altura para no pisar el saludo ni el rol */
-@media(min-width:681px){.hero-giant{font-size:clamp(150px,min(31vw,50vh),480px)!important}}
-@media(min-width:681px){.hero-greeting{z-index:9!important;bottom:clamp(64px,8.5vh,104px)!important}.hero-greeting .hero-kicker{max-width:none;white-space:nowrap}}
+@media(min-width:681px){.hero-giant{font-size:clamp(150px,min(31vw,50vh),480px)}}
+@media(min-width:681px){.hero-greeting{z-index:9;bottom:clamp(64px,8.5vh,104px)}.hero-greeting .hero-kicker{max-width:none;white-space:nowrap}}
 /* v78 — reel de motion debajo de las tarjetas de Motion */
 .motion-reel{margin:clamp(20px,3vw,40px) 0 0}
 .motion-reel video{display:block;width:100%;aspect-ratio:16/9;border-radius:var(--km-r);background:#14112A}
@@ -1377,8 +1377,8 @@ html.is-lite .clients-track{animation:none}
 
 /* v103 — rol de la portada con cuatro áreas: cada área no se corta y, en celular, el bloque gana ancho hacia la izquierda */
 .hero-role small span{white-space:nowrap}
-@media(max-width:680px){.hero-role small{width:212px;max-width:none!important;margin-left:-67px}}
-@media(min-width:681px){.hero-role small{max-width:330px!important;width:auto!important;margin-left:auto}}
+@media(max-width:680px){.hero-role small{width:212px;max-width:none;margin-left:-67px}}
+@media(min-width:681px){.hero-role small{max-width:330px;width:auto;margin-left:auto}}
 
 /* v108 — aviso de mail copiado */
 .mail-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#231f46;color:#f4f2ed;border:1px solid #84ff00;padding:12px 18px;border-radius:999px;font:500 13px "DM Mono",monospace;letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:10000;max-width:calc(100vw - 32px)}
@@ -1392,15 +1392,15 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 .main-nav a:has(small){flex-direction:column;justify-content:center;align-items:flex-start}
 
 /* v110 — portada: el trabajo aparece antes, contacto legible y recorrido más corto */
-.works-heading h2{font-size:clamp(64px,10vw,150px)!important}
-.discipline-main h3{font-size:clamp(56px,9vw,140px)!important}
+.works-heading h2{font-size:clamp(64px,10vw,150px)}
+.discipline-main h3{font-size:clamp(56px,9vw,140px)}
 .journey{height:calc(100svh + 7 * 30svh)}
 .footer-links,.footer-topline{font-size:15px!important}
 .footer-links a{letter-spacing:.02em}
 .works-section{padding-top:clamp(64px,7vw,110px)!important}
 .works-heading{min-height:0!important}
-.discipline{margin-top:clamp(40px,4vw,64px)!important}
-.discipline-main,.discipline-illustration .discipline-main{min-height:clamp(150px,16vw,240px)!important}
+.discipline{margin-top:clamp(40px,4vw,64px)}
+.discipline-main,.discipline-illustration .discipline-main{min-height:clamp(150px,16vw,240px)}
 
 /* v112 — Motion: animaciones de Todegol en una fila propia */
 .project-item-wide{grid-column:1/-1}
@@ -1415,7 +1415,7 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 .avatar-svg #cabello-base,.avatar-svg #cabello-parpadeo,.avatar-svg #cabello-frame3{visibility:visible!important;transform:none!important;pointer-events:none;animation-duration:.6s!important;animation-timing-function:steps(1,end)!important;animation-iteration-count:infinite!important}
 .avatar-svg #cabello-base{animation-name:hair3-a!important}
 .avatar-svg #cabello-parpadeo{animation-name:hair3-b!important}
-.avatar-svg #cabello-frame3{opacity:0;animation-name:hair3-c!important}
+.avatar-svg #cabello-frame3{opacity:0;animation-name:hair3-c}
 @keyframes hair3-a{0%,33.32%{opacity:1}33.33%,100%{opacity:0}}
 @keyframes hair3-b{0%,33.32%{opacity:0}33.33%,66.65%{opacity:1}66.66%,100%{opacity:0}}
 @keyframes hair3-c{0%,66.65%{opacity:0}66.66%,100%{opacity:1}}
@@ -1439,7 +1439,7 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 html.is-lite #avatar-mount{filter:none}
 
 /* v117 — tarjetas de proyecto: jerarquía clara (rubro chico → título → bajada) y sin etiquetas repetidas sobre la imagen */
-.project-visual.has-img .visual-overline{display:none!important}
+.project-visual.has-img .visual-overline{display:none}
 .project-caption{padding:16px 0 0!important;gap:20px!important;align-items:flex-start}
 .project-caption small{display:block;font:500 11px/1.4 var(--mono,"DM Mono",monospace)!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--muted,#5E5A78)!important;margin:0 0 8px!important}
 .project-caption h4{font-size:clamp(18px,1.5vw,22px)!important;line-height:1.15!important;letter-spacing:-.02em;margin:0 0 6px!important}
@@ -1450,19 +1450,19 @@ html.is-lite #avatar-mount{filter:none}
 @media(min-width:861px){
   .main-nav{align-items:center}
   .main-nav a{display:inline-flex!important;flex-direction:row!important;align-items:center!important;min-height:44px}
-  .main-nav a small{display:none!important}
+  .main-nav a small{display:none}
 }
 .topbar{align-items:center}
 @media(min-width:861px){.topbar .main-nav{grid-column:3;justify-self:end}.topbar .location-line{grid-column:2;justify-self:center}}
 /* v118 — celular: el rol sube junto al saludo y deja la cara del avatar despejada */
 @media(max-width:680px){
-  .hero-role{top:142px!important;bottom:auto!important;right:18px!important;left:auto!important;transform:none!important}
-  .hero-role small{margin-left:auto!important;width:auto!important;max-width:150px!important}
+  .hero-role{top:142px;bottom:auto;right:18px;left:auto;transform:none}
+  .hero-role small{margin-left:auto;width:auto;max-width:150px}
 }
-@media(max-width:680px){.hero-role small{display:none!important}}
+@media(max-width:680px){.hero-role small{display:none}}
 
 /* v119 — portada limpia: nombre, avatar, una línea de oficio, rol y botón */
-.hero-kicker,.hero-role small,.topbar .location-line{display:none!important}
+.hero-kicker,.hero-role small,.topbar .location-line{display:none}
 
 /* v120 — celular: piso de lectura (12 px en monoespaciada, 14 px en texto) */
 @media(max-width:680px){
@@ -1478,13 +1478,13 @@ html.is-lite #avatar-mount{filter:none}
 .footer{z-index:6}
 .services-ctas{display:flex;flex-wrap:wrap;gap:12px}
 .services-ctas .services-cta{margin:0}
-.services-cta-alt{background:transparent!important;color:inherit!important;box-shadow:inset 0 0 0 1.5px currentColor}
+.services-cta-alt{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
 .services-ctas{margin-top:clamp(28px,3vw,44px)}
 
 /* v122 — «Sobre mí»: texto en papel sólido (5:1 sobre el violeta, antes 3,3:1) */
-.about-text>p:not(.about-lead),.about-timeline p,.about-text p,.about-tools-label,.about-tags span,.about-topline span{color:var(--paper,#F4F2ED)!important;opacity:1!important}
+.about-text>p:not(.about-lead),.about-timeline p,.about-text p,.about-tools-label,.about-tags span,.about-topline span{color:var(--paper,#F4F2ED);opacity:1}
 /* v122 — disciplinas sin «Ver proyectos»: la lista de casos ocupa el resto del ancho */
-@media(min-width:861px){.discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr)!important}.discipline-motion .discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr) auto!important}}
+@media(min-width:861px){.discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr)}.discipline-motion .discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr) auto}}
 
 /* v123 — la cinta de clientes se puede pausar: al pasar el mouse, al enfocarla o con un toque/Enter (WCAG 2.2.2) */
 .clients:hover .clients-track,.clients:focus-within .clients-track,.clients.is-paused .clients-track{animation-play-state:paused}
