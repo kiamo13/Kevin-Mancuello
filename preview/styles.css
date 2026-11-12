@@ -1489,3 +1489,7 @@ html.is-lite #avatar-mount{filter:none}
 /* v123 — la cinta de clientes se puede pausar: al pasar el mouse, al enfocarla o con un toque/Enter (WCAG 2.2.2) */
 .clients:hover .clients-track,.clients:focus-within .clients-track,.clients.is-paused .clients-track{animation-play-state:paused}
 .clients{cursor:pointer;border-radius:12px}
+
+
+/* v125 — sin flechas decorativas: la lista de casos usa dos columnas (número y nombre) */
+.discipline-projects a{grid-template-columns:25px 1fr}
