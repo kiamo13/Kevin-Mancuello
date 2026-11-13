@@ -10,7 +10,8 @@
   --lilac:#c2e638;
   --line:rgba(35,31,70,.22);
   --mono:"DM Mono",monospace;
-  --display:"Space Grotesk",Arial,sans-serif;
+  --display:"Instrument Sans",Arial,sans-serif;
+  --heading:"Anybody","Arial Black",sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:84px}
@@ -1535,3 +1536,110 @@ html.is-lite #avatar-mount{filter:none}
 .avatar-mini{min-height:44px}
 .project-link{display:inline-grid;place-items:center;min-width:44px;min-height:44px;margin:-10px -14px -10px 0}
 .discipline-top,.discipline-top span{font-size:12px}
+
+
+/* v134 — tipografía y sistema de interacción */
+h1,h2,h3,h4,.hero-giant,.footer-email,.project-visual strong{
+  font-family:var(--heading);
+  font-weight:850;
+}
+.hero-greeting h1,.works-heading h2,.discipline-main h3,.about-heading h2,.services h2{
+  font-family:var(--heading);
+  font-weight:850;
+}
+body{font-family:var(--display)}
+
+/* Menú desplegable: una sola interacción consistente en desktop y móvil. */
+.topbar{grid-template-columns:1fr auto;position:absolute}
+.location-line{justify-self:start}
+.menu-toggle{
+  grid-column:2;grid-row:1;justify-self:end;align-items:center;gap:13px;
+  display:inline-flex;min-height:42px;padding:9px 0 9px 14px;
+  border:0;background:transparent;color:var(--paper);cursor:pointer;
+  font:500 10px var(--mono);letter-spacing:.13em;
+  transition:color .2s ease,opacity .2s ease;
+}
+.menu-toggle .menu-label{display:inline;width:auto;height:auto;margin:0;background:none}
+.menu-toggle .menu-mark{
+  display:grid;place-items:center;width:27px;height:27px;margin:0;
+  border:1px solid rgba(255,255,255,.65);border-radius:50%;
+  font:18px/1 var(--display);transition:transform .28s ease,background .2s ease,color .2s ease,border-color .2s ease;
+}
+.menu-toggle:hover{color:var(--acid)}
+.menu-toggle:hover .menu-mark{background:var(--acid);border-color:var(--acid);color:var(--plum)}
+.menu-toggle[aria-expanded="true"] .menu-mark{transform:rotate(45deg);background:var(--acid);border-color:var(--acid);color:var(--plum)}
+.main-nav{
+  position:absolute;top:calc(100% + 10px);right:clamp(18px,4vw,62px);
+  z-index:42;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:9px;
+  width:max-content;max-width:min(720px,calc(100vw - 36px));
+  padding:14px;background:var(--plum);border:1px solid rgba(255,255,255,.18);
+  border-radius:22px;box-shadow:0 18px 50px rgba(12,9,30,.22);
+  opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-9px) scale(.98);
+  transform-origin:top right;transition:opacity .22s ease,transform .22s ease,visibility .22s;
+}
+.main-nav.is-open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1)}
+.main-nav a{
+  display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:10px 15px;
+  border:1px solid rgba(255,255,255,.38);border-radius:999px;
+  color:var(--paper);font:500 10px var(--mono);letter-spacing:.025em;
+  transition:background .2s ease,color .2s ease,border-color .2s ease,transform .2s ease;
+}
+.main-nav a:hover,.main-nav a:focus-visible{
+  opacity:1;background:var(--acid);border-color:var(--acid);color:var(--plum);transform:translateY(-2px);
+}
+.main-nav a[aria-current="location"]{background:var(--acid);border-color:var(--acid);color:var(--plum)}
+.main-nav small{display:inline;font:8px var(--mono);opacity:.65;margin:0}
+.main-nav a[aria-current="location"] small{opacity:.8}
+
+/* Las etiquetas de áreas también funcionan como accesos directos. */
+.about-tags a{
+  display:inline-flex;align-items:center;min-height:34px;padding:8px 11px;
+  border:1px solid rgba(255,255,255,.32);border-radius:999px;
+  color:inherit;font:8px var(--mono);letter-spacing:.07em;
+  transition:background .2s ease,color .2s ease,border-color .2s ease,transform .2s ease;
+}
+.about-tags a:hover,.about-tags a:focus-visible{
+  background:var(--acid);border-color:var(--acid);color:var(--plum);transform:translateY(-2px);
+}
+
+/* Feedback táctil y visual para enlaces de acción. */
+.services-cta,.hero-contact,.about-link,.watch-link,.project-link,.footer-links a,.hero-scroll{
+  transition:color .2s ease,background .2s ease,border-color .2s ease,transform .2s ease,opacity .2s ease;
+}
+.services-cta,.hero-contact{position:relative}
+.services-cta:hover,.hero-contact:hover,.about-link:hover,.watch-link:hover{
+  color:var(--acid);transform:translateY(-2px);
+}
+.services-cta span,.project-link{display:inline-block;transition:transform .22s ease}
+.services-cta:hover span,.project-item:hover .project-link{transform:translate(3px,-3px)}
+.project-item .project-visual{transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.project-item:hover .project-visual{transform:translateY(-5px)}
+.project-img{transition:transform .65s cubic-bezier(.2,.7,.2,1)}
+.project-item:hover .project-img{transform:scale(1.035)}
+.project-link{position:relative;z-index:4;min-width:36px;min-height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%}
+.project-item:hover .project-link{background:var(--acid);border-color:var(--acid);color:var(--plum)}
+.footer-links a:hover{color:var(--violet);transform:translateY(-2px)}
+a:active,button:active{transform:scale(.97)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--acid);outline-offset:4px}
+
+@media(max-width:680px){
+  .topbar{grid-template-columns:1fr auto;min-height:65px;padding:0 18px}
+  .location-line{display:none}
+  .menu-toggle{grid-column:2;display:inline-flex}
+  .main-nav{
+    top:calc(100% + 8px);left:12px;right:12px;width:auto;max-width:none;
+    justify-content:flex-start;padding:13px;border-radius:18px;gap:8px;
+    transform-origin:top center;
+  }
+  .main-nav a{font-size:10px;min-height:42px;padding:11px 13px}
+  .about-tags{gap:7px}
+}
+@media(hover:none){
+  .project-item:hover .project-visual{transform:none}
+  .project-item:hover .project-img{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .main-nav,.main-nav a,.menu-toggle .menu-mark,.about-tags a,.project-visual,.project-img,.services-cta,.hero-contact,.about-link,.watch-link,.project-link,.footer-links a{
+    transition:none!important;
+  }
+}
