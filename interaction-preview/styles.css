@@ -1,0 +1,1645 @@
+:root{
+  --paper:#f4f2ed;
+  --paper-2:#e9e6df;
+  --ink:#231f46;
+  --plum:#231f46;
+  --violet:#6e3fff;
+  --peach:#ff5733;
+  --peach-light:#ff8066;
+  --coral:#ff5733;
+  --lilac:#c2e638;
+  --line:rgba(35,31,70,.22);
+  --mono:"DM Mono",monospace;
+  --display:"Instrument Sans",Arial,sans-serif;
+  --heading:"Anybody","Arial Black",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--display);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.skip-link{position:fixed;z-index:100;top:10px;left:10px;padding:12px 16px;background:var(--plum);color:var(--paper);font:12px var(--mono);transform:translateY(-160%);transition:transform .2s}
+.skip-link:focus{transform:translateY(0)}
+::selection{background:var(--plum);color:var(--peach)}
+.topbar{
+  position:absolute;top:0;left:0;right:0;z-index:30;
+  min-height:74px;padding:0 clamp(20px,4vw,62px);
+  display:grid;grid-template-columns:1fr 1.2fr 1fr;align-items:center;
+  color:var(--plum);border-bottom:1px solid rgba(67,27,88,.15);
+}
+.brand-code{font:500 12px var(--mono);letter-spacing:-.04em;white-space:nowrap}
+.location-line{justify-self:center;font:9px var(--mono);text-transform:lowercase;letter-spacing:.02em;margin:0;white-space:nowrap}
+.location-line span{display:inline-block;width:24px;height:1px;background:currentColor;vertical-align:middle;margin:0 7px}
+.main-nav{justify-self:end;display:flex;align-items:center;gap:clamp(17px,2.6vw,38px)}
+.main-nav a{font:11px var(--mono);text-transform:lowercase;transition:opacity .2s}
+.main-nav a:hover{opacity:.55}
+.main-nav small{display:block;font:8px var(--mono);opacity:.55;margin-top:3px}
+.menu-toggle{display:none;border:0;background:transparent;padding:8px}
+.menu-toggle span{display:block;width:22px;height:1px;background:var(--plum);margin:5px}
+
+/* HERO — bold typography, central character and a compact information layer. */
+.hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:max(760px,100svh);height: min(960px,100svh);
+  background:var(--peach);color:var(--plum);
+}
+.hero:before,.hero:after{content:"";position:absolute;pointer-events:none;border:1px solid rgba(67,27,88,.12);border-radius:50%;z-index:-1}
+.hero:before{width:min(73vw,1020px);aspect-ratio:1;left:50%;top:48%;transform:translate(-50%,-50%)}
+.hero:after{width:min(58vw,810px);aspect-ratio:1;left:50%;top:48%;transform:translate(-50%,-50%);border-style:dashed;opacity:.55}
+.hero-grain{position:absolute;inset:0;pointer-events:none;opacity:.13;z-index:8;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");mix-blend-mode:multiply}
+.hero-giant{
+  position:absolute;z-index:1;left:50%;top:48%;width:100%;
+  transform:translate(-50%,-50%);display:flex;flex-direction:column;
+  align-items:center;pointer-events:none;white-space:nowrap;
+  color:var(--violet);font-weight:700;letter-spacing:-.105em;line-height:.72;
+  font-size:clamp(112px,20.5vw,310px);text-align:center;
+}
+.hero-giant span:first-child{transform:translateX(-.06em)}
+.hero-giant span:last-child{font-size:.77em;letter-spacing:-.105em;margin-top:.11em}
+.hero-greeting{position:absolute;z-index:7;left:clamp(22px,5vw,76px);top:clamp(205px,27vh,290px);pointer-events:none}
+.hero-kicker{font:10px var(--mono);letter-spacing:.12em;margin:0 0 12px}
+.hero-greeting h1{font-size:clamp(35px,4.6vw,68px);line-height:.82;letter-spacing:-.09em;margin:0;font-weight:700}
+.hero-greeting h1 span{font-size:.33em;vertical-align:top;margin-left:5px}
+.hero-role{position:absolute;z-index:7;right:clamp(22px,5vw,76px);bottom:clamp(140px,18vh,190px);text-align:right}
+.role-rule{display:block;width:47px;height:1px;background:var(--plum);margin:0 0 15px auto}
+.hero-role p{font-size:clamp(15px,1.7vw,22px);font-weight:700;line-height:.96;letter-spacing:-.055em;margin:0}
+.hero-role small{display:block;font:8px var(--mono);letter-spacing:.08em;margin-top:12px}
+.hero-character{
+  position:absolute;z-index:5;left:50%;bottom:3.5%;transform:translateX(-50%);
+  width:min(43vw,555px);height:80%;display:grid;place-items:center;
+}
+.character-shadow{position:absolute;bottom:4%;width:56%;height:6%;border-radius:50%;background:rgba(67,27,88,.15);filter:blur(20px)}
+.character-ring{position:absolute;border:1px solid rgba(67,27,88,.16);border-radius:50%;pointer-events:none}
+.ring-a{width:89%;aspect-ratio:1;top:9%}
+.ring-b{width:74%;aspect-ratio:1;top:16%;border-style:dashed;opacity:.6}
+.avatar-stage{position:absolute;inset:0;display:grid;place-items:center;cursor:crosshair;outline:none;touch-action:pan-y;z-index:4;border:0;padding:0;background:transparent;color:inherit;font:inherit;width:100%}
+.avatar-mount{position:relative;width:100%;height:100%;display:grid;place-items:center}
+.avatar-mount svg{width:100%;height:100%;max-height:100%;display:block;overflow:visible}
+.avatar-svg{overflow:visible}
+.avatar-stage:focus-visible{outline:1px solid var(--plum);outline-offset:-12px}
+.hero-scroll{position:absolute;bottom:28px;left:clamp(22px,5vw,76px);z-index:9;display:flex;align-items:center;gap:12px;font:8px var(--mono);letter-spacing:.1em}
+.scroll-line{width:34px;height:1px;background:currentColor}
+.hero-scroll>span:last-child{font-size:13px}
+
+/* WORKS — one large typographic divider followed by discipline bands. */
+.works-section{background:var(--paper);padding:clamp(80px,12vw,160px) clamp(20px,5vw,76px) clamp(90px,12vw,150px);overflow:hidden}
+.works-heading{position:relative;min-height:270px;padding-bottom:32px;border-bottom:1px solid var(--line)}
+.eyebrow{font:9px var(--mono);letter-spacing:.13em;text-transform:uppercase;margin:0 0 25px;color:rgba(67,27,88,.68)}
+.works-heading h2{font-size:clamp(105px,20vw,280px);line-height:.65;letter-spacing:-.115em;margin:0;font-weight:700;color:var(--plum)}
+.works-heading h2 span{font-size:.28em;vertical-align:top;margin-left:.18em;color:var(--coral)}
+.works-intro{position:absolute;right:0;bottom:34px;max-width:240px;font-size:12px;line-height:1.55;color:rgba(67,27,88,.7)}
+.discipline{margin-top:65px;padding:0 0 38px;border-bottom:1px solid var(--line)}
+.discipline-top,.discipline-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.discipline-number,.discipline-tools{font:8px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:rgba(67,27,88,.65)}
+.discipline-main{position:relative;min-height:clamp(270px,36vw,490px);display:flex;align-items:center;justify-content:space-between;overflow:hidden}
+.discipline-main h3{position:relative;z-index:2;font-size:clamp(64px,11.6vw,166px);line-height:.78;letter-spacing:-.105em;margin:0;font-weight:700;color:var(--plum)}
+.discipline-main h3 em{font-style:normal;color:var(--violet)}
+.discipline-art{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:min(36vw,480px);height:min(31vw,390px);min-height:240px;overflow:hidden;isolation:isolate}
+.art-illustration{background:var(--lilac)}
+.art-illustration:before{content:"";position:absolute;width:68%;aspect-ratio:1;border:1px solid var(--plum);border-radius:50%;left:18%;top:14%;box-shadow:0 0 0 23px rgba(67,27,88,.05),0 0 0 46px rgba(67,27,88,.04)}
+.art-illustration:after{content:"";position:absolute;width:42%;height:70%;border:1px solid var(--plum);border-radius:49% 49% 44% 44%;left:30%;top:16%;transform:rotate(17deg);background:rgba(248,166,125,.35)}
+.art-orbit{position:absolute;z-index:2;border:1px solid rgba(67,27,88,.45);border-radius:50%;width:72%;height:72%;left:14%;top:13%;transform:rotate(-24deg)}
+.art-orbit:nth-child(2){transform:rotate(31deg) scale(.8)}
+.art-eye{position:absolute;z-index:3;width:18px;height:18px;border-radius:50%;background:var(--plum);left:48%;top:46%}
+.art-spark{position:absolute;z-index:4;right:12%;top:10%;font-size:42px;color:var(--plum)}
+.art-label{position:absolute;z-index:4;left:5%;bottom:6%;font:8px/1.4 var(--mono);letter-spacing:.12em}
+.art-branding{background:var(--plum)}
+.brand-orb{position:absolute;border:1px solid var(--peach-light);border-radius:50%;width:67%;aspect-ratio:1;top:16%;left:17%}
+.orb-two{transform:scale(.7) rotate(35deg);border-color:rgba(248,166,125,.7)}
+.brand-square{position:absolute;width:37%;height:37%;border:1px solid var(--peach);left:31%;top:32%;transform:rotate(45deg)}
+.brand-type{position:absolute;right:8%;top:8%;font-size:36px;font-weight:700;color:var(--peach)}
+.brand-label{position:absolute;left:7%;bottom:7%;font:8px/1.4 var(--mono);letter-spacing:.12em;color:var(--peach-light)}
+.art-motion{background:var(--coral)}
+.motion-ring{position:absolute;border:1px solid var(--plum);border-radius:50%;width:85%;aspect-ratio:1;left:6%;top:7%;transform:rotate(28deg) scaleY(.7)}
+.motion-ring:nth-child(2){transform:rotate(-36deg) scaleY(.7) scale(.8)}
+.motion-orb{position:absolute;width:24%;aspect-ratio:1;background:var(--plum);border-radius:50%;top:38%;left:39%;box-shadow:0 0 0 20px rgba(67,27,88,.08),0 0 0 40px rgba(67,27,88,.06)}
+.motion-arrow{position:absolute;right:8%;top:8%;font-size:45px;color:var(--plum)}
+.motion-label{position:absolute;left:7%;bottom:7%;font:8px/1.4 var(--mono);letter-spacing:.12em}
+.discipline-bottom{align-items:flex-end}
+.discipline-bottom>p{font-size:12px;line-height:1.55;margin:0;min-width:170px}
+.discipline-projects{display:flex;flex-direction:column;gap:7px;flex:1;max-width:510px}
+.discipline-projects a{display:grid;grid-template-columns:25px 1fr 20px;gap:10px;align-items:center;border-bottom:1px solid rgba(67,27,88,.17);padding:7px 0;font-size:11px;transition:padding .2s,color .2s}
+.discipline-projects a:hover{padding-left:8px;color:var(--violet)}
+.discipline-projects span{font:8px var(--mono);color:rgba(67,27,88,.55)}
+.discipline-projects b{font-weight:400;text-align:right}
+.watch-link{font:8px var(--mono);letter-spacing:.1em;white-space:nowrap;border-bottom:1px solid var(--plum);padding:0 0 7px}
+.watch-link span{margin-left:9px}
+
+/* Project cards stay as clearly labelled visual placeholders until final assets are added. */
+.project-shelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:30px 0 18px}
+.project-shelf-two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.project-item{min-width:0}
+.project-visual{height:clamp(220px,28vw,390px);padding:18px 20px;position:relative;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;color:white;isolation:isolate;transition:transform .35s ease}
+.project-item:hover .project-visual{transform:translateY(-5px)}
+.visual-overline,.visual-foot{position:relative;z-index:2;font:8px var(--mono);letter-spacing:.1em}
+.project-visual strong{position:relative;z-index:2;font-size:clamp(30px,5vw,70px);line-height:.82;letter-spacing:-.095em;margin:auto 0 12px}
+.project-visual i{position:absolute;z-index:1;font-style:normal}
+.visual-jasypa{background:#231f46}
+.visual-jasypa:before{content:"";position:absolute;width:70%;aspect-ratio:1;border:1px solid rgba(255,255,255,.55);border-radius:50%;right:-8%;top:10%;box-shadow:0 0 0 22px rgba(255,255,255,.06),0 0 0 44px rgba(255,255,255,.04)}
+.visual-jasypa i{font-size:90px;right:18%;top:32%;color:var(--peach)}
+.visual-selection{background:var(--lilac);color:var(--plum)}
+.visual-selection strong{font-size:clamp(25px,3.8vw,54px)}
+.selection-shape{width:42%;aspect-ratio:1;border:1px solid var(--plum);border-radius:50%;right:9%;top:15%;box-shadow:inset 0 0 0 17px rgba(67,27,88,.06)}
+.visual-personal{background:var(--coral);color:var(--plum)}
+.visual-personal strong{font-size:clamp(25px,3.6vw,50px)}
+.personal-shape{right:9%;top:18%;width:40%;height:70%;border:1px solid var(--plum);border-radius:50% 50% 38% 38%;transform:rotate(-15deg)}
+.visual-mariano{background:#231f46}
+.visual-mariano strong{font-size:clamp(85px,12vw,160px);line-height:.68}
+.visual-mariano strong span{font-size:.22em;letter-spacing:-.04em}
+.visual-mariano:after{content:"";position:absolute;right:-7%;top:9%;width:67%;aspect-ratio:1;border:1px solid rgba(255,255,255,.5);border-radius:50%}
+.visual-mariano i{width:42%;height:42%;border:1px solid rgba(255,255,255,.55);right:12%;top:23%;transform:rotate(45deg)}
+.visual-player{background:#ffe600;color:var(--plum)}
+.visual-player strong{font-size:clamp(38px,6vw,78px)}
+.visual-player i{right:10%;top:20%;width:60%;height:58%;border:1px solid rgba(67,27,88,.65);border-radius:50%;transform:rotate(-24deg)}
+.visual-todegol{background:#231f46}
+.visual-todegol i{right:12%;bottom:23%;font-size:14px;border:1px solid rgba(255,255,255,.65);padding:8px 11px;transform:rotate(-8deg)}
+.visual-etidol{background:#ff5733}
+.visual-etidol i{right:13%;top:20%;width:50%;aspect-ratio:1;border:1px solid rgba(255,255,255,.5);border-radius:50%;box-shadow:0 0 0 17px rgba(255,255,255,.06),0 0 0 34px rgba(255,255,255,.04)}
+.visual-atlas{background:#231f46}
+.visual-atlas i{right:12%;top:16%;width:45%;height:74%;border:1px solid rgba(255,255,255,.5);border-radius:50% 50% 5% 5%;transform:rotate(12deg)}
+.project-caption{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;padding:14px 1px 0}
+.project-caption small{font:8px var(--mono);letter-spacing:.05em;color:rgba(67,27,88,.6)}
+.project-caption h4{font-size:15px;letter-spacing:-.045em;margin:6px 0 4px}
+.project-caption p{font-size:10px;color:rgba(67,27,88,.65);margin:0;line-height:1.5}
+.project-caption>a,.project-caption>span{font-size:18px}
+
+/* ABOUT */
+.about-section{position:relative;overflow:hidden;background:var(--plum);color:var(--paper);padding:32px clamp(20px,5vw,76px) 100px;min-height:670px}
+.about-topline,.footer-topline{display:flex;align-items:center;justify-content:space-between;font:8px var(--mono);letter-spacing:.12em;opacity:.72}
+.about-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:7vw;align-items:center;position:relative;z-index:2;padding:105px 0 80px}
+.about-kicker{font:9px var(--mono);letter-spacing:.15em;line-height:1.7;color:var(--peach);margin:0 0 20px}
+.about-heading h2{font-size:clamp(72px,11vw,150px);line-height:.77;letter-spacing:-.11em;margin:0;font-weight:700}
+.about-heading h2 span{color:var(--peach)}
+.about-signature{font:9px var(--mono);letter-spacing:.12em;margin:24px 0 0;color:var(--lilac)}
+.about-text{max-width:450px;padding-top:50px}
+.about-lead{font-size:clamp(19px,2.4vw,30px);line-height:1.15;letter-spacing:-.055em;margin:0 0 23px}
+.about-text>p:not(.about-lead){font-size:12px;line-height:1.85;color:#d7c7df;margin:0}
+.about-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:25px}
+.about-tags span{font:8px var(--mono);letter-spacing:.07em;border:1px solid rgba(255,255,255,.32);padding:8px 10px}
+.about-link{display:inline-block;font:8px var(--mono);letter-spacing:.1em;border-bottom:1px solid var(--peach);padding-bottom:9px;margin-top:35px}
+.about-link span{margin-left:15px;color:var(--peach)}
+
+/* CONTACT */
+.footer{background:var(--paper-2);color:var(--plum);padding:35px clamp(20px,5vw,76px) 22px}
+.footer-email{display:flex;align-items:center;justify-content:space-between;font-size:clamp(72px,16vw,220px);font-weight:700;line-height:.9;letter-spacing:-.12em;margin:70px 0 80px}
+.footer-email span{font-size:.3em;align-self:flex-start;margin-top:.18em;color:var(--violet)}
+.footer-links{display:flex;align-items:center;gap:clamp(15px,3vw,40px);flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px;font:9px var(--mono)}
+.footer-links a{transition:color .2s}
+.footer-links a:hover{color:var(--coral)}
+.footer-links a:last-child{margin-left:auto}
+.footer-copyright{font:8px var(--mono);letter-spacing:.1em;color:rgba(67,27,88,.55);margin:45px 0 0}
+
+/* SVG avatar expressions and reveal layer */
+.avatar-svg #CRÁNEO{opacity:0;pointer-events:none;transition:opacity .22s ease}
+.avatar-svg #skull-peek-shape{opacity:0;transition:opacity .16s ease}
+.avatar-stage.is-hovering .avatar-svg #CRÁNEO,
+.avatar-stage.is-closing .avatar-svg #CRÁNEO{opacity:1}
+.avatar-stage.is-hovering .avatar-svg #skull-peek-shape,
+.avatar-stage.is-closing .avatar-svg #skull-peek-shape{opacity:1}
+.avatar-error{font-size:12px;color:#8d304a}
+
+/* Responsive */
+@media(max-width:1000px){
+  .topbar{grid-template-columns:1fr auto;gap:15px}
+  .location-line{display:none}
+  .hero-giant{font-size:22vw}
+  .hero-character{width:min(52vw,540px);height:76%}
+  .discipline-main{min-height:350px}
+  .discipline-main h3{font-size:clamp(55px,10vw,115px)}
+  .discipline-art{width:39vw;height:32vw}
+  .discipline-bottom{align-items:flex-start;flex-wrap:wrap}
+  .discipline-bottom>p{width:100%}
+  .discipline-projects{max-width:none}
+}
+@media(max-width:680px){
+  html{scroll-padding-top:70px}
+  .topbar{position:absolute;min-height:65px;padding:0 18px;grid-template-columns:1fr auto}
+  .brand-code{font-size:10px}
+  .main-nav{display:none;position:absolute;top:64px;left:0;right:0;padding:20px 18px 22px;background:var(--peach);border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start;gap:18px}
+  .main-nav.is-open{display:flex}
+  .main-nav a{font-size:13px}
+  .menu-toggle{display:block}
+  .hero{min-height:790px;height:100svh;max-height:980px}
+  .hero-giant{top:47%;font-size:clamp(100px,24vw,180px)}
+  .hero-giant span:last-child{font-size:.66em}
+  .hero-greeting{top:162px;left:18px}
+  .hero-kicker{font-size:8px;margin-bottom:8px}
+  .hero-greeting h1{font-size:34px}
+  .hero-role{right:18px;bottom:110px}
+  .hero-role p{font-size:16px}
+  .hero-role small{font-size:7px}
+  .hero-character{width:min(83vw,430px);height:62%;bottom:12%;left:50%}
+  .hero-scroll{left:18px;bottom:20px;font-size:7px}
+  .hero:before{width:93vw;top:49%}
+  .hero:after{width:76vw;top:49%}
+  .works-section{padding:75px 18px 85px}
+  .works-heading{min-height:215px}
+  .works-heading h2{font-size:clamp(95px,25vw,155px)}
+  .works-intro{position:static;max-width:230px;margin:20px 0 0 auto;font-size:10px}
+  .discipline{margin-top:52px;padding-bottom:28px}
+  .discipline-top{align-items:flex-start}
+  .discipline-tools{max-width:52%;text-align:right;line-height:1.5}
+  .discipline-main{min-height:410px;align-items:flex-start;padding-top:42px}
+  .discipline-main h3{font-size:clamp(58px,13vw,90px)}
+  .discipline-art{width:75vw;height:62vw;max-height:300px;right:0;top:auto;bottom:0;transform:none;min-height:220px}
+  .discipline-bottom{gap:23px}
+  .discipline-bottom>p{font-size:11px}
+  .discipline-projects{width:100%;flex:auto}
+  .discipline-projects a{font-size:10px}
+  .watch-link{margin-left:auto}
+  .project-shelf,.project-shelf-two{grid-template-columns:1fr;gap:30px;padding-top:25px}
+  .project-visual{height:80vw;max-height:400px;min-height:260px;padding:19px}
+  .project-visual strong{font-size:clamp(45px,12vw,76px)}
+  .visual-selection strong,.visual-personal strong{font-size:clamp(37px,10vw,61px)}
+  .about-section{padding:25px 18px 82px;min-height:700px}
+  .about-layout{grid-template-columns:1fr;gap:35px;padding:72px 0 85px}
+  .about-heading h2{font-size:clamp(75px,18vw,125px)}
+  .about-text{padding-top:0}
+  .about-lead{font-size:23px}
+  .footer{padding:25px 18px 20px}
+  .footer-email{font-size:clamp(70px,19vw,125px);margin:60px 0}
+  .footer-links{gap:15px;flex-direction:column;align-items:flex-start}
+  .footer-links a:last-child{margin:0}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}
+}
+/* Accessibility and interaction refinements */
+a:focus-visible,button:focus-visible{outline:2px solid var(--violet);outline-offset:4px}
+@media(hover:none){
+  .avatar-stage{cursor:pointer}
+  .project-item:hover .project-visual{transform:none}
+}
+
+:root{--acid:#84ff00;--gold:#ffe600}
+
+/* KM — composición editorial y jerarquía cromática */
+body{background:var(--paper);color:var(--plum)}
+::selection{background:var(--acid);color:var(--plum)}
+.topbar{color:var(--paper);border-color:rgba(255,255,255,.2)}
+.menu-toggle span{background:var(--paper)}
+.hero{background:var(--plum);color:var(--paper)}
+.hero:before{width:min(78vw,1080px);top:52%;background:var(--violet);border:0;border-radius:48% 52% 43% 57%/53% 43% 57% 47%}
+.hero:after{width:min(84vw,1160px);top:52%;border-color:rgba(255,255,255,.2)}
+.hero-giant{top:50%;font-size:clamp(130px,23vw,340px);line-height:.69;letter-spacing:-.12em;color:var(--paper)}
+.hero-giant span:first-child{color:var(--paper);transform:translateX(-.11em)}
+.hero-giant span:last-child{font-size:.67em;letter-spacing:-.105em;margin-top:.16em;color:var(--acid);transform:translateX(.04em)}
+.hero-greeting{z-index:8}
+.hero-kicker{color:var(--acid)}
+.hero-role{z-index:8;color:var(--paper)}
+.role-rule{background:var(--acid);height:2px}
+.hero-role small{color:var(--acid)}
+.hero-character{z-index:5;width:min(39vw,520px);height:78%;bottom:2%}
+.character-shadow{background:rgba(0,0,0,.3)}
+.character-ring{border-color:rgba(255,255,255,.25)}
+.ring-b{border-color:rgba(132,255,0,.55)}
+.character-index,.hero-scroll{color:var(--paper)}
+.hero-scroll .scroll-line{background:var(--acid);height:2px}
+.works-section{background:var(--paper)}
+.works-heading h2,.discipline-main h3{color:var(--plum)}
+.works-heading h2 span{color:var(--coral)}
+.eyebrow,.discipline-number,.discipline-projects span,.project-caption small{color:var(--violet)}
+.discipline-art{display:none}
+.discipline-main{min-height:clamp(190px,25vw,330px)}
+.discipline-main h3{font-size:clamp(66px,12vw,172px);letter-spacing:-.12em}
+.discipline-main h3 em{color:var(--violet)}
+.discipline-bottom{border-top:1px solid var(--line);padding-top:20px}
+.discipline-projects a{border-color:var(--line);color:var(--plum)}
+.watch-link{border-color:var(--violet);color:var(--violet)}
+.visual-jasypa,.visual-todegol{background:var(--violet)}
+.visual-selection{background:var(--acid);color:var(--plum)}
+.visual-personal,.visual-etidol{background:var(--coral);color:var(--plum)}
+.visual-mariano,.visual-atlas{background:var(--plum)}
+.visual-player{background:var(--gold);color:var(--plum)}
+.about-section{background:var(--violet);color:var(--paper)}
+.about-kicker,.about-timeline span{color:var(--acid)}
+.about-heading h2 span{color:var(--acid)}
+.about-signature{color:var(--gold)}
+.about-text>p:not(.about-lead),.about-timeline p{color:var(--paper)}
+.about-link{border-color:var(--acid)}
+.about-link span{color:var(--acid)}
+.footer{background:var(--acid);color:var(--plum)}
+.footer-email span{color:var(--violet)}
+.footer-links a:hover{color:var(--violet)}
+.skip-link{background:var(--acid);color:var(--plum)}
+@media(max-width:1000px){.topbar{color:var(--paper)}.hero-character{width:min(48vw,500px);height:73%}}
+@media(max-width:680px){
+ .topbar{color:var(--paper)}
+ .main-nav{background:var(--plum);border-color:rgba(255,255,255,.2)}
+ .main-nav a{color:var(--paper)}
+ .menu-toggle span{background:var(--paper)}
+ .hero{background:var(--plum)}
+ .hero-giant{font-size:clamp(104px,25vw,176px);line-height:.72}
+ .hero-giant span:last-child{font-size:.63em}
+ .hero-character{width:min(82vw,405px);height:62%;bottom:12%}
+ .hero:before{width:112vw;top:49%}
+ .hero:after{width:105vw;top:49%}
+ .discipline-main{min-height:260px;padding-top:24px}
+ .discipline-main h3{font-size:clamp(58px,13vw,92px)}
+}
+
+/* KM / ART DIRECTION PASS — composición más contundente, menos decoración genérica */
+:root{--acid:#84ff00;--gold:#ffe600;--plum:#231f46;--violet:#6e3fff;--coral:#ff5733}
+.hero{min-height:max(760px,100svh);background:var(--plum);color:var(--paper)}
+.hero:before,.hero:after{display:none}
+.hero-grain{opacity:.07}
+.hero-giant{z-index:2;top:47%;left:50%;width:100%;align-items:center;font-size:clamp(150px,25vw,370px);line-height:.65;letter-spacing:-.14em;color:var(--acid);mix-blend-mode:normal}
+.hero-giant span:first-child{color:var(--acid);transform:translateX(-.13em)}
+.hero-giant span:last-child{color:var(--paper);font-size:.69em;letter-spacing:-.13em;transform:translateX(.08em);margin-top:.16em}
+.hero-character{z-index:5;width:min(47vw,620px);height:86%;bottom:-1%}
+.avatar-stage{touch-action:none;cursor:crosshair}
+.avatar-mount,.avatar-svg{width:100%;height:100%}
+.avatar-svg{filter:drop-shadow(0 24px 26px rgba(0,0,0,.24))}
+.character-shadow,.character-ring{display:none}
+.hero-greeting{z-index:8;left:clamp(24px,5vw,76px);top:clamp(190px,25vh,260px);max-width:230px}
+.hero-kicker{color:var(--acid);font-size:10px}
+.hero-intro{font-size:clamp(15px,1.5vw,21px);line-height:1.05;font-weight:700;letter-spacing:-.04em}
+.hero-role{z-index:8;right:clamp(24px,5vw,76px);bottom:clamp(110px,15vh,160px);color:var(--paper)}
+.hero-role p{font-size:clamp(20px,2.2vw,31px);letter-spacing:-.08em}
+.hero-role small{color:var(--acid)}
+.role-rule{background:var(--coral);width:68px;height:4px}
+.hero-scroll{color:var(--paper);font-weight:700}
+.hero-scroll .scroll-line{background:var(--acid);width:52px;height:3px}
+.works-section{padding-top:clamp(100px,13vw,190px)}
+.works-heading{position:relative;min-height:clamp(270px,32vw,440px)}
+.works-heading h2{font-size:clamp(130px,24vw,340px);letter-spacing:-.15em;line-height:.7;margin-left:-.055em;color:var(--plum)}
+.works-heading h2 span{color:var(--coral);font-size:.42em;vertical-align:top}
+.works-intro{max-width:280px;font-size:clamp(13px,1.35vw,18px);line-height:1.2;right:4%;bottom:12%}
+.discipline{margin-top:clamp(80px,12vw,160px)}
+.discipline-top{border-top:3px solid var(--plum);padding-top:14px;font-size:10px}
+.discipline-main{min-height:clamp(240px,31vw,430px);position:relative}
+.discipline-main h3{font-size:clamp(90px,16vw,220px);line-height:.72;letter-spacing:-.15em;position:relative;z-index:2}
+.discipline-main h3 em{color:var(--violet);font-style:normal}
+.discipline-bottom{border-top:2px solid var(--plum);padding-top:18px}
+.discipline-bottom>p{font-size:clamp(13px,1.5vw,18px);line-height:1.1;font-weight:600}
+.discipline-projects a{border-bottom:1px solid rgba(35,31,70,.35);padding:12px 0;font-size:12px}
+.discipline-projects a b{color:var(--coral)}
+.watch-link{border:2px solid var(--violet);padding:12px 16px;font-size:9px;font-weight:700}
+.project-shelf{grid-template-columns:1.18fr .82fr;gap:clamp(18px,3vw,42px);padding-top:42px}
+.project-item:nth-child(even){margin-top:clamp(55px,9vw,130px)}
+.project-visual{min-height:360px;height:clamp(360px,42vw,610px);padding:clamp(20px,3vw,42px);overflow:hidden}
+.project-visual strong{font-size:clamp(58px,9vw,130px);line-height:.76;letter-spacing:-.12em}
+.project-visual:after{content:"";position:absolute;width:62%;aspect-ratio:1;right:-16%;bottom:-30%;border:2px solid currentColor;border-radius:46% 54% 65% 35%;transform:rotate(-22deg);opacity:.55}
+.visual-jasypa{background:var(--violet);color:var(--paper)}
+.visual-selection{background:var(--acid);color:var(--plum)}
+.visual-personal{background:var(--coral);color:var(--plum)}
+.visual-mariano{background:var(--plum);color:var(--gold)}
+.visual-player{background:var(--gold);color:var(--plum)}
+.visual-todegol{background:var(--violet);color:var(--acid)}
+.visual-etidol{background:var(--coral);color:var(--plum)}
+.visual-atlas{background:var(--plum);color:var(--paper)}
+.project-caption{padding-top:15px;border-top:2px solid var(--plum)}
+.project-caption h4{font-size:clamp(17px,2vw,24px);letter-spacing:-.06em}
+.project-caption p{font-size:12px}
+.about-section{padding-top:clamp(80px,12vw,160px);padding-bottom:clamp(90px,14vw,190px);background:var(--violet)}
+.about-layout{grid-template-columns:1.15fr .85fr;gap:8vw}
+.about-heading h2{font-size:clamp(100px,17vw,230px);letter-spacing:-.15em;line-height:.7}
+.about-heading h2 span{color:var(--acid)}
+.about-lead{font-size:clamp(28px,4vw,55px);line-height:.98;letter-spacing:-.08em}
+.about-text>p:not(.about-lead){font-size:14px;line-height:1.65}
+.footer{padding-top:clamp(60px,9vw,120px);background:var(--acid)}
+.footer-email{font-size:clamp(90px,19vw,270px);letter-spacing:-.15em;line-height:.72}
+@media(max-width:1000px){
+ .hero-character{width:min(58vw,560px);height:80%;bottom:0}
+ .hero-giant{font-size:25vw}
+ .project-shelf{grid-template-columns:1fr 1fr}
+}
+@media(max-width:680px){
+ .hero{min-height:820px;height:100svh;max-height:980px}
+ .hero-giant{top:44%;font-size:clamp(108px,25vw,170px);line-height:.72}
+ .hero-giant span:last-child{font-size:.62em}
+ .hero-character{width:min(94vw,450px);height:66%;bottom:9%}
+ .hero-greeting{top:142px;left:18px;max-width:145px}
+ .hero-kicker{font-size:7px}
+ .hero-intro{font-size:14px}
+ .hero-role{right:18px;bottom:88px}
+ .hero-role p{font-size:18px}
+ .hero-role small{max-width:145px;font-size:6px;line-height:1.4}
+ .works-section{padding:80px 18px 90px}
+ .works-heading{min-height:240px}
+ .works-heading h2{font-size:clamp(100px,26vw,160px)}
+ .works-intro{max-width:190px;font-size:12px;margin-top:18px}
+ .discipline{margin-top:75px}
+ .discipline-main{min-height:260px}
+ .discipline-main h3{font-size:clamp(64px,15vw,105px)}
+ .discipline-bottom{gap:18px}
+ .project-shelf,.project-shelf-two{grid-template-columns:1fr;gap:32px}
+ .project-item:nth-child(even){margin-top:0}
+ .project-visual{height:92vw;min-height:300px;max-height:460px}
+ .about-layout{grid-template-columns:1fr;gap:38px}
+ .about-heading h2{font-size:clamp(85px,20vw,135px)}
+ .about-lead{font-size:30px}
+ .footer-email{font-size:clamp(78px,20vw,135px)}
+}
+@media(prefers-reduced-motion:reduce){.avatar-svg{filter:none}}
+
+
+/* Mobile: preserve native scrolling while the global touch interaction follows the finger. */
+@media(max-width:680px){
+  .avatar-stage{touch-action:pan-y pinch-zoom !important}
+  .hero{height:auto;min-height:max(820px,100svh);max-height:none}
+}
+
+
+/* LOCAL CHROMATIC INVERSION — organic cursor field */
+.color-invert{
+  position:fixed;z-index:24;left:0;top:0;width:clamp(170px,20vw,250px);height:clamp(190px,23vw,280px);
+  pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.72);
+  mix-blend-mode:difference;transition:opacity .22s ease,transform .35s cubic-bezier(.2,.75,.25,1);
+  will-change:left,top,transform,opacity;
+}
+.color-invert.is-visible{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.color-invert svg{display:block;width:100%;height:100%;overflow:visible}
+.color-invert path{fill:#fff}
+@media(max-width:680px){
+  .color-invert{width:150px;height:170px}
+}
+@media(prefers-reduced-motion:reduce){
+  .color-invert{transition:opacity .01ms,transform .01ms}
+}
+
+
+/* PERFORMANCE MODE — Lite */
+.lite-toggle{
+  border:1px solid currentColor;background:transparent;color:inherit;padding:8px 10px;
+  font:9px var(--mono);letter-spacing:.04em;cursor:pointer;white-space:nowrap;
+}
+.lite-toggle:hover,.lite-toggle[aria-pressed="true"]{background:var(--acid);color:var(--plum);border-color:var(--acid)}
+html.is-lite{scroll-behavior:auto}
+html.is-lite *,html.is-lite *::before,html.is-lite *::after{
+  animation:none!important;transition:none!important;scroll-behavior:auto!important;
+  scroll-snap-type:none!important;
+}
+html.is-lite .color-invert{display:none!important}
+html.is-lite .hero-grain{display:none!important}
+html.is-lite .avatar-svg{filter:none!important}
+html.is-lite .project-visual{transform:none!important}
+html.is-lite .project-visual:after{display:none}
+html.is-lite .character-shadow{filter:none}
+html.is-lite .lite-toggle{background:var(--acid);color:var(--plum);border-color:var(--acid)}
+@media(max-width:680px){
+  .lite-toggle{font-size:8px;padding:7px 8px}
+}
+
+
+/* HERO REFINEMENT — readable name, balanced portrait, continuous expressions */
+.hero-giant{
+  top:39%;
+  font-size:clamp(138px,23vw,340px);
+}
+.hero-character{
+  width:min(44vw,580px)!important;
+  height:81%!important;
+  bottom:0!important;
+}
+@media(max-width:680px){
+  .hero-giant{
+    top:37%;
+    font-size:clamp(105px,23vw,158px);
+    line-height:.76;
+  }
+  .hero-giant span:last-child{font-size:.62em}
+  .hero-character{
+    width:min(88vw,420px)!important;
+    height:61%!important;
+    bottom:9%!important;
+  }
+}
+
+
+/*/* Match the softness and timing of both chromatic transitions */
+.avatar-svg #CRÁNEO,
+.avatar-svg #skull-peek-shape{
+  transition:opacity .12s linear;
+}
+.color-invert{
+  transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1);
+}
+.color-invert path{fill:url(#color-invert-gradient)}
+
+
+/* Cabello: alternancia original de fotogramas, sin fundidos. */
+.avatar-svg #cabello-silueta{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:none;
+}
+.avatar-svg #cabello-base,
+.avatar-svg #cabello-parpadeo{
+  visibility:visible!important;
+  transform:none!important;
+  pointer-events:none;
+  animation-duration:.4s!important;
+  animation-timing-function:steps(1,end)!important;
+  animation-iteration-count:infinite!important;
+}
+.avatar-svg #cabello-base{
+  opacity:1;
+  animation-name:hair-frame-base!important;
+}
+.avatar-svg #cabello-parpadeo{
+  opacity:0;
+  animation-name:hair-frame-alt!important;
+}
+@keyframes hair-frame-base{
+  0%,49.999%{opacity:1}
+  50%,100%{opacity:0}
+}
+@keyframes hair-frame-alt{
+  0%,49.999%{opacity:0}
+  50%,100%{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .avatar-svg #cabello-silueta,
+  .avatar-svg #cabello-base{
+    opacity:1!important;
+    visibility:visible!important;
+    animation:none!important;
+    transform:none!important;
+  }
+  .avatar-svg #cabello-parpadeo{
+    opacity:0!important;
+    animation:none!important;
+    transform:none!important;
+  }
+}
+ 
+/* KM SYSTEM PASS — tokens, asset slots, navigation and responsive QA */
+:root{
+  --km-indigo:#231f46;
+  --km-violet:#6e3fff;
+  --km-coral:#ff5733;
+  --km-lime:#84ff00;
+  --km-yellow:#ffe600;
+  --km-paper:#f4f2ed;
+  --km-space-1:8px;
+  --km-space-2:16px;
+  --km-space-3:24px;
+  --km-space-4:40px;
+  --km-space-5:64px;
+  --km-space-6:96px;
+}
+:focus-visible{outline:2px solid #231F46!important;outline-offset:3px;box-shadow:0 0 0 5px #84FF00}
+html{scroll-padding-top:90px}
+section[id],footer[id]{scroll-margin-top:88px}
+.main-nav a[aria-current="location"]{color:var(--km-lime);text-decoration:underline;text-underline-offset:7px}
+.main-nav a,.lite-toggle,.menu-toggle{min-height:40px}
+.avatar-hint{
+  position:absolute;z-index:7;bottom:25px;left:50%;transform:translateX(-50%);
+  width:max-content;max-width:90%;font:8px var(--mono);letter-spacing:.1em;
+  color:var(--km-paper);opacity:.72;text-align:center;pointer-events:none;
+}
+.avatar-stage:focus-visible{outline:2px solid var(--km-lime)!important;outline-offset:-10px}
+.avatar-stage:focus-visible .avatar-hint{opacity:1}
+.project-visual[data-asset-slot="true"]{isolation:isolate}
+.project-item{min-width:0}
+.project-caption{min-height:88px}
+.project-caption h4{line-height:1.05}
+.project-caption p{max-width:42ch}
+.discipline-projects a:focus-visible,.watch-link:focus-visible,.footer-links a:focus-visible{outline-offset:5px}
+.menu-toggle{cursor:pointer}
+.menu-toggle[aria-expanded="true"] span:first-child{transform:translateY(3px) rotate(45deg)}
+.menu-toggle[aria-expanded="true"] span:last-child{transform:translateY(-3px) rotate(-45deg)}
+.menu-toggle span{transition:transform .2s ease}
+@media(min-width:681px) and (max-width:1000px){
+  .topbar{grid-template-columns:1fr auto}
+  .main-nav{gap:16px}
+  .main-nav a{font-size:10px}
+  .hero-character{width:min(55vw,530px);height:75%}
+  .hero-greeting{max-width:190px}
+  .hero-role{right:24px}
+  .project-shelf{gap:18px}
+  .project-visual{min-height:330px}
+}
+@media(max-width:680px){
+  html{scroll-padding-top:72px}
+  .topbar{position:absolute;min-height:65px}
+  .main-nav{z-index:31;box-shadow:0 18px 30px rgba(0,0,0,.16)}
+  .main-nav a{min-height:32px;display:flex;align-items:center}
+  .lite-toggle{margin-top:4px}
+  .hero{min-height:850px}
+  .hero-greeting{max-width:150px}
+  .hero-intro{font-size:clamp(14px,4vw,17px);line-height:1.08}
+  .hero-character{width:min(96vw,440px);height:63%;bottom:9%}
+  .avatar-hint{bottom:13px;font-size:7px}
+  .hero-role{max-width:145px}
+  .hero-scroll{bottom:18px}
+  .works-heading h2{letter-spacing:-.13em}
+  .discipline-top{gap:10px}
+  .discipline-number,.discipline-tools{font-size:7px}
+  .discipline-main{min-height:245px}
+  .discipline-bottom{display:grid;grid-template-columns:1fr;gap:18px}
+  .discipline-projects{width:100%;max-width:none}
+  .watch-link{justify-self:end;margin:0}
+  .project-visual{min-height:300px}
+  .project-caption{min-height:0;padding-bottom:4px}
+  .footer-email{letter-spacing:-.13em;overflow-wrap:anywhere}
+}
+@media(prefers-reduced-motion:reduce){
+  .menu-toggle span{transition:none}
+  .project-item:hover .project-visual{transform:none}
+  .avatar-hint{opacity:1}
+}
+
+/* Accessible text: available to assistive technology and search engines. */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+
+/* KM — legibility, consistent grid and typographic rhythm */
+.topbar{
+  color:var(--km-paper);
+  border-bottom-color:rgba(255,255,255,.24);
+}
+.brand-code{
+  font-size:13px;
+  letter-spacing:-.025em;
+}
+.location-line{
+  color:rgba(255,255,255,.9);
+  font-size:11px;
+}
+.main-nav{gap:clamp(18px,2.3vw,32px)}
+.main-nav a{font-size:12px;color:rgba(255,255,255,.94)}
+.main-nav small{font-size:10px;opacity:.78}
+.lite-toggle{font-size:10px}
+.hero-kicker{font-size:12px;color:var(--km-paper)}
+.hero-role small{
+  max-width:270px;
+  font:10px/1.5 var(--mono);
+  letter-spacing:.06em;
+  color:rgba(255,255,255,.9);
+}
+.hero-scroll{font-size:10px;letter-spacing:.08em}
+.hero-scroll .scroll-line{width:44px}
+
+/* Works heading: title and intro occupy separate, predictable areas. */
+.works-heading{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(220px,.42fr);
+  grid-template-areas:"eyebrow intro" "title intro";
+  align-items:end;
+  column-gap:clamp(24px,4vw,64px);
+  row-gap:12px;
+  min-height:0;
+  padding-bottom:30px;
+}
+.works-heading .eyebrow{
+  grid-area:eyebrow;
+  margin:0;
+  align-self:end;
+  color:rgba(35,31,70,.82);
+  font-size:11px;
+  line-height:1.4;
+}
+.works-heading h2{
+  grid-area:title;
+  align-self:end;
+  font-size:clamp(100px,17vw,250px);
+  line-height:.84;
+  letter-spacing:-.13em;
+  white-space:nowrap;
+}
+.works-intro{
+  grid-area:intro;
+  position:static;
+  align-self:end;
+  max-width:320px;
+  margin:0 0 7px;
+  color:rgba(35,31,70,.86);
+  font-size:clamp(14px,1.2vw,17px);
+  line-height:1.45;
+}
+
+/* Section dividers no longer collide with oversized discipline titles. */
+.discipline{
+  margin-top:clamp(58px,8vw,112px);
+  padding-bottom:30px;
+}
+.discipline-top{
+  border-top:1px solid rgba(35,31,70,.42);
+  padding-top:13px;
+  font-size:11px;
+}
+.discipline-number,
+.discipline-tools{
+  color:rgba(35,31,70,.82);
+  font-size:10px;
+  line-height:1.5;
+}
+.discipline-main{
+  min-height:clamp(230px,27vw,370px);
+  padding:25px 0 30px;
+  overflow:visible;
+}
+.discipline-illustration .discipline-main{
+  min-height:clamp(185px,19vw,265px);
+}
+.discipline-main h3{
+  max-width:100%;
+  font-size:clamp(68px,10.5vw,152px);
+  line-height:.88;
+  letter-spacing:-.105em;
+  overflow-wrap:anywhere;
+}
+.discipline-bottom{
+  display:grid;
+  grid-template-columns:minmax(170px,.72fr) minmax(0,1.55fr) auto;
+  align-items:center;
+  gap:clamp(18px,3vw,42px);
+  border-top:1px solid rgba(35,31,70,.3);
+  padding-top:20px;
+}
+.discipline-bottom>p{
+  min-width:0;
+  font-size:clamp(14px,1.35vw,17px);
+  line-height:1.35;
+  font-weight:600;
+}
+.discipline-projects{max-width:none;gap:4px}
+.discipline-projects a{
+  grid-template-columns:30px minmax(0,1fr) 20px;
+  gap:12px;
+  padding:10px 0;
+  font-size:13px;
+  line-height:1.35;
+}
+.discipline-projects span{
+  font-size:10px;
+  color:rgba(35,31,70,.76);
+}
+.watch-link{
+  font-size:10px;
+  line-height:1.3;
+  padding:11px 14px;
+  white-space:nowrap;
+  border-width:1px;
+}
+
+/* Project cards share a common two-column grid and a consistent image ratio. */
+.project-shelf,
+.project-shelf-two{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:start;
+  column-gap:clamp(20px,3vw,44px);
+  row-gap:36px;
+  padding-top:34px;
+}
+.project-item{
+  display:flex;
+  flex-direction:column;
+  align-self:start;
+  min-width:0;
+  margin-top:0!important;
+}
+.project-visual{
+  width:100%;
+  height:auto;
+  min-height:0;
+  max-height:none;
+  aspect-ratio:4/3;
+  padding:clamp(20px,2.8vw,38px);
+}
+.project-visual strong{
+  font-size:clamp(42px,6.8vw,94px);
+  line-height:.86;
+  letter-spacing:-.105em;
+}
+.visual-overline,.visual-foot{
+  font-size:10px;
+  line-height:1.4;
+}
+.project-caption{
+  min-height:108px;
+  padding-top:15px;
+  gap:16px;
+}
+.project-caption small{
+  display:block;
+  font-size:10px;
+  line-height:1.4;
+  color:rgba(35,31,70,.82);
+}
+.project-caption h4{
+  font-size:clamp(18px,1.65vw,23px);
+  line-height:1.12;
+  margin:7px 0 5px;
+}
+.project-caption p{
+  max-width:48ch;
+  font-size:13px;
+  line-height:1.5;
+  color:rgba(35,31,70,.82);
+}
+
+/* Body copy and metadata retain legibility on the violet About section. */
+.about-kicker,
+.about-timeline span{
+  color:#fff;
+  font-size:11px;
+}
+.about-heading h2{
+  font-size:clamp(76px,9vw,132px);
+  line-height:.82;
+  letter-spacing:-.105em;
+}
+.about-lead{font-size:clamp(25px,3vw,42px);line-height:1.05}
+.about-text>p:not(.about-lead){
+  color:rgba(255,255,255,.92);
+  font-size:15px;
+  line-height:1.7;
+}
+.about-tags span{font-size:10px}
+.about-link{font-size:10px}
+.footer-topline{font-size:11px;opacity:1}
+.footer-links{font-size:11px}
+.footer-copyright{font-size:10px;color:rgba(35,31,70,.78)}
+
+/* Responsive spacing: preserve hierarchy instead of shrinking text to microtype. */
+@media(min-width:681px) and (max-width:1000px){
+  .works-heading{grid-template-columns:minmax(0,1fr) minmax(190px,.45fr)}
+  .works-heading h2{font-size:clamp(104px,16vw,170px)}
+  .discipline-main{min-height:300px}
+  .discipline-illustration .discipline-main{min-height:210px}
+  .discipline-main h3{font-size:clamp(66px,10vw,104px)}
+  .discipline-bottom{grid-template-columns:minmax(140px,.7fr) minmax(0,1.5fr) auto;gap:16px}
+  .discipline-projects a{font-size:12px}
+  .watch-link{padding:10px 11px;font-size:9px}
+  .project-visual strong{font-size:clamp(42px,6vw,68px)}
+}
+@media(max-width:680px){
+  .brand-code{font-size:11px}
+  .main-nav a{font-size:14px}
+  .hero-kicker{font-size:10px}
+  .hero-role small{font-size:9px;max-width:190px}
+  .hero-scroll{font-size:9px}
+  .works-heading{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"eyebrow" "title" "intro";
+    row-gap:10px;
+    padding-bottom:24px;
+  }
+  .works-heading h2{
+    font-size:clamp(78px,21vw,136px);
+    line-height:.9;
+    letter-spacing:-.12em;
+    white-space:normal;
+  }
+  .works-intro{max-width:280px;margin:4px 0 0 auto;font-size:14px}
+  .discipline{margin-top:60px;padding-bottom:26px}
+  .discipline-main{
+    min-height:250px;
+    padding:24px 0;
+  }
+  .discipline-illustration .discipline-main{min-height:175px}
+  .discipline-main h3{
+    font-size:clamp(58px,13vw,88px);
+    line-height:.9;
+    letter-spacing:-.1em;
+  }
+  .discipline-top{gap:12px}
+  .discipline-number,.discipline-tools{font-size:9px}
+  .discipline-bottom{
+    grid-template-columns:minmax(0,1fr);
+    gap:15px;
+    padding-top:17px;
+  }
+  .discipline-bottom>p{font-size:14px}
+  .discipline-projects a{font-size:13px;padding:11px 0}
+  .watch-link{justify-self:end}
+  .project-shelf,.project-shelf-two{
+    grid-template-columns:minmax(0,1fr);
+    gap:30px;
+    padding-top:26px;
+  }
+  .project-visual{
+    aspect-ratio:4/3;
+    min-height:0;
+    max-height:none;
+    padding:22px;
+  }
+  .project-visual strong{font-size:clamp(46px,11vw,74px)}
+  .visual-overline,.visual-foot{font-size:10px}
+  .project-caption{min-height:0;padding-bottom:4px}
+  .project-caption h4{font-size:20px}
+  .project-caption p{font-size:13px}
+  .about-heading h2{font-size:clamp(78px,17vw,120px)}
+  .about-text>p:not(.about-lead){font-size:14px}
+  .about-tags span{font-size:9px}
+  .footer-topline{font-size:9px;gap:12px}
+  .footer-email{letter-spacing:-.1em}
+  .footer-links{font-size:11px}
+  .footer-copyright{font-size:9px;line-height:1.5}
+}
+
+
+/* Small accent labels use text contrast, not the lime-on-violet combination. */
+.main-nav a[aria-current="location"]{
+  color:var(--km-paper);
+  text-decoration-color:var(--km-coral);
+}
+.character-index,.avatar-hint{
+  color:var(--km-paper);
+  font-size:10px;
+  opacity:.92;
+}
+.about-signature{
+  color:var(--km-paper);
+  font-size:10px;
+}
+.about-link span{color:var(--km-paper)}
+@media(max-width:680px){
+  .character-index,.avatar-hint{font-size:9px}
+}
+
+
+/* AVATAR FLOAT — gentle vertical levitation with a breathing ground shadow. */
+@keyframes avatar-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-16px)}
+}
+@keyframes avatar-shadow-breathe{
+  0%,100%{transform:scaleX(1);opacity:1}
+  50%{transform:scaleX(.78);opacity:.62}
+}
+.avatar-mount{
+  animation:avatar-float 4.8s cubic-bezier(.42,0,.58,1) infinite;
+  will-change:transform;
+}
+.character-shadow{
+  animation:avatar-shadow-breathe 4.8s cubic-bezier(.42,0,.58,1) infinite;
+  transform-origin:center;
+  will-change:transform,opacity;
+}
+@media(prefers-reduced-motion:reduce){
+  .avatar-mount,.character-shadow{animation:none!important;will-change:auto}
+}
+
+/* BUTTERMAX-INSPIRED FLUID CURSOR — particle trail + metaball fusion */
+.fluid-cursor{
+  position:fixed;inset:0;z-index:24;display:block;
+  width:100vw;height:100vh;pointer-events:none;
+  opacity:0;mix-blend-mode:difference;
+  transition:opacity .12s linear;image-rendering:auto;
+}
+.fluid-cursor.is-active{opacity:.96}
+.color-invert{
+  visibility:hidden;opacity:0;pointer-events:none;
+}
+@media(max-width:680px){.fluid-cursor{display:none}}
+@media(prefers-reduced-motion:reduce){.fluid-cursor{display:none!important}}
+
+
+
+
+/*
+
+
+/* v53 — parpadeo frame a frame: abierto → cerrado → abierto, sin fundidos. */
+.avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-svg #ojos,
+.avatar-svg #pupila_1,
+.avatar-svg #pupila_2,
+.avatar-svg #brillito,
+.avatar-svg #ojos_sonrientes,
+.avatar-svg #cara_ojos_abiertos_neutro_copia {
+  display:inline;
+  opacity:1;
+  transition:none;
+}
+
+/* Estado de reposo: solo el frame de ojos abiertos está visible. */
+.avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-svg #ojos,
+.avatar-svg #pupila_1,
+.avatar-svg #pupila_2,
+.avatar-svg #brillito {
+  visibility:visible;
+}
+.avatar-svg #ojos_sonrientes,
+.avatar-svg #cara_ojos_abiertos_neutro_copia {
+  visibility:hidden;
+}
+
+/* La sonrisa también cambia de dibujo sin interpolación. */
+.avatar-stage.is-smiling .avatar-svg #cara_ojos_abiertos_neutro {
+  visibility:hidden;
+}
+.avatar-stage.is-smiling .avatar-svg #ojos_sonrientes {
+  visibility:visible;
+}
+
+/* Dos dibujos discretos: ojos abiertos, cerrados y vuelta a abiertos. */
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito {
+  animation:km-blink-open-frame .21s steps(1,end) both!important;
+  transition:none!important;
+}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro_copia {
+  animation:km-blink-closed-frame .21s steps(1,end) both!important;
+  transition:none!important;
+}
+@keyframes km-blink-open-frame {
+  0%,24.999% { visibility:visible; }
+  25%,74.999% { visibility:hidden; }
+  75%,100% { visibility:visible; }
+}
+@keyframes km-blink-closed-frame {
+  0%,24.999% { visibility:hidden; }
+  25%,74.999% { visibility:visible; }
+  75%,100% { visibility:hidden; }
+}
+
+/* v62 — REVELADO CON CAMPO COMPARTIDO
+   El rostro (piel, cabello, barba) se compone en un canvas perforado con los mismos
+   píxeles del cursor fluido. El SVG debajo conserva cráneo, ojos, pupilas y brillos. */
+.avatar-face-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;display:block;
+  filter:drop-shadow(0 24px 26px rgba(0,0,0,.24));
+}
+.avatar-stage.km-raster .avatar-svg #CRÁNEO{opacity:1!important;transition:none!important}
+html.is-lite .avatar-face-canvas{display:none!important}
+@media(prefers-reduced-motion:reduce){.avatar-face-canvas{filter:none}}
+
+/* v62 — PROYECTOS CON IMAGEN REAL (reemplaza los espacios reservados) */
+.project-visual.has-img{background:#14112A}
+.project-visual.has-img::before,.project-visual.has-img::after{display:none}
+.project-visual.has-img strong,.project-visual.has-img i,.project-visual.has-img .visual-foot{display:none}
+.project-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.project-item:hover .project-img{transform:scale(1.035)}
+.project-visual.has-img .visual-overline{align-self:flex-start;z-index:2;background:rgba(20,17,42,.78);color:#fff;padding:7px 12px;border-radius:999px;font-size:11px;letter-spacing:.08em;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.visual-atlas .project-img{object-position:50% 38%}
+.visual-jasypa .project-img{object-position:50% 30%}
+.visual-personal .project-img,.visual-selection .project-img{object-position:50% 35%}
+/* tamaños mínimos legibles */
+.visual-overline,.visual-foot{font-size:11px}
+.character-index,.avatar-hint{font-size:11px}
+@media(max-width:680px){.character-index,.avatar-hint{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.project-img{transition:none}.project-item:hover .project-img{transform:none}}
+
+/* v62 — HERO: corrige la colisión de «MOVIMIENTO» con «MANCUELLO».
+   La regla .hero-intro (texto secundario, 230 px) perdía contra .hero-greeting h1 (68 px). */
+.hero-greeting .hero-intro{font-size:clamp(17px,1.6vw,23px);line-height:1.04;letter-spacing:-.035em}
+.hero-greeting{max-width:230px}
+/* En pantallas bajas (notebooks de 650–760 px) el CTA y el autorretrato quedan dentro del primer pliegue */
+@media(min-width:681px) and (max-height:780px){
+  .hero{min-height:max(620px,100svh);height:100svh;max-height:none}
+  .hero-character{height:82%!important;bottom:0!important}
+  .hero-role{bottom:clamp(84px,13vh,140px)}
+}
+/* ayuda del avatar legible sobre la ilustración */
+.avatar-hint{background:rgba(35,31,70,.78);color:var(--paper);padding:6px 12px;border-radius:999px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.visual-mariano .project-img{object-position:0% 50%}
+/* celular: About entra completo en el ancho (antes se cortaba 21 px a la derecha) */
+@media(max-width:680px){
+  .about-layout{display:block;width:auto;max-width:100%;grid-template-columns:1fr}
+  .about-layout>*,.about-heading,.about-text{width:auto;max-width:100%;min-width:0}
+  .about-text p,.about-timeline{overflow-wrap:anywhere}
+}
+/* pantallas táctiles: sin la ayuda «hacé click» (choca con el rol y el verbo no aplica al tacto) */
+@media(hover:none),(max-width:680px){.avatar-hint{display:none!important}}
+@media(max-width:680px){.about-heading h2{font-size:min(17.5vw,78px)}.about-heading h2 span{font-size:1em}}
+/* mínimo legible de 11 px para rótulos monoespaciados (antes 7–9 px) */
+.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.location-line,.main-nav small,.footer-topline{font-size:max(12px,1em)!important}
+@media(max-width:680px){.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.footer-topline{font-size:11px!important}}
+.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:max(11px,1em)}
+@media(max-width:680px){.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:11px}}
+/* v62 — el efecto negativo (cursor fluido por diferencia) también al tocar en celular */
+@media(max-width:680px){.fluid-cursor{display:block}}
+/* v64 — tarjetas que abren su página de caso */
+.project-item{position:relative}
+.project-link{position:static}
+.project-link::after{content:"";position:absolute;inset:0;z-index:3}
+.project-item:has(.project-link) .project-visual{cursor:pointer}
+.project-link:focus-visible::after{outline:2px solid var(--violet,#6e3fff);outline-offset:4px;border-radius:4px}
+video.project-img{background:#14112A}
+/* portadas animadas: el video ocupa la tarjeta; Mariano centrado sobre su gris */
+.visual-mariano video.project-img{object-position:50% 50%;background:#F2F2F2}
+.visual-todegol video.project-img{background:#000}
+/* v66 — auditoría: título del pie entero en móvil, mínimos de lectura y de toque */
+.main-nav a{white-space:nowrap}
+.lite-toggle,.about-link{font-size:11px}
+.footer-links a{display:inline-flex;align-items:center;min-height:32px}
+@media(max-width:680px){
+  .footer-email{font-size:min(17.5vw,135px);letter-spacing:-.1em;overflow-wrap:normal;white-space:nowrap}
+  .footer-links{gap:4px}
+  .footer-links a{min-height:40px}
+  .hero-scroll,.brand-code{min-height:32px;display:inline-flex;align-items:center}
+}
+/* v67 — en móvil el apellido queda entero: el nombre se ancla bajo el saludo y el personaje
+   toma la proporción exacta del SVG (631×740) y su caja arranca, con el pelo, justo debajo de MANCUELLO */
+@media(max-width:680px){
+  .hero-giant{top:300px}
+  .hero-character{
+    --cw:min(94vw,440px);
+    width:var(--cw)!important;height:auto!important;aspect-ratio:631/740;
+    top:374px!important;bottom:auto!important;
+  }
+  .character-index{display:none}
+}
+/* v67 — «PROYECTOS» tiene 9 letras (WORKS tenía 5): el título se escala para entrar en su columna */
+.works-heading h2{font-size:clamp(84px,13vw,220px)}
+@media(max-width:680px){.works-heading h2{font-size:19vw}}
+@media(max-width:900px){.avatar-hint{display:none}}
+/* v68 — menú de 3 manos: aparecen alrededor de la cara al hacer clic, cuadro por cuadro */
+.hands-menu{position:absolute;inset:0;z-index:9;pointer-events:none}
+.hands-menu .hand{position:absolute;width:clamp(190px,22vw,340px);display:flex;flex-direction:column;align-items:center;gap:6px;
+  text-decoration:none;color:var(--paper);opacity:0;transform:scale(.4) rotate(-8deg);visibility:hidden;
+  transition:opacity .27s steps(3),transform .27s steps(3),visibility 0s .27s}
+.hands-menu .hand svg{width:100%;height:auto;overflow:visible;filter:drop-shadow(0 10px 18px rgba(10,6,30,.35))}
+.hands-menu .hand span{font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.12em;text-transform:uppercase;
+  background:var(--acid);color:var(--plum);padding:8px 12px;border-radius:999px;white-space:nowrap}
+.hands-menu .hand:hover span,.hands-menu .hand:focus-visible span{background:var(--paper)}
+.hands-menu .hand:hover svg{transform:scale(1.06)}
+.hand-ilu{left:calc(50% - clamp(330px,38vw,620px));top:42%}
+.hand-brand{right:calc(50% - clamp(330px,38vw,620px));top:24%}
+.hand-motion{right:calc(50% - clamp(290px,33vw,540px));top:58%}
+.hero.hands-open .hands-menu{pointer-events:auto}
+.hero.hands-open .hands-menu .hand{opacity:1;transform:none;visibility:visible;pointer-events:auto;
+  transition:opacity .27s steps(3) calc(var(--i)*90ms),transform .27s steps(3) calc(var(--i)*90ms),visibility 0s}
+.hero.hands-open .hero-greeting,.hero.hands-open .hero-role,.hero.hands-open .hero-meta,.hero.hands-open .avatar-hint{opacity:.18;transition:opacity .2s}
+.hero.hands-open .hands-menu{pointer-events:none}
+@media(max-width:900px){
+  .hands-menu .hand{width:31vw;top:auto;bottom:clamp(70px,11vh,120px)}
+  .hand-ilu{left:2vw}.hand-brand{left:34.5vw;right:auto}.hand-motion{right:2vw}
+  .hands-menu .hand span{font-size:11px;padding:7px 9px;letter-spacing:.06em}
+}
+@media(prefers-reduced-motion:reduce){.hands-menu .hand{transition:none!important}}
+html.is-lite .hands-menu .hand{transition:none}
+
+/* v68 — Sobre mí: el personaje camina por el borde inferior mientras deslizás, de 2015 a «más adelante» */
+.about-section{overflow:clip}
+@media(max-width:900px){
+  .hands-menu::before{content:"";position:absolute;left:8px;right:8px;bottom:calc(clamp(70px,11vh,120px) - 14px);height:calc(31vw * .75 + 62px);
+    background:rgba(25,22,50,.94);border-radius:24px;opacity:0;transform:translateY(16px);transition:opacity .2s steps(2),transform .2s steps(2)}
+  .hero.hands-open .hands-menu::before{opacity:1;transform:none}
+}
+/* v69 — el menú de manos como pantalla propia: fondo violeta, la cara se achica al centro,
+   las manos crecen y todo el texto del hero se va para que nada se mezcle */
+.hero{transition:background-color .24s steps(3)}
+.hero.hands-open{background:var(--violet)}
+.hero-character{transition:scale .3s steps(3),top .3s steps(3),transform .3s steps(3)}
+.hero.hands-open .hero-character{scale:.5;transform:translateX(-100%)}
+.hero-giant,.hero-greeting,.hero-role,.hero-meta,.avatar-hint,.hero-scroll,.hero-coordinate,.hero-stamp,.character-index{transition:opacity .2s steps(2),visibility 0s}
+.hero.hands-open :is(.hero-giant,.hero-greeting,.hero-role,.hero-meta,.avatar-hint,.hero-scroll,.hero-coordinate,.hero-stamp,.character-index){opacity:0;visibility:hidden;transition:opacity .2s steps(2),visibility 0s .2s}
+.hero.hands-open .hero-grain{opacity:.07}
+.hands-menu .hand{width:clamp(250px,26vw,430px)}
+.hands-menu .hand span{font-size:14px;padding:10px 16px}
+.hand-brand{left:calc(50% - clamp(125px,13vw,215px));right:auto;top:7%}
+.hand-ilu{left:calc(50% - clamp(400px,41vw,680px));top:47%}
+.hand-motion{right:calc(50% - clamp(400px,41vw,680px));left:auto;top:47%}
+@media(max-width:900px){
+  .hands-menu::before{display:none}
+  .hero.hands-open .hero-character{scale:.52;transform-origin:50% 0;top:120px!important}
+  .hands-menu .hand{width:46vw}
+  .hands-menu .hand-ilu{left:3vw;top:auto;bottom:calc(46vw * .75 + 120px)}
+  .hands-menu .hand-brand{left:auto;right:3vw;top:auto;bottom:calc(46vw * .75 + 120px)}
+  .hands-menu .hand-motion{left:27vw;right:auto;top:auto;bottom:64px}
+  .hands-menu .hand span{font-size:12px;padding:8px 12px}
+}
+/* v70 — botón «Cerrar» del menú y cara chica flotante que lo abre desde cualquier sección */
+.hands-close{position:absolute;left:50%;bottom:clamp(28px,5vh,56px);transform:translateX(-50%);z-index:2;
+  font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:var(--paper);background:transparent;
+  border:1px solid rgba(244,242,237,.5);border-radius:999px;padding:12px 20px;min-height:44px;cursor:pointer;
+  opacity:0;visibility:hidden;transition:opacity .2s steps(2),visibility 0s .2s}
+.hero.hands-open .hands-close{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .2s steps(2) .2s,visibility 0s}
+.hands-close:hover,.hands-close:focus-visible{background:var(--paper);color:var(--violet)}
+@media(max-width:900px){.hands-close{left:auto;right:16px;transform:none;bottom:auto;top:86px}}
+.avatar-mini{position:fixed;right:clamp(14px,2.4vw,32px);bottom:clamp(14px,2.4vw,32px);z-index:60;display:flex;align-items:center;gap:0;
+  padding:0;border:0;background:none;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(20px) scale(.7);
+  transition:opacity .24s steps(3),transform .24s steps(3),visibility 0s .24s}
+.avatar-mini.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .24s steps(3),transform .24s steps(3),visibility 0s}
+.avatar-mini img{width:clamp(58px,5vw,76px);height:auto;aspect-ratio:1;border-radius:50%;border:3px solid var(--acid);
+  box-shadow:0 10px 24px rgba(20,16,50,.35);background:var(--plum);display:block}
+.avatar-mini span{order:-1;margin-right:-10px;padding:7px 18px 7px 12px;border-radius:999px 0 0 999px;background:var(--acid);color:var(--plum);
+  font:500 11px var(--mono,"DM Mono",monospace);letter-spacing:.14em}
+.avatar-mini:hover img{transform:rotate(-8deg)}
+.avatar-mini:focus-visible{outline:2px solid var(--acid);outline-offset:4px;border-radius:999px}
+@media(prefers-reduced-motion:reduce){.avatar-mini{transition:none}}
+/* v71 — el hero se fija un tramo al inicio del scroll (ver script.js) */
+.hero-pin{position:relative}
+.hero-pin>.hero{position:sticky}
+.avatar-mini.is-on.is-hidden{opacity:0;visibility:hidden;transform:translateY(20px) scale(.7);transition:opacity .24s steps(3),transform .24s steps(3),visibility 0s .24s}
+
+/* v72 — celular: las manos rodean la cabeza (una arriba, dos a los costados de abajo) */
+@media(max-width:900px){
+  .hero.hands-open .hero-character{top:clamp(250px,36svh,330px)!important}
+  .hands-menu .hand{width:40vw}
+  .hands-menu .hand-brand{left:30vw;right:auto;top:clamp(84px,11svh,110px);bottom:auto}
+  .hands-menu .hand-ilu{left:2vw;right:auto;top:calc(clamp(250px,36svh,330px) + 47vw);bottom:auto}
+  .hands-menu .hand-motion{right:2vw;left:auto;top:calc(clamp(250px,36svh,330px) + 47vw);bottom:auto}
+  .hands-close{top:auto;bottom:24px;right:auto;left:50%;transform:translateX(-50%)}
+}
+
+/* v72 — «Mi recorrido»: escena fija; el personaje camina sobre la línea, título grande arriba y descripción abajo */
+.journey{position:relative;height:calc(100svh + 7 * 50svh);background:var(--plum);color:var(--paper)}
+.journey-pin{position:sticky;top:0;height:100svh;overflow:hidden;padding:0 clamp(20px,5vw,76px)}
+.journey-top{position:absolute;left:clamp(20px,5vw,76px);right:clamp(20px,5vw,76px);top:clamp(84px,11svh,110px);display:flex;justify-content:space-between;
+  font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:rgba(244,242,237,.72);z-index:3}
+.journey-count b{color:var(--acid);font-weight:500}
+.journey-steps{list-style:none;margin:0;padding:0}
+.journey-steps li{position:absolute;inset:clamp(118px,16svh,150px) clamp(20px,5vw,76px) clamp(28px,5svh,56px);display:flex;flex-direction:column;justify-content:space-between;
+  opacity:0;visibility:hidden;transform:translateY(24px);transition:opacity .25s steps(3),transform .25s steps(3),visibility 0s .25s;z-index:2}
+.journey-steps li.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .25s steps(3),transform .25s steps(3),visibility 0s}
+.journey-steps h3{margin:0 0 0 -.05em;font-size:clamp(64px,14.5vw,250px);line-height:.8;letter-spacing:-.1em;font-weight:700;color:var(--acid);white-space:nowrap}
+.journey-steps p{margin:0;max-width:38ch;font-size:clamp(19px,1.9vw,28px);line-height:1.3;letter-spacing:-.02em;color:var(--paper)}
+.journey-road{position:absolute;left:clamp(20px,5vw,76px);right:clamp(20px,5vw,76px);top:50%;height:clamp(190px,36svh,360px);transform:translateY(-42%);z-index:1}
+.journey-walker{position:absolute;left:0;bottom:0;height:100%;will-change:transform}
+.journey-walker svg{height:100%;width:auto;overflow:visible}
+.journey-line{position:absolute;left:0;right:0;bottom:-6px;height:2px;background:rgba(244,242,237,.22);display:flex;justify-content:space-between}
+.journey-line i{width:12px;height:12px;margin-top:-5px;border-radius:50%;background:var(--plum);border:2px solid rgba(244,242,237,.4)}
+.journey-line i.is-on{background:var(--acid);border-color:var(--acid)}
+@media(max-width:680px){
+  .journey-steps h3{font-size:clamp(52px,15vw,96px);white-space:normal;text-wrap:balance}
+  .journey-road{height:clamp(170px,30svh,260px);top:52%}
+}
+
+/* v72 — tipografía con intención (A./CHEN): los títulos llenan el ancho, se salen por el borde y se deslizan al bajar */
+.works-heading{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"eyebrow" "title" "intro"!important}
+.works-heading h2{font-size:clamp(90px,18.6vw,330px);margin-left:-.05em;line-height:.8;white-space:nowrap}
+.works-heading .works-intro{justify-self:end;max-width:32ch;text-align:right}
+.discipline-main h3{font-size:clamp(80px,17vw,300px);white-space:nowrap;margin-left:-.05em}
+.footer{overflow:clip}
+.footer-email{font-size:min(21vw,330px);white-space:nowrap;margin-left:-.04em}
+@media(max-width:680px){.works-intro{text-align:left!important;justify-self:start!important}}
+
+/* v73 — el recorrido en celular: la descripción sube para que la cara flotante «MENÚ» no la tape */
+@media(max-width:680px){.journey-steps li{bottom:clamp(96px,14svh,120px)}.journey-steps p{padding-right:8px}}
+
+/* v73 — nombre del hero más agresivo: más grande, KEVIN se sale por la izquierda y MANCUELLO por la derecha;
+   entra cuadro por cuadro desde los costados y, mientras el hero está fijo, cada línea se abre hacia su lado */
+@keyframes km-in-left{from{translate:-70vw 0}to{translate:calc(var(--hd,0) * -1vw) 0}}
+@keyframes km-in-right{from{translate:70vw 0}to{translate:calc(var(--hd,0) * 1vw) 0}}
+.hero-giant span:first-child{translate:calc(var(--hd,0) * -1vw) 0;animation:km-in-left .66s steps(6) .1s backwards}
+.hero-giant span:last-child{translate:calc(var(--hd,0) * 1vw) 0;animation:km-in-right .66s steps(6) .24s backwards}
+@media(min-width:681px){
+  .hero-giant{font-size:clamp(170px,31vw,480px);top:45%;line-height:.7}
+  .hero-giant span:first-child{margin-left:-14vw}
+  .hero-giant span:last-child{font-size:.6em;margin-right:-12vw;margin-top:.12em}
+  .hero-greeting{top:auto;bottom:clamp(86px,12vh,120px)}
+  .hero-role{bottom:clamp(40px,6vh,64px)}
+}
+@media(prefers-reduced-motion:reduce){.hero-giant span{animation:none!important}}
+html.is-lite .hero-giant span{animation:none}
+
+/* v73 — tarjetas con la forma de su contenido: cada fila tiene la misma altura y cada pieza el ancho que pide
+   su proporción (ilustraciones verticales 4:5, marcas 5:3, spot 16:9, Atlas 9:16) */
+.project-shelf{display:flex!important;align-items:flex-start;gap:clamp(14px,2vw,28px)!important}
+.project-shelf>.project-item{flex:calc(var(--ar,4/3)) 1 0;min-width:0}
+.project-shelf .project-visual{aspect-ratio:var(--ar,4/3);height:auto;min-height:0;max-height:none}
+.project-shelf .project-visual .project-img{width:100%;height:100%;object-fit:cover}
+@media(max-width:760px){
+  .project-shelf{flex-direction:column;align-items:stretch}
+  .project-shelf>.project-item{flex:none;width:100%}
+  .project-shelf .project-visual{max-height:78svh;margin-inline:auto}
+  .project-shelf>.project-item[style*="9/16"] .project-visual{width:min(100%,calc(78svh * 9 / 16))}
+}
+
+/* v73 — todas las formas redondeadas */
+:root{--km-r:clamp(20px,2.2vw,32px)}
+.project-visual,.project-visual .project-img{border-radius:var(--km-r);overflow:hidden}
+.about-tags span,.lite-toggle,.watch-link,.about-link{border-radius:999px}
+.watch-link,.about-link{padding:12px 18px;border:1px solid currentColor}
+.works-section,.about-section,.journey,.footer{border-radius:var(--km-r) var(--km-r) 0 0;margin-top:calc(var(--km-r) * -1);position:relative}
+.works-section{z-index:2}.about-section{z-index:3}.journey{z-index:4}.footer{z-index:5}
+.journey-line{border-radius:2px}
+
+/* v74 — «Qué hago»: cuatro servicios, un llamado a pedir propuesta y la franja de clientes */
+.services{background:var(--plum);color:var(--paper);padding:clamp(90px,11vw,160px) clamp(20px,5vw,76px) clamp(70px,9vw,120px);overflow:clip;z-index:3}
+.services-top{display:flex;justify-content:space-between;gap:16px;font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:rgba(244,242,237,.72)}
+.services h2{margin:clamp(24px,3vw,40px) 0 0 -.05em;font-size:clamp(84px,18.6vw,330px);line-height:.8;letter-spacing:-.13em;font-weight:700;color:var(--acid);white-space:nowrap}
+.services h2 span{font-size:.28em;vertical-align:top;margin-left:.18em;color:var(--paper)}
+.services-list{list-style:none;margin:clamp(40px,5vw,72px) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(14px,2vw,28px)}
+.services-list li{border:1px solid rgba(244,242,237,.22);border-radius:var(--km-r);padding:clamp(20px,2.4vw,34px);display:flex;flex-direction:column;gap:14px;min-height:clamp(220px,20vw,300px)}
+.services-list b{font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:var(--acid)}
+.services-list h3{margin:auto 0 0;font-size:clamp(26px,2.4vw,38px);line-height:1;letter-spacing:-.05em}
+.services-list p{margin:0;font-size:16px;line-height:1.5;color:rgba(244,242,237,.82)}
+.services-cta{display:inline-flex;align-items:center;gap:12px;margin-top:clamp(28px,3vw,44px);min-height:52px;padding:14px 26px;border-radius:999px;background:var(--acid);color:var(--plum);
+  font:500 13px var(--mono,"DM Mono",monospace);letter-spacing:.14em;text-decoration:none}
+.services-cta:hover,.services-cta:focus-visible{background:var(--paper)}
+.clients{margin-top:clamp(56px,7vw,100px);border-top:1px solid rgba(244,242,237,.22);padding-top:22px}
+.clients-label{margin:0 0 18px;font:500 12px var(--mono,"DM Mono",monospace);letter-spacing:.14em;color:rgba(244,242,237,.72)}
+.clients-track{display:flex;width:max-content;animation:km-clients 38s linear infinite}
+.clients-row{display:flex;gap:clamp(28px,4vw,64px);padding-right:clamp(28px,4vw,64px)}
+.clients-row span{font-size:clamp(28px,3.6vw,56px);font-weight:700;letter-spacing:-.05em;white-space:nowrap;color:var(--paper)}
+.clients-row span:nth-child(even){color:transparent;-webkit-text-stroke:1.5px var(--paper)}
+@keyframes km-clients{to{transform:translateX(-50%)}}
+@media(max-width:900px){.services-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.services-list{grid-template-columns:1fr}.services-list li{min-height:0}.services-top span:last-child{display:none}}
+@media(prefers-reduced-motion:reduce){.clients-track{animation:none;flex-wrap:wrap}}
+html.is-lite .clients-track{animation:none}
+/* v74 — Branding tiene 4 piezas: van de a dos por fila */
+#branding-projects{flex-wrap:wrap}
+#branding-projects>.project-item{flex:1 1 calc(50% - clamp(14px,2vw,28px))}
+/* v75 — clientes con sus logos reales, en blanco sobre el violeta (Banco Atlas usa su versión blanca oficial) */
+.clients-row{align-items:center}
+.clients-row img{height:clamp(30px,3.4vw,48px);width:auto;max-width:200px;object-fit:contain;filter:brightness(0) invert(1);opacity:.92}
+.clients-row img.keep{filter:none;opacity:1}
+.clients-row img[src*="ma-natural"],.clients-row img[src*="mariano"]{height:clamp(40px,4.4vw,62px)}
+.clients-row img[src*="etidol"]{height:clamp(22px,2.4vw,34px)}
+/* v76 — auditoría: entre 901 y 1200 px la línea de ubicación no entra con el menú; objetivos táctiles mínimos */
+@media(min-width:901px) and (max-width:1480px){.location-line{display:none}}
+.brand-code,.hero-scroll{min-height:32px;display:inline-flex;align-items:center}
+/* v76 — en pantallas bajas (laptops de 720–800 px de alto) el nombre se escala también por la altura para no pisar el saludo ni el rol */
+@media(min-width:681px){.hero-giant{font-size:clamp(150px,min(31vw,50vh),480px)}}
+@media(min-width:681px){.hero-greeting{z-index:9;bottom:clamp(64px,8.5vh,104px)}.hero-greeting .hero-kicker{max-width:none;white-space:nowrap}}
+/* v78 — reel de motion debajo de las tarjetas de Motion */
+.motion-reel{margin:clamp(20px,3vw,40px) 0 0}
+.motion-reel video{display:block;width:100%;aspect-ratio:16/9;border-radius:var(--km-r);background:#14112A}
+.motion-reel figcaption{margin-top:12px;font:500 13px var(--mono,"DM Mono",monospace);letter-spacing:.04em;color:var(--muted,#5e5a78)}
+.motion-reel figcaption b{color:var(--violet,#6E3FFF);font-weight:500;margin-right:8px}
+
+/* v80 — «Mi recorrido»: la descripción de cada hito se lee de entrada (más grande, con marca ácida) */
+.journey-steps p{font-size:clamp(22px,2.5vw,38px);line-height:1.22;max-width:30ch;font-weight:500;padding-left:clamp(14px,1.4vw,22px);border-left:4px solid var(--acid)}
+@media(max-width:680px){.journey-steps p{font-size:clamp(20px,5.6vw,26px);max-width:none;padding-right:64px}}
+/* v80 — cada tarjeta de proyecto lleva un enlace real que la cubre (clic del medio, Ctrl+clic y menú contextual) */
+.project-item{position:relative}
+.project-item .project-cover{position:absolute;inset:0;z-index:3;display:block;font-size:0;color:transparent}
+.project-item.has-cover .project-link::after{content:none}
+.project-item .project-cover:focus-visible{outline:2px solid var(--violet,#6e3fff);outline-offset:4px;border-radius:4px}
+
+/* v97 — tira de herramientas en «Sobre mí» */
+.about-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:22px}
+.about-tools-label{flex:0 0 100%;margin:0 0 2px;font:500 11px var(--mono);letter-spacing:.14em;opacity:.7}
+.about-tools img{width:44px;height:44px;object-fit:contain;border-radius:12px;overflow:hidden}
+@media(max-width:520px){.about-tools img{width:38px;height:38px}}
+
+/* v101 — sin la raya oscura bajo la imagen de cada tarjeta */
+.project-caption{border-top:0!important;border-bottom:0!important}
+
+/* v102 — pie: disponibilidad con la lista de servicios, alineada a la derecha */
+.footer-topline{gap:24px}
+.footer-available{text-align:right;text-wrap:balance}
+@media(max-width:680px){.footer-topline{flex-direction:column;align-items:flex-start;gap:8px}.footer-available{text-align:left}}
+
+/* v103 — rol de la portada con cuatro áreas: cada área no se corta y, en celular, el bloque gana ancho hacia la izquierda */
+.hero-role small span{white-space:nowrap}
+@media(max-width:680px){.hero-role small{width:212px;max-width:none;margin-left:-67px}}
+@media(min-width:681px){.hero-role small{max-width:330px;width:auto;margin-left:auto}}
+
+/* v108 — aviso de mail copiado */
+.mail-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#231f46;color:#f4f2ed;border:1px solid #84ff00;padding:12px 18px;border-radius:999px;font:500 13px "DM Mono",monospace;letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:10000;max-width:calc(100vw - 32px)}
+.mail-toast.is-on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){.mail-toast{transition:none}}
+
+/* v110 — tipografía sin viudas y objetivos táctiles de 44 px */
+p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
+.main-nav a{min-height:44px}
+.brand-code,.hero-scroll,.footer-links a{min-height:44px;display:inline-flex;align-items:center}
+.main-nav a:has(small){flex-direction:column;justify-content:center;align-items:flex-start}
+
+/* v110 — portada: el trabajo aparece antes, contacto legible y recorrido más corto */
+.works-heading h2{font-size:clamp(64px,10vw,150px)}
+.discipline-main h3{font-size:clamp(56px,9vw,140px)}
+.journey{height:calc(100svh + 7 * 30svh)}
+.footer-links,.footer-topline{font-size:15px!important}
+.footer-links a{letter-spacing:.02em}
+.works-section{padding-top:clamp(64px,7vw,110px)!important}
+.works-heading{min-height:0!important}
+.discipline{margin-top:clamp(40px,4vw,64px)}
+.discipline-main,.discipline-illustration .discipline-main{min-height:clamp(150px,16vw,240px)}
+
+/* v112 — Motion: animaciones de Todegol en una fila propia */
+.project-item-wide{grid-column:1/-1}
+.motion-trio{display:flex;gap:clamp(12px,2vw,28px);justify-content:center;align-items:flex-start;background:var(--plum);border-radius:18px;padding:clamp(18px,3vw,40px)}
+.motion-trio video{flex:1 1 0;min-width:0;max-width:300px;aspect-ratio:9/16;object-fit:cover;border-radius:12px;background:rgba(255,255,255,.06)}
+@media(max-width:700px){.motion-trio{gap:8px;padding:14px}}
+#motion-projects{flex-wrap:wrap}
+#motion-projects .project-item-wide{flex:0 0 100%!important;width:100%}
+.motion-trio video{max-width:340px}
+
+/* v115 — avatar nuevo: el pelo alterna tres cuadros (neutro, 1, 2) */
+.avatar-svg #cabello-base,.avatar-svg #cabello-parpadeo,.avatar-svg #cabello-frame3{visibility:visible!important;transform:none!important;pointer-events:none;animation-duration:.6s!important;animation-timing-function:steps(1,end)!important;animation-iteration-count:infinite!important}
+.avatar-svg #cabello-base{animation-name:hair3-a!important}
+.avatar-svg #cabello-parpadeo{animation-name:hair3-b!important}
+.avatar-svg #cabello-frame3{opacity:0;animation-name:hair3-c}
+@keyframes hair3-a{0%,33.32%{opacity:1}33.33%,100%{opacity:0}}
+@keyframes hair3-b{0%,33.32%{opacity:0}33.33%,66.65%{opacity:1}66.66%,100%{opacity:0}}
+@keyframes hair3-c{0%,66.65%{opacity:0}66.66%,100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.avatar-svg #cabello-base{opacity:1!important;animation:none!important}.avatar-svg #cabello-parpadeo,.avatar-svg #cabello-frame3{opacity:0!important;animation:none!important}}
+/* v116 — pelo: un movimiento corto cada 2 s y después quieto en el cuadro neutro */
+.avatar-svg #cabello-base,.avatar-svg #cabello-parpadeo,.avatar-svg #cabello-frame3{animation-duration:2s!important}
+@keyframes hair3-a{0%,19.99%{opacity:0}20%,100%{opacity:1}}
+@keyframes hair3-b{0%,9.99%{opacity:1}10%,100%{opacity:0}}
+@keyframes hair3-c{0%,9.99%{opacity:0}10%,19.99%{opacity:1}20%,100%{opacity:0}}
+/* v116 — la sombra del rostro se calcula sobre el conjunto (no cae dentro de los ojos) */
+.avatar-face-canvas{filter:none!important}
+#avatar-mount{filter:drop-shadow(0 24px 26px rgba(0,0,0,.24))}
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #ojos,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_1,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #pupila_2,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #brillito,
+.avatar-stage.is-blinking:not(.is-smiling):not(.is-hovering) .avatar-svg #cara_ojos_abiertos_neutro_copia{animation-duration:.3s!important}
+.avatar-svg{filter:none!important}
+@media(prefers-reduced-motion:reduce){#avatar-mount{filter:none}}
+html.is-lite #avatar-mount{filter:none}
+
+/* v117 — tarjetas de proyecto: jerarquía clara (rubro chico → título → bajada) y sin etiquetas repetidas sobre la imagen */
+.project-visual.has-img .visual-overline{display:none}
+.project-caption{padding:16px 0 0!important;gap:20px!important;align-items:flex-start}
+.project-caption small{display:block;font:500 12px/1.4 var(--mono,"DM Mono",monospace)!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--muted,#5E5A78)!important;margin:0 0 8px!important}
+.project-caption h4{font-size:clamp(18px,1.5vw,22px)!important;line-height:1.15!important;letter-spacing:-.02em;margin:0 0 6px!important}
+.project-caption p{font-size:14px!important;line-height:1.5!important;max-width:46ch;margin:0!important;color:var(--muted,#5E5A78)}
+.project-caption .project-link{flex:none;margin-top:-2px}
+
+/* v118 — barra superior: enlaces en una sola línea, alineados al centro (sin año colgando ni botón Lite) */
+@media(min-width:861px){
+  .main-nav{align-items:center}
+  .main-nav a{display:inline-flex!important;flex-direction:row!important;align-items:center!important;min-height:44px}
+  .main-nav a small{display:none}
+}
+.topbar{align-items:center}
+@media(min-width:861px){.topbar .main-nav{grid-column:3;justify-self:end}.topbar .location-line{grid-column:2;justify-self:center}}
+/* v118 — celular: el rol sube junto al saludo y deja la cara del avatar despejada */
+@media(max-width:680px){
+  .hero-role{top:142px;bottom:auto;right:18px;left:auto;transform:none}
+  .hero-role small{margin-left:auto;width:auto;max-width:150px}
+}
+@media(max-width:680px){.hero-role small{display:none}}
+
+/* v119 — portada limpia: nombre, avatar, una línea de oficio, rol y botón */
+.hero-kicker,.hero-role small,.topbar .location-line{display:none}
+
+/* v120 — celular: piso de lectura (12 px en monoespaciada, 14 px en texto) */
+@media(max-width:680px){
+  .about-kicker,.about-link,.about-signature,.about-tools-label,.brand-code,.discipline-number,.discipline-tools,.eyebrow,
+  .footer-copyright,.hero-scroll,.skip-link,.watch-link,.project-caption small,.discipline-projects a span,.about-tags span,
+  .about-topline span,.footer-topline,.journey-top,.clients-label{font-size:12px!important;letter-spacing:.06em!important}
+  .discipline-projects a,.footer-links{font-size:14px!important}
+  .project-caption p{font-size:14px!important}
+}
+
+/* v121 — «Qué hago» cierra la página antes del contacto, con dos formas de escribir */
+.services{position:relative;z-index:4}
+.footer{z-index:6}
+.services-ctas{display:flex;flex-wrap:wrap;gap:12px}
+.services-ctas .services-cta{margin:0}
+.services-cta-alt{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
+.services-ctas{margin-top:clamp(28px,3vw,44px)}
+
+/* v122 — «Sobre mí»: texto en papel sólido (5:1 sobre el violeta, antes 3,3:1) */
+.about-text>p:not(.about-lead),.about-timeline p,.about-text p,.about-tools-label,.about-tags span,.about-topline span{color:var(--paper,#F4F2ED);opacity:1}
+/* v122 — disciplinas sin «Ver proyectos»: la lista de casos ocupa el resto del ancho */
+@media(min-width:861px){.discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr)}.discipline-motion .discipline-bottom{grid-template-columns:minmax(200px,.6fr) minmax(0,1.6fr) auto}}
+
+/* v123 — la cinta de clientes se puede pausar: al pasar el mouse, al enfocarla o con un toque/Enter (WCAG 2.2.2) */
+.clients:hover .clients-track,.clients:focus-within .clients-track,.clients.is-paused .clients-track{animation-play-state:paused}
+.clients{cursor:pointer;border-radius:12px}
+
+
+/* v125 — sin flechas decorativas: la lista de casos usa dos columnas (número y nombre) */
+.discipline-projects a{grid-template-columns:25px 1fr}
+
+/* v126 — celular y tableta: el rol con menos interletrado negativo para que se lea a 18 px */
+@media(max-width:1100px){.hero-role p{letter-spacing:-.05em}}
+/* v126 — piso de 12 px también en las etiquetas de «Sobre mí» y el botón de menú */
+.about-kicker,.about-tools-label,.lite-toggle,.about-link,.avatar-mini span{font-size:12px}
+
+/* v126 — crítica de portada: el botón de mail no pierde el texto en hover/foco; Sobre mí con texto sólido y menos apretado; menú táctil de 44 px */
+.services-cta-alt:hover,.services-cta-alt:focus-visible{background:var(--acid);color:var(--plum);box-shadow:none}
+.about-topline{opacity:1}
+.about-lead{letter-spacing:-.04em;line-height:1.2}
+.menu-toggle{min-height:44px;min-width:44px}
+
+/* v126 — contacto a mano desde la portada */
+.hero-contact{position:absolute;right:clamp(22px,5vw,76px);bottom:20px;z-index:9;display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:var(--acid);color:var(--plum);font:500 12px var(--mono);letter-spacing:.12em;transition:background .2s}
+.hero-contact:hover{background:#a6ff4d}
+.hero-contact:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+.hero.hands-open .hero-contact{opacity:0;visibility:hidden}
+@media(max-width:680px){.hero-contact{right:18px;left:auto;padding:0 16px}.hero-contact .hc-pre{display:none}}
+
+/* v126 — la cara flotante abre un menú ahí mismo, sin llevarte arriba */
+.mini-menu{position:fixed;right:clamp(14px,2.4vw,32px);bottom:calc(clamp(14px,2.4vw,32px) + clamp(58px,5vw,76px) + 12px);z-index:61;display:grid;min-width:220px;padding:8px;border-radius:20px;background:var(--plum);color:var(--paper);box-shadow:0 14px 32px rgba(20,16,50,.32);opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .18s ease-out,transform .18s ease-out,visibility 0s .18s}
+.mini-menu.is-open{opacity:1;visibility:visible;transform:none;transition:opacity .18s ease-out,transform .18s ease-out,visibility 0s}
+.mini-menu a{display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;font:500 14px var(--mono);letter-spacing:.04em}
+.mini-menu a:hover,.mini-menu a:focus-visible{background:rgba(244,242,237,.1);outline:none}
+.mini-menu a:focus-visible{box-shadow:inset 0 0 0 2px var(--acid)}
+.mini-menu .mini-menu-cta{margin-top:6px;background:var(--acid);color:var(--plum)}
+.mini-menu .mini-menu-cta:hover,.mini-menu .mini-menu-cta:focus-visible{background:#a6ff4d}
+.mini-menu hr{border:0;border-top:1px solid rgba(244,242,237,.18);margin:6px 4px}
+@media(prefers-reduced-motion:reduce){.mini-menu,.mini-menu.is-open{transition:none;transform:none}}
+
+/* v126 — «Trabajé para» sube justo debajo de la portada: la prueba de trayectoria aparece antes */
+.clients-band{background:var(--plum);color:var(--paper);padding:clamp(28px,3.4vw,48px) 0}
+.clients-band .clients{margin:0;border-top:0;padding:0 0 0;overflow:hidden}
+.clients-band .clients-label{padding:0 clamp(22px,5vw,76px)}
+@media(min-width:681px){.hero-role{bottom:clamp(88px,10.5vh,104px)}}
+.hero-contact .hc-pre{margin-right:.6em}
+
+/* v127 — segunda crítica: menú rápido cerrado no bloquea toques; cara flotante y flecha de tarjeta con área táctil de 44 px; rubros de disciplina a 12 px */
+.mini-menu:not(.is-open){pointer-events:none}
+.avatar-mini{min-height:44px}
+.project-link{display:inline-grid;place-items:center;min-width:44px;min-height:44px;margin:-10px -14px -10px 0}
+.discipline-top,.discipline-top span{font-size:12px}
+
+
+/* v134 — tipografía y sistema de interacción */
+h1,h2,h3,h4,.hero-giant,.footer-email,.project-visual strong{
+  font-family:var(--heading);
+  font-weight:850;
+}
+.hero-greeting h1,.works-heading h2,.discipline-main h3,.about-heading h2,.services h2{
+  font-family:var(--heading);
+  font-weight:850;
+}
+body{font-family:var(--display)}
+
+/* Menú desplegable: una sola interacción consistente en desktop y móvil. */
+.topbar{grid-template-columns:1fr auto;position:absolute}
+.location-line{justify-self:start}
+.menu-toggle{
+  grid-column:2;grid-row:1;justify-self:end;align-items:center;gap:13px;
+  display:inline-flex;min-height:42px;padding:9px 0 9px 14px;
+  border:0;background:transparent;color:var(--paper);cursor:pointer;
+  font:500 10px var(--mono);letter-spacing:.13em;
+  transition:color .2s ease,opacity .2s ease;
+}
+.menu-toggle .menu-label{display:inline;width:auto;height:auto;margin:0;background:none}
+.menu-toggle .menu-mark{
+  display:grid;place-items:center;width:27px;height:27px;margin:0;
+  border:1px solid rgba(255,255,255,.65);border-radius:50%;
+  font:18px/1 var(--display);transition:transform .28s ease,background .2s ease,color .2s ease,border-color .2s ease;
+}
+.menu-toggle:hover{color:var(--acid)}
+.menu-toggle:hover .menu-mark{background:var(--acid);border-color:var(--acid);color:var(--plum)}
+.menu-toggle[aria-expanded="true"] .menu-mark{transform:rotate(45deg);background:var(--acid);border-color:var(--acid);color:var(--plum)}
+.main-nav{
+  position:absolute;top:calc(100% + 10px);right:clamp(18px,4vw,62px);
+  z-index:42;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:9px;
+  width:max-content;max-width:min(720px,calc(100vw - 36px));
+  padding:14px;background:var(--plum);border:1px solid rgba(255,255,255,.18);
+  border-radius:22px;box-shadow:0 18px 50px rgba(12,9,30,.22);
+  opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-9px) scale(.98);
+  transform-origin:top right;transition:opacity .22s ease,transform .22s ease,visibility .22s;
+}
+.main-nav.is-open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1)}
+.main-nav a{
+  display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:10px 15px;
+  border:1px solid rgba(255,255,255,.38);border-radius:999px;
+  color:var(--paper);font:500 10px var(--mono);letter-spacing:.025em;
+  transition:background .2s ease,color .2s ease,border-color .2s ease,transform .2s ease;
+}
+.main-nav a:hover,.main-nav a:focus-visible{
+  opacity:1;background:var(--acid);border-color:var(--acid);color:var(--plum);transform:translateY(-2px);
+}
+.main-nav a[aria-current="location"]{background:var(--acid);border-color:var(--acid);color:var(--plum)}
+.main-nav small{display:inline;font:8px var(--mono);opacity:.65;margin:0}
+.main-nav a[aria-current="location"] small{opacity:.8}
+
+/* Las etiquetas de áreas también funcionan como accesos directos. */
+.about-tags a{
+  display:inline-flex;align-items:center;min-height:34px;padding:8px 11px;
+  border:1px solid rgba(255,255,255,.32);border-radius:999px;
+  color:inherit;font:8px var(--mono);letter-spacing:.07em;
+  transition:background .2s ease,color .2s ease,border-color .2s ease,transform .2s ease;
+}
+.about-tags a:hover,.about-tags a:focus-visible{
+  background:var(--acid);border-color:var(--acid);color:var(--plum);transform:translateY(-2px);
+}
+
+/* Feedback táctil y visual para enlaces de acción. */
+.services-cta,.hero-contact,.about-link,.watch-link,.project-link,.footer-links a,.hero-scroll{
+  transition:color .2s ease,background .2s ease,border-color .2s ease,transform .2s ease,opacity .2s ease;
+}
+.services-cta,.hero-contact{position:relative}
+.services-cta:hover,.hero-contact:hover,.about-link:hover,.watch-link:hover{
+  color:var(--acid);transform:translateY(-2px);
+}
+.services-cta span,.project-link{display:inline-block;transition:transform .22s ease}
+.services-cta:hover span,.project-item:hover .project-link{transform:translate(3px,-3px)}
+.project-item .project-visual{transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.project-item:hover .project-visual{transform:translateY(-5px)}
+.project-img{transition:transform .65s cubic-bezier(.2,.7,.2,1)}
+.project-item:hover .project-img{transform:scale(1.035)}
+.project-link{position:relative;z-index:4;min-width:36px;min-height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%}
+.project-item:hover .project-link{background:var(--acid);border-color:var(--acid);color:var(--plum)}
+.footer-links a:hover{color:var(--violet);transform:translateY(-2px)}
+a:active,button:active{transform:scale(.97)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--acid);outline-offset:4px}
+
+@media(max-width:680px){
+  .topbar{grid-template-columns:1fr auto;min-height:65px;padding:0 18px}
+  .location-line{display:none}
+  .menu-toggle{grid-column:2;display:inline-flex}
+  .main-nav{
+    top:calc(100% + 8px);left:12px;right:12px;width:auto;max-width:none;
+    justify-content:flex-start;padding:13px;border-radius:18px;gap:8px;
+    transform-origin:top center;
+  }
+  .main-nav a{font-size:10px;min-height:42px;padding:11px 13px}
+  .about-tags{gap:7px}
+}
+@media(hover:none){
+  .project-item:hover .project-visual{transform:none}
+  .project-item:hover .project-img{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .main-nav,.main-nav a,.menu-toggle .menu-mark,.about-tags a,.project-visual,.project-img,.services-cta,.hero-contact,.about-link,.watch-link,.project-link,.footer-links a{
+    transition:none!important;
+  }
+}
