@@ -1559,7 +1559,7 @@ body{font-family:var(--display)}
   font:500 10px var(--mono);letter-spacing:.13em;
   transition:color .2s ease,opacity .2s ease;
 }
-.menu-toggle .menu-label{display:inline}
+.menu-toggle .menu-label{display:inline;width:auto;height:auto;margin:0;background:none}
 .menu-toggle .menu-mark{
   display:grid;place-items:center;width:27px;height:27px;margin:0;
   border:1px solid rgba(255,255,255,.65);border-radius:50%;
