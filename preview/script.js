@@ -902,7 +902,7 @@ void main(){float a=bic(uv);float k=smoothstep(.26,.34,a);k=max(0.,k-ring*smooth
       const open=nav.classList.toggle('is-open');
       menuButton.setAttribute('aria-expanded',String(open));
       menuButton.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú');
-      if(open&&window.matchMedia('(max-width: 680px)').matches){
+      if(open&&e.detail===0){
         const firstLink=nav.querySelector('a');
         if(firstLink)firstLink.focus();
       }
