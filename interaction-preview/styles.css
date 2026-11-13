@@ -1643,3 +1643,23 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--acid);outline-offse
     transition:none!important;
   }
 }
+
+
+/* v135 — ajuste óptico de tracking en titulares: menos compresión sin perder impacto */
+.hero-giant,
+.hero-giant span:last-child{letter-spacing:-.058em}
+.hero-greeting h1{letter-spacing:-.045em}
+.works-heading h2{letter-spacing:-.068em}
+.discipline-main h3{letter-spacing:-.058em}
+.about-heading h2{letter-spacing:-.068em}
+.services h2{letter-spacing:-.055em}
+.footer-email{letter-spacing:-.072em}
+.project-visual strong{letter-spacing:-.052em}
+.project-caption h4{letter-spacing:-.015em}
+@media(max-width:680px){
+  .hero-giant,.hero-giant span:last-child{letter-spacing:-.052em}
+  .hero-greeting h1{letter-spacing:-.035em}
+  .works-heading h2,.about-heading h2{letter-spacing:-.06em}
+  .discipline-main h3{letter-spacing:-.05em}
+  .footer-email{letter-spacing:-.06em}
+}
