@@ -367,11 +367,21 @@ function sceneBtn(S){                               // la mano oprime el botón 
  if('IntersectionObserver' in window){
   new IntersectionObserver(([e])=>mini.classList.toggle('is-on',!e.isIntersecting),{rootMargin:'0px 0px -55% 0px'}).observe(hero);
  }
- mini.addEventListener('click',e=>{
-  e.stopPropagation();
-  const go=()=>{if(window.scrollY<4){set(true);stage.focus({preventScroll:true});return}requestAnimationFrame(go)};
-  window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});requestAnimationFrame(go);
- });
+ // v126 — la cara flotante abre un menú ahí mismo, sin perder el lugar en la página
+ mini.setAttribute('aria-label','Abrir menú');mini.setAttribute('aria-expanded','false');mini.setAttribute('aria-controls','mini-menu');
+ const sheet=document.createElement('nav');
+ sheet.id='mini-menu';sheet.className='mini-menu';sheet.setAttribute('aria-label','Menú rápido');
+ sheet.innerHTML='<a href="#works">Proyectos</a><a href="#reel">Reel</a><a href="#about">Sobre mí</a><a href="#servicios">Qué hago</a><hr><a class="mini-menu-cta" href="https://wa.me/595981923361" target="_blank" rel="noreferrer">Escribime por WhatsApp</a><a href="mailto:kevin13.kiamo@gmail.com">Escribime por mail</a>';
+ document.body.appendChild(sheet);
+ const links=[...sheet.querySelectorAll('a')];
+ const setSheet=v=>{sheet.classList.toggle('is-open',v);sheet.inert=!v;mini.setAttribute('aria-expanded',String(v));links.forEach(a=>a.tabIndex=v?0:-1);if(v)links[0].focus({preventScroll:true});};
+ setSheet(false);
+ mini.addEventListener('click',e=>{e.stopPropagation();setSheet(!sheet.classList.contains('is-open'));});
+ sheet.addEventListener('click',e=>{if(e.target.closest('a'))setSheet(false)});
+ document.addEventListener('click',e=>{if(sheet.classList.contains('is-open')&&!e.target.closest('#mini-menu'))setSheet(false)});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sheet.classList.contains('is-open')){setSheet(false);mini.focus({preventScroll:true})}});
+ // si la cara se esconde (portada o pie a la vista), el menú se cierra
+ new MutationObserver(()=>{if(!mini.classList.contains('is-on')||mini.classList.contains('is-hidden'))setSheet(false)}).observe(mini,{attributes:true,attributeFilter:['class']});
 })();
 
 /* ---------- Sobre mí: el personaje camina mientras deslizás y pasa de joven a viejo ---------- */

@@ -17,7 +17,7 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--display);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit}
-.skip-link{position:fixed;z-index:100;top:10px;left:10px;padding:12px 16px;background:var(--plum);color:var(--paper);font:11px var(--mono);transform:translateY(-160%);transition:transform .2s}
+.skip-link{position:fixed;z-index:100;top:10px;left:10px;padding:12px 16px;background:var(--plum);color:var(--paper);font:12px var(--mono);transform:translateY(-160%);transition:transform .2s}
 .skip-link:focus{transform:translateY(0)}
 ::selection{background:var(--plum);color:var(--peach)}
 .topbar{
@@ -1103,7 +1103,7 @@ html.is-lite .avatar-face-canvas{display:none!important}
 @media(hover:none),(max-width:680px){.avatar-hint{display:none!important}}
 @media(max-width:680px){.about-heading h2{font-size:min(17.5vw,78px)}.about-heading h2 span{font-size:1em}}
 /* mínimo legible de 11 px para rótulos monoespaciados (antes 7–9 px) */
-.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.location-line,.main-nav small,.footer-topline{font-size:max(11px,1em)!important}
+.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.location-line,.main-nav small,.footer-topline{font-size:max(12px,1em)!important}
 @media(max-width:680px){.hero-scroll,.discipline-number,.discipline-tools,.footer-copyright,.project-caption small,.eyebrow,.hero-meta,.hero-kicker,.about-topline,.footer-topline{font-size:11px!important}}
 .hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:max(11px,1em)}
 @media(max-width:680px){.hero-role small,.discipline-projects a span,.watch-link,.about-signature,.about-tags span{font-size:11px}}
@@ -1441,7 +1441,7 @@ html.is-lite #avatar-mount{filter:none}
 /* v117 — tarjetas de proyecto: jerarquía clara (rubro chico → título → bajada) y sin etiquetas repetidas sobre la imagen */
 .project-visual.has-img .visual-overline{display:none}
 .project-caption{padding:16px 0 0!important;gap:20px!important;align-items:flex-start}
-.project-caption small{display:block;font:500 11px/1.4 var(--mono,"DM Mono",monospace)!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--muted,#5E5A78)!important;margin:0 0 8px!important}
+.project-caption small{display:block;font:500 12px/1.4 var(--mono,"DM Mono",monospace)!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--muted,#5E5A78)!important;margin:0 0 8px!important}
 .project-caption h4{font-size:clamp(18px,1.5vw,22px)!important;line-height:1.15!important;letter-spacing:-.02em;margin:0 0 6px!important}
 .project-caption p{font-size:14px!important;line-height:1.5!important;max-width:46ch;margin:0!important;color:var(--muted,#5E5A78)}
 .project-caption .project-link{flex:none;margin-top:-2px}
@@ -1493,3 +1493,45 @@ html.is-lite #avatar-mount{filter:none}
 
 /* v125 — sin flechas decorativas: la lista de casos usa dos columnas (número y nombre) */
 .discipline-projects a{grid-template-columns:25px 1fr}
+
+/* v126 — celular y tableta: el rol con menos interletrado negativo para que se lea a 18 px */
+@media(max-width:1100px){.hero-role p{letter-spacing:-.05em}}
+/* v126 — piso de 12 px también en las etiquetas de «Sobre mí» y el botón de menú */
+.about-kicker,.about-tools-label,.lite-toggle,.about-link,.avatar-mini span{font-size:12px}
+
+/* v126 — crítica de portada: el botón de mail no pierde el texto en hover/foco; Sobre mí con texto sólido y menos apretado; menú táctil de 44 px */
+.services-cta-alt:hover,.services-cta-alt:focus-visible{background:var(--acid);color:var(--plum);box-shadow:none}
+.about-topline{opacity:1}
+.about-lead{letter-spacing:-.04em;line-height:1.2}
+.menu-toggle{min-height:44px;min-width:44px}
+
+/* v126 — contacto a mano desde la portada */
+.hero-contact{position:absolute;right:clamp(22px,5vw,76px);bottom:20px;z-index:9;display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:var(--acid);color:var(--plum);font:500 12px var(--mono);letter-spacing:.12em;transition:background .2s}
+.hero-contact:hover{background:#a6ff4d}
+.hero-contact:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+.hero.hands-open .hero-contact{opacity:0;visibility:hidden}
+@media(max-width:680px){.hero-contact{right:18px;left:auto;padding:0 16px}.hero-contact .hc-pre{display:none}}
+
+/* v126 — la cara flotante abre un menú ahí mismo, sin llevarte arriba */
+.mini-menu{position:fixed;right:clamp(14px,2.4vw,32px);bottom:calc(clamp(14px,2.4vw,32px) + clamp(58px,5vw,76px) + 12px);z-index:61;display:grid;min-width:220px;padding:8px;border-radius:20px;background:var(--plum);color:var(--paper);box-shadow:0 14px 32px rgba(20,16,50,.32);opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .18s ease-out,transform .18s ease-out,visibility 0s .18s}
+.mini-menu.is-open{opacity:1;visibility:visible;transform:none;transition:opacity .18s ease-out,transform .18s ease-out,visibility 0s}
+.mini-menu a{display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;font:500 14px var(--mono);letter-spacing:.04em}
+.mini-menu a:hover,.mini-menu a:focus-visible{background:rgba(244,242,237,.1);outline:none}
+.mini-menu a:focus-visible{box-shadow:inset 0 0 0 2px var(--acid)}
+.mini-menu .mini-menu-cta{margin-top:6px;background:var(--acid);color:var(--plum)}
+.mini-menu .mini-menu-cta:hover,.mini-menu .mini-menu-cta:focus-visible{background:#a6ff4d}
+.mini-menu hr{border:0;border-top:1px solid rgba(244,242,237,.18);margin:6px 4px}
+@media(prefers-reduced-motion:reduce){.mini-menu,.mini-menu.is-open{transition:none;transform:none}}
+
+/* v126 — «Trabajé para» sube justo debajo de la portada: la prueba de trayectoria aparece antes */
+.clients-band{background:var(--plum);color:var(--paper);padding:clamp(28px,3.4vw,48px) 0}
+.clients-band .clients{margin:0;border-top:0;padding:0 0 0;overflow:hidden}
+.clients-band .clients-label{padding:0 clamp(22px,5vw,76px)}
+@media(min-width:681px){.hero-role{bottom:clamp(88px,10.5vh,104px)}}
+.hero-contact .hc-pre{margin-right:.6em}
+
+/* v127 — segunda crítica: menú rápido cerrado no bloquea toques; cara flotante y flecha de tarjeta con área táctil de 44 px; rubros de disciplina a 12 px */
+.mini-menu:not(.is-open){pointer-events:none}
+.avatar-mini{min-height:44px}
+.project-link{display:inline-grid;place-items:center;min-width:44px;min-height:44px;margin:-10px -14px -10px 0}
+.discipline-top,.discipline-top span{font-size:12px}

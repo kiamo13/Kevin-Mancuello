@@ -57,7 +57,7 @@ a{color:inherit}
 .cs-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
 .cs-pills span{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;font-size:15px;font-weight:500}
 .cs-two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,72px)}
-.cs-two h3{font-size:clamp(24px,2.2vw,32px);letter-spacing:-.03em;line-height:1.1;margin:12px 0 16px}
+.cs-two h2,.cs-two h3{font-size:clamp(24px,2.2vw,32px);letter-spacing:-.03em;line-height:1.1;margin:12px 0 16px}
 .cs-steps{list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap);margin-top:32px}
 .cs-steps li{counter-increment:s;border-top:2px solid var(--ink);padding-top:16px;font-size:17px;line-height:1.45}
 .cs-steps li::before{content:"0" counter(s);display:block;font:500 12px var(--mono);letter-spacing:.14em;color:var(--violet);margin-bottom:8px}
@@ -121,7 +121,7 @@ a{color:inherit}
 @media(max-width:560px){.cs-feedmini{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .cs-mont{margin:clamp(24px,3vw,40px) 0 0;max-width:680px}
 .cs-mont img{width:100%;height:auto;border-radius:var(--r);display:block}
-.cs-ext{display:inline-block;margin-top:6px;font:500 14px var(--mono);letter-spacing:.06em;color:inherit;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--acid,#84FF00);text-decoration-thickness:2px}
+.cs-ext{display:inline-block;margin-top:-7px;padding:13px 0;font:500 14px var(--mono);letter-spacing:.06em;color:inherit;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--acid,#84FF00);text-decoration-thickness:2px}
 .cs-ext:hover{background:var(--acid,#84FF00);color:#231F46;text-decoration-color:transparent}
 
 /* v90 — Melvi sin fondo: las imágenes tienen transparencia, así que van directo sobre la página */
@@ -156,7 +156,7 @@ a{color:inherit}
 .lf{margin:0;background:#F0EFF1;box-shadow:0 0 0 .5px var(--line)}
 .lf img{display:block;width:100%;height:auto}
 .lf figcaption{display:flex;flex-direction:column;gap:2px;padding:0 clamp(12px,1.6vw,22px) clamp(12px,1.4vw,18px);font:500 clamp(12px,1vw,14px) var(--sans,inherit);color:#111}
-.lf figcaption span{font:500 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#6b6b72}
+.lf figcaption span{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#6b6b72}
 @media(max-width:620px){.lf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* v103 — en pantallas angostas, un dato largo de la ficha ocupa el ancho completo */
@@ -262,3 +262,6 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 @media(max-width:1000px){.cs-hero-art{display:none}}
 .cs-laptops{align-items:flex-end}
 .cs-laptops figure.bare img{border:0}
+
+/* v126 — «Hablemos» en violeta más profundo sobre el gris cálido (5,2:1; antes 4,4:1) */
+.cs-contact .cs-label{color:#5f33f0}
