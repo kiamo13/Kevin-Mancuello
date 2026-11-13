@@ -265,3 +265,9 @@ p,li,figcaption,dd,dt,h2,h3{text-wrap:pretty}
 
 /* v126 — «Hablemos» en violeta más profundo sobre el gris cálido (5,2:1; antes 4,4:1) */
 .cs-contact .cs-label{color:#5f33f0}
+
+/* v131 — crítica de casos: créditos largos en minúscula para leerse, salto al caso táctil, bajada con más aire en celular */
+.cs-credits dt{text-transform:none;letter-spacing:.02em;font-size:13px}
+.skip-link:focus{min-height:44px;display:inline-flex;align-items:center;padding:0 16px}
+@media(max-width:680px){.cs-lead{line-height:1.35}}
+.cs-credits{padding-top:16px}
